@@ -3,69 +3,70 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 function App() {
+  const [data, setData] = useState([]);
+  console.log(data);
 
-  const [data , setData] = useState([])
-  console.log(data)
-  
-  function handleCKeditorState(event, editor){
+  function handleCKeditorState(event, editor) {
     const data = editor.getData();
-    setData(data)
+    setData(data);
   }
-  function uploadAdapter (loader){
-   return {
-    upload:()=>{
-      return new Promise((resolve, reject)=>{
-        const body = new FormData();
-        loader.file.then((file)=>{
-          body.append("cover_img", file);
-          fetch("http://localhost:3001/v1/ckeImage",{
-            method:"post",
-            body:body
-          }).then((res)=>res.json())
-          .then((res)=>{
-            // console.log(...res.data)
-            resolve({...res.data})
-           
-          })
-          .catch((err)=>{
-             reject(err)
-          })
-        })
-    })
-  }}}
 
-    function uploadPlugin(editor){
-      editor.plugins.get( 'FileRepository' ).createUploadAdapter = (loader) => {
-        return new uploadAdapter(loader)
-      }
-    }
-
-  
-    const custom_config = {
-      extraPlugins: [ uploadPlugin ],
-      toolbar: {
-        items: [
-          'heading',
-          '|',
-          'bold',
-          'italic',
-          'link',
-          'bulletedList',
-          'numberedList',
-          '|',
-          'blockQuote',
-          'insertTable',
-          '|',
-          'imageUpload',
-          'undo',
-          'redo'
-        ]
+  function uploadAdapter(loader) {
+    return {
+      upload: () => {
+        return new Promise((resolve, reject) => {
+          const body = new FormData();
+          loader.file.then((file) => {
+            body.append("cover_img", file);
+            fetch("http://localhost:3001/v1/image", {
+              method: "post",
+              body: body,
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                // console.log(...res.data)
+                resolve({ ...res.data });
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          });
+        });
       },
-      table: {
-        contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-      }
-    }
+    };
+  }
 
+  function uploadPlugin(editor) {
+    editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+      return new uploadAdapter(loader);
+    };
+  }
+
+  const custom_config = {
+    extraPlugins: [uploadPlugin],
+
+    toolbar: {
+      items: [
+        "heading",
+        "|",
+        "bold",
+        "italic",
+        "link",
+        "bulletedList",
+        "numberedList",
+        "|",
+        "blockQuote",
+        "insertTable",
+        "|",
+        "imageUpload",
+        "undo",
+        "redo",
+      ],
+    },
+    table: {
+      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+    },
+  };
 
   return (
     <div className="App">
@@ -84,7 +85,7 @@ function App() {
           // You can store the "editor" and use when it is needed.
           console.log("Editor is ready to use!", editor);
         }}
-        onChange={(event, editor ) => handleCKeditorState(event, editor)}
+        onChange={(event, editor) => handleCKeditorState(event, editor)}
       />
     </div>
   );
