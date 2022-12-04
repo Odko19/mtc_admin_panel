@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const newsRoute = require("./news.route");
-const ckeImgRoute = require("./ckeImg.route");
-const usersRoute = require("./user.route");
+const imageRoute = require("./image.route");
+const usersRoute = require("./users.route");
+const authRoute = require("./auth.route");
 
 router.use("/news", newsRoute);
-router.use("/ckeImage", ckeImgRoute);
-
-
+router.use("/image", imageRoute);
+router.use("/users", usersRoute);
+router.use("/login", authRoute);
 
 module.exports = router;
