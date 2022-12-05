@@ -9,21 +9,15 @@ async function getAllNews(req) {
 }
 
 async function getCreateImage(req) {
-    const images = req.files.map((image) => {
-        return `http://10.0.10.53:3001/uploads/${image.filename}`;
-      });
-       await db.query(
-        "INSERT INTO  images(cover_img) VALUES (?)",
-        [images]
-      );
-      return {
-        data:images,
-      };
+  const images = req.files.map((image) => {
+    return `http://localhost:3001/uploads/${image.filename}`;
+  });
+  // await db.query("INSERT INTO  images(cover_img) VALUES (?)", [images]);
+  return {
+    data: images,
+  };
 }
 
-
-
 module.exports = {
-    getCreateImage,
-
+  getCreateImage,
 };

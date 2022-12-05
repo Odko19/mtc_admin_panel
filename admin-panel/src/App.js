@@ -1,9 +1,6 @@
 import React, { Component, useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-
-
-cons
+import DecoupledEditor from "@ckeditor/ckeditor5-build-classic";
 
 function App() {
   const [data, setData] = useState([]);
@@ -21,14 +18,13 @@ function App() {
           const body = new FormData();
           loader.file.then((file) => {
             body.append("cover_img", file);
-            console.log(file)
+            console.log(file);
             fetch("http://localhost:3001/v1/image", {
               method: "post",
               body: body,
             })
               .then((res) => res.json())
               .then((res) => {
-                console.log(...res.data)
                 resolve({ ...res.data });
               })
               .catch((err) => {
@@ -41,7 +37,7 @@ function App() {
   }
 
   function uploadPlugin(editor) {
-    console.log(editor)
+    console.log(editor);
     editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
       return new uploadAdapter(loader);
     };
@@ -64,65 +60,59 @@ function App() {
         "insertTable",
         "|",
         "imageUpload",
-        "undo",
-        "redo",
       ],
     },
-    
-    table: {
-      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
-    },
-   
+
     image: {
       // Configure the available styles.
-      styles: [
-        'alignLeft', 'alignCenter', 'alignRight', ],
+      styles: ["alignLeft", "alignCenter", "alignRight", "full", "side"],
 
       // Configure the available image resize options.
       resizeOptions: [
         {
-          name: 'resizeImage:original',
-          label: 'Original',
-          value: null
+          name: "imageResize:original",
+          value: null,
+          icon: "original",
         },
         {
-          name: 'resizeImage:25',
-          value: '25',
-          icon: 'small'
+          name: "imageResize:50",
+          value: "50%",
+          icon: "medium",
         },
         {
-          name: 'resizeImage:50',
-          label: '50%',
-          value: '50'
+          name: "imageResize:75",
+          value: "75%",
+          icon: "large",
         },
-        {
-          name: 'resizeImage:75',
-          label: '75%',
-          value: '75'
-        }
       ],
+      // You need to configure the image toolbar, too, so it shows the new style
+      // buttons as well as the resize buttons.
       toolbar: [
-        'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
-       'ImageResize'
-       
-      ]
-    }
-  };
+        "imageResize",
+        "imageResize:50",
+        "imageResize:75",
+        "imageResize:original",
+        "linkImage",
+      ],
+    },
 
+    table: {
+      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+    },
+  };
 
   return (
     <div className="App">
       <h2>Using CKEditor 5 build in React</h2>
       <CKEditor
-        editor={ClassicEditor}
+        editor={DecoupledEditor}
         // config={{
         //   ckfinder:{
         //     uploadUrl:"/ckeImage"
         //   },
         //   extraPlugins: [uploadPlugin]
         // }}
-        config={custom_config }
-    
+        config={custom_config}
         data="<p>Hello from CKEditor 5!</p>"
         onReady={(editor) => {
           // You can store the "editor" and use when it is needed.
