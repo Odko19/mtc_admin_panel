@@ -13,6 +13,7 @@ const getAllNews = async (req, res) => {
 const getCreateImage = async (req, res) => {
   try {
     const image = await imageServices.getCreateImage(req);
+
     res.json(image);
   } catch (error) {
     res.json({
