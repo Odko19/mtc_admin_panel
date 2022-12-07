@@ -5,16 +5,18 @@ const TOKEN_KEY = process.env.TOKEN_KEY;
 
 const getLoginUser = async (req, res) => {
   try {
-    const { name, password } = req.body;
-    if (Object.values(name).length === 0) {
+    const { firstName, password } = req.body;
+    if (Object.values(firstName).length === 0) {
       res.status(400).json({
         success: false,
         message: "No user is provided",
       });
     } else {
       const foundUser = await authServices.getLoginUser(req);
+      console.log(foundUser);
       const validPassword = foundUser.data[0].password;
-      const validName = foundUser.data[0].name;
+      const validName = foundUser.data[0].firstName;
+      const validPermission = foundUser.data[0].permission;
       if (await bcrypt.compare(password, validPassword)) {
         const token = jwt.sign(
           {
@@ -28,7 +30,8 @@ const getLoginUser = async (req, res) => {
         res.status(200).json({
           success: true,
           data: {
-            name: name,
+            firstName: validName,
+            permission: validPermission,
           },
           token: token,
         });

@@ -7,5 +7,6 @@ router.get("/", newsController.getAllNews);
 router.post("/", file.upload.array("cover_img"), newsController.getCreateNews);
 router.put("/", file.upload.array("cover_img"), newsController.getUpdateNews);
 router.delete("/?", newsController.getDeleteNews);
+router.get("/?id", newsController.getNewsById);
 
 module.exports = router;

@@ -7,6 +7,14 @@ async function getAllNews(req) {
     data,
   };
 }
+async function getNewsById(req) {
+  const { id } = req.query;
+  const data = await db.query("SELECT * FROM news where id = ?", [id]);
+  return {
+    success: true,
+    data,
+  };
+}
 
 async function getCreateNews(req) {
   const { title, body, created_by, type } = req.body;
@@ -52,6 +60,7 @@ async function getDeleteNews(req) {
 
 module.exports = {
   getAllNews,
+  getNewsById,
   getCreateNews,
   getUpdateNews,
   getDeleteNews,

@@ -9,14 +9,23 @@ async function getAllUsers(req) {
   };
 }
 
+async function getUserById(req) {
+  const { id } = req.query;
+  console.log(id);
+  const data = await db.query("SELECT * FROM users WHERE id=?", [id]);
+  return {
+    success: true,
+    data,
+  };
+}
+
 async function getCreateUser(req) {
-  const { name, password, user_access } = req.body;
+  const { firstName, password, permission } = req.body;
   const hashedPass = await bcrypt.hash(password, 10);
   const data = await db.query(
-    "INSERT INTO  users(name, password, user_access) VALUES (?, ?, ?)",
-    [name, hashedPass, user_access]
+    "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
+    [firstName, hashedPass, permission]
   );
-  console.log(data);
   return {
     success: true,
     data,
@@ -24,12 +33,12 @@ async function getCreateUser(req) {
 }
 
 async function getUpdateUser(req) {
-  const { id, name, password, user_access } = req.body;
+  const { id, firstName, password, permission } = req.body;
   const hashedPass = await bcrypt.hash(password, 10);
   const data = await db.query(
     `UPDATE users
-     SET name=?, password=?, user_access=? WHERE id=?`,
-    [name, hashedPass, user_access, id]
+     SET firstName=?, password=?, permission=? WHERE id=?`,
+    [firstName, hashedPass, permission, id]
   );
   return {
     success: true,
@@ -48,6 +57,7 @@ async function getDeleteUser(req) {
 
 module.exports = {
   getAllUsers,
+  getUserById,
   getCreateUser,
   getUpdateUser,
   getDeleteUser,

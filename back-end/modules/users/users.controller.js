@@ -10,6 +10,16 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
+const getUserById = async (req, res) => {
+  try {
+    const user = await usersServices.getUserById(req);
+    res.json(user);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
 const getCreateUser = async (req, res) => {
   try {
     const user = await usersServices.getCreateUser(req);
@@ -44,6 +54,7 @@ const getDeleteUser = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getUserById,
   getCreateUser,
   getUpdateUser,
   getDeleteUser,
