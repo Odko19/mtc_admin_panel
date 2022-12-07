@@ -12,9 +12,7 @@ const getAllNews = async (req, res) => {
 };
 const getCreateImage = async (req, res) => {
   try {
-    const image = await imageServices.getCreateImage(req);
-
-    res.json(image);
+    res.json(await imageServices.getCreateImage(req));
   } catch (error) {
     res.json({
       error: error,
@@ -22,7 +20,6 @@ const getCreateImage = async (req, res) => {
   }
 };
 
-
 module.exports = {
-    getCreateImage
+  getCreateImage,
 };
