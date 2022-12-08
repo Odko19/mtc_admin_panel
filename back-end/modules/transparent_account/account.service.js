@@ -1,29 +1,30 @@
 const db = require("../../db/db");
 
-async function getAllShare(req) {
-  const data = await db.query("select * from shareholders");
+async function getAllAccount(req) {
+  const data = await db.query("select * from account");
   return {
     success: true,
     data,
   };
 }
 
-async function getShareById(req) {
+async function getAccountById(req) {
   const { id } = req.query;
-  const data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
+  const data = await db.query("SELECT * FROM account WHERE id=?;", [id]);
   return {
     success: true,
     data,
   };
 }
 
-async function getCreateShare(req) {
+async function getCreateAccount(req) {
   const { title, body, created_by } = req.body;
+  console.log(req.body);
   const images = req.files.map((image) => {
     return `http://localhost:3001/uploads/${image.filename}`;
   });
   const data = await db.query(
-    "INSERT INTO  shareholders(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
+    "INSERT INTO  account(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
     [title, images, body, created_by]
   );
   return {
@@ -32,13 +33,14 @@ async function getCreateShare(req) {
   };
 }
 
-async function getUpdateShare(req) {
+async function getUpdateAccount(req) {
   const { id, title, body, created_by } = req.body;
+  console.log(id, title, body, created_by);
   const images = req.files.map((image) => {
     return `http://localhost:3001/uploads/${image.filename}`;
   });
   const data = await db.query(
-    `UPDATE shareholders
+    `UPDATE account
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
      WHERE id=?`,
     [title, images, body, created_by, id]
@@ -49,9 +51,9 @@ async function getUpdateShare(req) {
   };
 }
 
-async function getDeleteShare(req) {
+async function getDeleteAccount(req) {
   const { id } = req.query;
-  const data = await db.query("DELETE FROM shareholders where id = ?", [id]);
+  const data = await db.query("DELETE FROM account where id = ?", [id]);
   return {
     success: true,
     data,
@@ -59,9 +61,9 @@ async function getDeleteShare(req) {
 }
 
 module.exports = {
-  getAllShare,
-  getShareById,
-  getCreateShare,
-  getUpdateShare,
-  getDeleteShare,
+  getAllAccount,
+  getAccountById,
+  getCreateAccount,
+  getUpdateAccount,
+  getDeleteAccount,
 };

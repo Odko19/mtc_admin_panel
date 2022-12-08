@@ -1,43 +1,64 @@
 const db = require("../../db/db");
 
 async function getAllNews(req) {
-  const data = await db.query("select * from news");
+  let totalPage;
+  const { page, limit } = req.query;
+  const startId = (page - 1) * limit;
+  const data_count = await db.query("select count(*) as count from news");
+  if (data_count[0].count / limit !== 1) {
+    totalPage = parseInt(data_count[0].count / limit + 1);
+  } else {
+    totalPage = data_count[0].count / limit;
+  }
+  const data = await db.query("select * from news limit ?, ?", [
+    JSON.stringify(startId),
+    limit,
+  ]);
   return {
-    success: true,
+    pagination: {
+      firstPage: 1,
+      lastPage: totalPage,
+      totalPage: totalPage,
+      totalData: data_count[0].count,
+    },
     data,
   };
 }
-async function getNewsById(req) {
-  const { id } = req.query;
-  const data = await db.query("SELECT * FROM news where id = ?", [id]);
-  return {
-    success: true,
-    data,
-  };
-}
-
 async function getNewsPage(req) {
-  const { page, limit, type } = req.query;
+  let totalPage;
+  const { page, type, limit } = req.query;
   const startId = (page - 1) * limit;
   const data_count = await db.query(
     "select count(*) as count  from news where type=?",
     [type]
   );
-  let page_total = data_count[0].count / limit;
-  if (data_count[0].count / limit !== 0) {
-    console.log(data_count[0].count / limit + 1);
+
+  if (data_count[0].count / limit !== 1) {
+    totalPage = parseInt(data_count[0].count / limit + 1);
   } else {
-    console.log(data_count[0].count / limit);
+    totalPage = data_count[0].count / limit;
   }
-  // console.log(count);
   const data = await db.query("select * from news where type=? limit ?, ?", [
     type,
     JSON.stringify(startId),
     limit,
   ]);
   return {
+    pagination: {
+      firstPage: 1,
+      lastPage: totalPage,
+      totalPage: totalPage,
+      totalData: data_count[0].count,
+    },
+    data,
+  };
+}
+
+async function getNewsById(req) {
+  const { id } = req.query;
+  const data = await db.query("SELECT * FROM news where id = ?", [id]);
+  return {
     success: true,
-    pagination: {},
     data,
   };
 }

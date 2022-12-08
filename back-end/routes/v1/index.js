@@ -5,11 +5,13 @@ const imageRoute = require("./image.route");
 const usersRoute = require("./users.route");
 const authRoute = require("./auth.route");
 const shareholdersRoute = require("./shareholders.route");
+const transparentAccountRoute = require("./transparent_account.route");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);
 router.use("/users", usersRoute);
 router.use("/login", authRoute);
 router.use("/shareholders", shareholdersRoute);
+router.use("/account", transparentAccountRoute);
 
 module.exports = router;
