@@ -1,55 +1,39 @@
 const db = require("../../db/db");
 
 async function getAllNews(req) {
-  let totalPage;
   const { page, limit } = req.query;
   const startId = (page - 1) * limit;
   const data_count = await db.query("select count(*) as count from news");
-  if (data_count[0].count / limit !== 1) {
-    totalPage = parseInt(data_count[0].count / limit + 1);
-  } else {
-    totalPage = data_count[0].count / limit;
-  }
+  const totalPage = data_count[0].count / limit;
   const data = await db.query("select * from news limit ?, ?", [
     JSON.stringify(startId),
     limit,
   ]);
   return {
-    pagination: {
-      firstPage: 1,
-      lastPage: totalPage,
-      totalPage: totalPage,
-      totalData: data_count[0].count,
-    },
+    totalPages: Math.ceil(totalPage),
+    totalDatas: data_count[0].count,
+    currentPage: JSON.parse(page),
+    currentPageSize: JSON.parse(limit),
     data,
   };
 }
 async function getNewsPage(req) {
-  let totalPage;
-  const { page, type, limit } = req.query;
-  const startId = (page - 1) * limit;
+  const { page, type } = req.query;
+  const startId = (page - 1) * 6;
   const data_count = await db.query(
     "select count(*) as count  from news where type=?",
     [type]
   );
-
-  if (data_count[0].count / limit !== 1) {
-    totalPage = parseInt(data_count[0].count / limit + 1);
-  } else {
-    totalPage = data_count[0].count / limit;
-  }
-  const data = await db.query("select * from news where type=? limit ?, ?", [
+  const totalPage = data_count[0].count / 6;
+  const data = await db.query("select * from news where type=? limit ?, 6", [
     type,
     JSON.stringify(startId),
-    limit,
   ]);
   return {
-    pagination: {
-      firstPage: 1,
-      lastPage: totalPage,
-      totalPage: totalPage,
-      totalData: data_count[0].count,
-    },
+    totalPages: Math.ceil(totalPage),
+    totalDatas: data_count[0].count,
+    currentPage: JSON.parse(page),
+    currentPageSize: 6,
     data,
   };
 }
@@ -65,13 +49,17 @@ async function getNewsById(req) {
 
 async function getCreateNews(req) {
   const { title, body, created_by, type } = req.body;
-  const images = req.files.map((image) => {
-    return `http://localhost:3001/uploads/${image.filename}`;
-  });
-  const data = await db.query(
-    "INSERT INTO  news(title, cover_img, body, created_by , type, created_at , updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
-    [title, images, body, created_by, type]
-  );
+  let data;
+  req.files[0]
+    ? (data = await db.query(
+        "INSERT INTO  news(title, cover_img, body, created_by , type, created_at , updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
+        [title, req.files[0].filename, body, created_by, type]
+      ))
+    : (data = await db.query(
+        "INSERT INTO  news(title, cover_img, body, created_by , type, created_at , updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
+        [title, " ", body, created_by, type]
+      ));
+
   return {
     success: true,
     data,
@@ -80,15 +68,12 @@ async function getCreateNews(req) {
 
 async function getUpdateNews(req) {
   const { id, title, body, created_by, type } = req.body;
-  console.log(id, title, body, created_by, type);
-  const images = req.files.map((image) => {
-    return `http://localhost:3001/uploads/${image.filename}`;
-  });
+  const coverImg = req.files[0].filename;
   const data = await db.query(
     `UPDATE news
      SET title=?, cover_img=?, body=?, created_by=?, type=?, updated_at=now()
      WHERE id=?`,
-    [title, images, body, created_by, type, id]
+    [title, coverImg, body, created_by, type, id]
   );
   return {
     success: true,

@@ -19,13 +19,17 @@ async function getShareById(req) {
 
 async function getCreateShare(req) {
   const { title, body, created_by } = req.body;
-  const images = req.files.map((image) => {
-    return `http://localhost:3001/uploads/${image.filename}`;
-  });
-  const data = await db.query(
-    "INSERT INTO  shareholders(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
-    [title, images, body, created_by]
-  );
+  let data;
+  req.files[0]
+    ? (data = await db.query(
+        "INSERT INTO  shareholders(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
+        [title, req.files[0].filename, body, created_by]
+      ))
+    : (data = await db.query(
+        "INSERT INTO  shareholders(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
+        [title, " ", body, created_by]
+      ));
+
   return {
     success: true,
     data,
@@ -34,14 +38,12 @@ async function getCreateShare(req) {
 
 async function getUpdateShare(req) {
   const { id, title, body, created_by } = req.body;
-  const images = req.files.map((image) => {
-    return `http://localhost:3001/uploads/${image.filename}`;
-  });
+  const cover_img = req.files[0].filename;
   const data = await db.query(
     `UPDATE shareholders
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
      WHERE id=?`,
-    [title, images, body, created_by, id]
+    [title, cover_img, body, created_by, id]
   );
   return {
     success: true,
