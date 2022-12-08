@@ -10,7 +10,6 @@ async function getAllShare(req) {
 
 async function getShareById(req) {
   const { id } = req.query;
-  console.log(id);
   const data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
   return {
     success: true,

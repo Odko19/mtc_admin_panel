@@ -6,6 +6,7 @@ const TOKEN_KEY = process.env.TOKEN_KEY;
 const getLoginUser = async (req, res) => {
   try {
     const { firstName, password } = req.body;
+    console.log(firstName, password);
     if (Object.values(firstName).length === 0) {
       res.status(400).json({
         success: false,

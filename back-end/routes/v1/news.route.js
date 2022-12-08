@@ -4,9 +4,10 @@ const newsController = require("../../modules/news");
 const file = require("../../helpers/image-uploader");
 
 router.get("/", newsController.getAllNews);
+router.get("/id?", newsController.getNewsById);
+router.get("/page?", newsController.getNewsPage);
 router.post("/", file.upload.array("cover_img"), newsController.getCreateNews);
 router.put("/", file.upload.array("cover_img"), newsController.getUpdateNews);
 router.delete("/?", newsController.getDeleteNews);
-router.get("/?id", newsController.getNewsById);
 
 module.exports = router;

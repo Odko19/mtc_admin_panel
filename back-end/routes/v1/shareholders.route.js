@@ -4,7 +4,7 @@ const shareController = require("../../modules/shareholders");
 const file = require("../../helpers/image-uploader");
 
 router.get("/", shareController.getAllShare);
-router.get("/?", shareController.getShareById);
+router.get("/id?", shareController.getShareById);
 router.post(
   "/",
   file.upload.array("cover_img"),

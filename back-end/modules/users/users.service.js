@@ -11,7 +11,6 @@ async function getAllUsers(req) {
 
 async function getUserById(req) {
   const { id } = req.query;
-  console.log(id);
   const data = await db.query("SELECT * FROM users WHERE id=?", [id]);
   return {
     success: true,
@@ -22,10 +21,19 @@ async function getUserById(req) {
 async function getCreateUser(req) {
   const { firstName, password, permission } = req.body;
   const hashedPass = await bcrypt.hash(password, 10);
-  const data = await db.query(
-    "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
-    [firstName, hashedPass, permission]
-  );
+  let data;
+  if (permission === "") {
+    data = await db.query(
+      "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
+      [firstName, hashedPass, []]
+    );
+  } else {
+    data = await db.query(
+      "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
+      [firstName, hashedPass, permission]
+    );
+  }
+
   return {
     success: true,
     data,

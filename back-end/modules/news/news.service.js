@@ -16,6 +16,32 @@ async function getNewsById(req) {
   };
 }
 
+async function getNewsPage(req) {
+  const { page, limit, type } = req.query;
+  const startId = (page - 1) * limit;
+  const data_count = await db.query(
+    "select count(*) as count  from news where type=?",
+    [type]
+  );
+  let page_total = data_count[0].count / limit;
+  if (data_count[0].count / limit !== 0) {
+    console.log(data_count[0].count / limit + 1);
+  } else {
+    console.log(data_count[0].count / limit);
+  }
+  // console.log(count);
+  const data = await db.query("select * from news where type=? limit ?, ?", [
+    type,
+    JSON.stringify(startId),
+    limit,
+  ]);
+  return {
+    success: true,
+    pagination: {},
+    data,
+  };
+}
+
 async function getCreateNews(req) {
   const { title, body, created_by, type } = req.body;
   const images = req.files.map((image) => {
@@ -61,6 +87,7 @@ async function getDeleteNews(req) {
 module.exports = {
   getAllNews,
   getNewsById,
+  getNewsPage,
   getCreateNews,
   getUpdateNews,
   getDeleteNews,
