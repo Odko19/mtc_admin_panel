@@ -13,7 +13,6 @@ const getAllAccount = async (req, res) => {
 
 const getAccountById = async (req, res) => {
   try {
-    console.log(req.body);
     const account = await accountServices.getAccountById(req);
     res.json(account);
   } catch (error) {

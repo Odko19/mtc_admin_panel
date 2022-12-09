@@ -10,8 +10,13 @@ async function getAllUsers(req) {
 }
 
 async function getUserById(req) {
+  let data;
   const { id } = req.query;
-  const data = await db.query("SELECT * FROM users WHERE id=?", [id]);
+  if (id !== undefined) {
+    data = await db.query("SELECT * FROM users WHERE id=?", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,
@@ -21,19 +26,10 @@ async function getUserById(req) {
 async function getCreateUser(req) {
   const { firstName, password, permission } = req.body;
   const hashedPass = await bcrypt.hash(password, 10);
-  let data;
-  if (permission === "") {
-    data = await db.query(
-      "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
-      [firstName, hashedPass, []]
-    );
-  } else {
-    data = await db.query(
-      "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
-      [firstName, hashedPass, permission]
-    );
-  }
-
+  const data = await db.query(
+    "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
+    [firstName, hashedPass, permission]
+  );
   return {
     success: true,
     data,
@@ -55,8 +51,13 @@ async function getUpdateUser(req) {
 }
 
 async function getDeleteUser(req) {
+  let data;
   const { id } = req.query;
-  const data = await db.query("DELETE FROM users where id = ?", [id]);
+  if (id !== undefined) {
+    data = await db.query("DELETE FROM users where id = ?", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,

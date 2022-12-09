@@ -9,8 +9,13 @@ async function getAllShare(req) {
 }
 
 async function getShareById(req) {
+  let data;
   const { id } = req.query;
-  const data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
+  if (id !== undefined) {
+    data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,
@@ -18,8 +23,8 @@ async function getShareById(req) {
 }
 
 async function getCreateShare(req) {
-  const { title, body, created_by } = req.body;
   let data;
+  const { title, body, created_by } = req.body;
   req.files[0]
     ? (data = await db.query(
         "INSERT INTO  shareholders(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
@@ -27,9 +32,8 @@ async function getCreateShare(req) {
       ))
     : (data = await db.query(
         "INSERT INTO  shareholders(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
-        [title, " ", body, created_by]
+        [title, null, body, created_by]
       ));
-
   return {
     success: true,
     data,
@@ -52,8 +56,13 @@ async function getUpdateShare(req) {
 }
 
 async function getDeleteShare(req) {
+  let data;
   const { id } = req.query;
-  const data = await db.query("DELETE FROM shareholders where id = ?", [id]);
+  if (id !== undefined) {
+    data = await db.query("DELETE FROM shareholders where id = ?", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,

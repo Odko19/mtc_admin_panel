@@ -10,6 +10,7 @@ const getAllNews = async (req, res) => {
     });
   }
 };
+
 const getNewsById = async (req, res) => {
   try {
     const news = await newsServices.getNewsById(req);
@@ -20,6 +21,7 @@ const getNewsById = async (req, res) => {
     });
   }
 };
+
 const getNewsPage = async (req, res) => {
   try {
     const news = await newsServices.getNewsPage(req);
@@ -30,6 +32,7 @@ const getNewsPage = async (req, res) => {
     });
   }
 };
+
 const getCreateNews = async (req, res) => {
   try {
     const news = await newsServices.getCreateNews(req);
@@ -40,6 +43,7 @@ const getCreateNews = async (req, res) => {
     });
   }
 };
+
 const getUpdateNews = async (req, res) => {
   try {
     const news = await newsServices.getUpdateNews(req);

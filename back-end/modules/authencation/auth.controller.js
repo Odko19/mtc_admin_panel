@@ -39,7 +39,7 @@ const getLoginUser = async (req, res) => {
       } else {
         res.status(401).json({
           success: false,
-          data: "Name or Password do not match",
+          data: "firstName or Password do not match",
         });
       }
     }

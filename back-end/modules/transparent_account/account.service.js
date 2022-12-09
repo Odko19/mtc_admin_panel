@@ -9,8 +9,13 @@ async function getAllAccount(req) {
 }
 
 async function getAccountById(req) {
+  let data;
   const { id } = req.query;
-  const data = await db.query("SELECT * FROM account WHERE id=?;", [id]);
+  if (id !== undefined) {
+    data = await db.query("SELECT * FROM account WHERE id=?;", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,
@@ -18,8 +23,8 @@ async function getAccountById(req) {
 }
 
 async function getCreateAccount(req) {
-  const { title, body, created_by } = req.body;
   let data;
+  const { title, body, created_by } = req.body;
   req.files[0]
     ? (data = await db.query(
         "INSERT INTO  account(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
@@ -27,7 +32,7 @@ async function getCreateAccount(req) {
       ))
     : (data = await db.query(
         "INSERT INTO  account(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
-        [title, " ", body, created_by]
+        [title, null, body, created_by]
       ));
   return {
     success: true,
@@ -38,6 +43,7 @@ async function getCreateAccount(req) {
 async function getUpdateAccount(req) {
   const { id, title, body, created_by } = req.body;
   const cover_img = req.files[0].filename;
+
   const data = await db.query(
     `UPDATE account
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
@@ -51,8 +57,13 @@ async function getUpdateAccount(req) {
 }
 
 async function getDeleteAccount(req) {
+  let data;
   const { id } = req.query;
-  const data = await db.query("DELETE FROM account where id = ?", [id]);
+  if (id !== undefined) {
+    data = await db.query("DELETE FROM account where id = ?", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,

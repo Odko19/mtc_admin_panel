@@ -2,13 +2,13 @@ import React, { Component, useState, useRef, useEffect } from "react";
 import parse from "html-react-parser";
 import { Editor } from "@tinymce/tinymce-react";
 import axios from "axios";
+
 import "./App.css";
 
 function Tinycme() {
   const [data, setData] = useState([]);
   const [news, setNews] = useState([]);
   const [image, setImage] = useState([]);
-  console.log(news);
 
   const editorRef = useRef(null);
   const log = () => {
@@ -38,12 +38,12 @@ function Tinycme() {
       .catch((error) => console.log("error", error));
   }
 
-  useEffect(() => {
-    fetch("http://localhost:3001/v1/news")
-      .then((response) => response.text())
-      .then((result) => setNews(JSON.parse(result).data))
-      .catch((error) => console.log("error", error));
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:3001/v1/news")
+  //     .then((response) => response.text())
+  //     .then((result) => setNews(JSON.parse(result).data))
+  //     .catch((error) => console.log("error", error));
+  // }, []);
 
   return (
     <div className="content">

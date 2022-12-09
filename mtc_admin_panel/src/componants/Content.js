@@ -26,7 +26,7 @@ function Content() {
       {/* http://localhost:3001/uploads/ */}
       {data?.data.map((d, key) => {
         return (
-          <div className="flex">
+          <div key={key} className="flex">
             <div>{d.id}</div>
             <div>{d.title}</div>
             <div>{d.type}</div>

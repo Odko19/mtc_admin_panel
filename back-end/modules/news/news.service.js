@@ -2,13 +2,20 @@ const db = require("../../db/db");
 
 async function getAllNews(req) {
   const { page, limit } = req.query;
-  const startId = (page - 1) * limit;
-  const data_count = await db.query("select count(*) as count from news");
-  const totalPage = data_count[0].count / limit;
-  const data = await db.query("select * from news limit ?, ?", [
-    JSON.stringify(startId),
-    limit,
-  ]);
+  let data, totalPage, data_count, startId;
+  if (page !== undefined || limit !== undefined) {
+    console.log(page, limit);
+    startId = (page - 1) * limit;
+    data_count = await db.query("select count(*) as count from news");
+    totalPage = data_count && data_count[0].count / limit;
+    data = await db.query("select * from news limit ?, ?", [
+      JSON.stringify(startId),
+      limit,
+    ]);
+  } else {
+    data;
+  }
+
   return {
     totalPages: Math.ceil(totalPage),
     totalDatas: data_count[0].count,
@@ -17,18 +24,25 @@ async function getAllNews(req) {
     data,
   };
 }
+
 async function getNewsPage(req) {
   const { page, type } = req.query;
-  const startId = (page - 1) * 6;
-  const data_count = await db.query(
-    "select count(*) as count  from news where type=?",
-    [type]
-  );
-  const totalPage = data_count[0].count / 6;
-  const data = await db.query("select * from news where type=? limit ?, 6", [
-    type,
-    JSON.stringify(startId),
-  ]);
+  let data, totalPage, data_count, startId;
+  if (page !== undefined || type !== undefined) {
+    startId = (page - 1) * 6;
+    data_count = await db.query(
+      "select count(*) as count  from news where type=?",
+      [type]
+    );
+    totalPage = data_count && data_count[0].count / 6;
+    data = await db.query("select * from news where type=? limit ?, 6", [
+      type,
+      JSON.stringify(startId),
+    ]);
+    console.log(data);
+  } else {
+    data;
+  }
   return {
     totalPages: Math.ceil(totalPage),
     totalDatas: data_count[0].count,
@@ -40,7 +54,12 @@ async function getNewsPage(req) {
 
 async function getNewsById(req) {
   const { id } = req.query;
-  const data = await db.query("SELECT * FROM news where id = ?", [id]);
+  let data;
+  if (id !== undefined) {
+    data = await db.query("SELECT * FROM news where id = ?", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,
@@ -49,7 +68,6 @@ async function getNewsById(req) {
 
 async function getCreateNews(req) {
   const { title, body, created_by, type } = req.body;
-  let data;
   req.files[0]
     ? (data = await db.query(
         "INSERT INTO  news(title, cover_img, body, created_by , type, created_at , updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
@@ -57,9 +75,8 @@ async function getCreateNews(req) {
       ))
     : (data = await db.query(
         "INSERT INTO  news(title, cover_img, body, created_by , type, created_at , updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
-        [title, " ", body, created_by, type]
+        [title, null, body, created_by, type]
       ));
-
   return {
     success: true,
     data,
@@ -83,7 +100,11 @@ async function getUpdateNews(req) {
 
 async function getDeleteNews(req) {
   const { id } = req.query;
-  const data = await db.query("DELETE FROM news where id = ?", [id]);
+  if (id !== undefined) {
+    data = await db.query("DELETE FROM news where id = ?", [id]);
+  } else {
+    data;
+  }
   return {
     success: true,
     data,

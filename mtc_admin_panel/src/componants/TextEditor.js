@@ -58,6 +58,7 @@ function TextEditor() {
             input.setAttribute("accept", "image/*");
             input.onchange = function () {
               var file = this.files[0];
+              console.log(file);
               var reader = new FileReader();
               reader.onload = function () {
                 var id = "blobid" + new Date().getTime();
@@ -69,9 +70,7 @@ function TextEditor() {
                 axios
                   .post("http://localhost:3001/v1/image", data)
                   .then(function (res) {
-                    res.data.data.map((image) => {
-                      return cb(image);
-                    });
+                    console.log(res);
                   })
                   .catch(function (err) {
                     console.log(err);

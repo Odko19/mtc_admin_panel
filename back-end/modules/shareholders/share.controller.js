@@ -13,7 +13,6 @@ const getAllShare = async (req, res) => {
 
 const getShareById = async (req, res) => {
   try {
-    console.log(req.body);
     const share = await shareServices.getShareById(req);
     res.json(share);
   } catch (error) {
