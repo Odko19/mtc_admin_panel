@@ -7,8 +7,9 @@ function App() {
 
   return (
     <div className="App">
-      <Content />
-      <TextEditor />
+      {/* <Content />
+      <TextEditor /> */}
+      his
     </div>
   );
 }
