@@ -4,7 +4,6 @@ async function getAllNews(req) {
   const { page, limit } = req.query;
   let data, totalPage, data_count, startId;
   if (page !== undefined || limit !== undefined) {
-    console.log(page, limit);
     startId = (page - 1) * limit;
     data_count = await db.query("select count(*) as count from news");
     totalPage = data_count && data_count[0].count / limit;
@@ -85,6 +84,7 @@ async function getCreateNews(req) {
 
 async function getUpdateNews(req) {
   const { id, title, body, created_by, type } = req.body;
+  console.log(req.body);
   const coverImg = req.files[0].filename;
   const data = await db.query(
     `UPDATE news

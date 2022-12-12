@@ -1,9 +1,14 @@
-import React, { Component, useState, useRef } from "react";
+import React, { Component, useState, useRef, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { useLocation } from "react-router";
+
 import axios from "axios";
 
 function TextEditor() {
   const [body, setBody] = useState();
+  const [edit, setEdit] = useState();
+  console.log(edit);
+  const { state } = useLocation();
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
@@ -31,7 +36,100 @@ function TextEditor() {
       .catch((error) => console.log("error", error));
   }
 
-  return (
+  function handleBtnEdit(e) {
+    e.preventDefault();
+    var formdata = new FormData();
+    formdata.append("id", edit[0].id);
+    formdata.append("title", edit[0].title);
+    formdata.append("body", body);
+    formdata.append("created_by", edit[0].created_by);
+    formdata.append("type", edit[0].type);
+    formdata.append("cover_img", e.target.image.files[0]);
+    var requestOptions = {
+      method: "PUT",
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:3001/v1/news", requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  }
+
+  useEffect(() => {
+    state
+      ? fetch(`http://localhost:3001/v1/news/id?id=${state}`)
+          .then((response) => response.json())
+          .then((result) => setEdit(result.data))
+          .catch((error) => console.log("error", error))
+      : console.log("error");
+  }, []);
+
+  return state ? (
+    edit?.map((news, i) => {
+      return (
+        <div key={i}>
+          <form onSubmit={handleBtnEdit}>
+            <input accept="image/*" type="file" multiple name="image" />
+            <button onClick={log}>submit</button>
+          </form>
+          <Editor
+            initialValue={news.body}
+            onInit={(evt, editor) => (editorRef.current = editor)}
+            init={{
+              height: 500,
+              menubar: false,
+              toolbar:
+                "  undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
+              selector: "textarea",
+              plugins: "quickbars image",
+              quickbars_image_toolbar:
+                "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+              quickbars_selection_toolbar:
+                "bold italic alignleft aligncenter alignright alignjustify ",
+              automatic_uploads: true,
+              file_picker_types: "image",
+              file_picker_callback: function (cb, value, meta) {
+                var input = document.createElement("input");
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
+                input.onchange = function () {
+                  var file = this.files[0];
+                  console.log(file);
+                  var reader = new FileReader();
+                  reader.onload = function () {
+                    var id = "blobid" + new Date().getTime();
+                    var blobCache = editorRef.current.editorUpload.blobCache;
+                    var base64 = reader.result.split(",")[1];
+                    var blobInfo = blobCache.create(id, file, base64);
+                    let data = new FormData();
+                    data.append(
+                      "cover_img",
+                      blobInfo.blob(),
+                      blobInfo.filename()
+                    );
+                    axios
+                      .post("http://localhost:3001/v1/image", data)
+                      .then(function (res) {
+                        res.data.images.map((image) => {
+                          return cb(image);
+                        });
+                      })
+                      .catch(function (err) {
+                        console.log(err);
+                      });
+                  };
+                  reader.readAsDataURL(file);
+                };
+                input.click();
+              },
+            }}
+          />
+        </div>
+      );
+    })
+  ) : (
     <div>
       <form onSubmit={handleBtn}>
         <input accept="image/*" type="file" multiple name="image" />
@@ -58,7 +156,7 @@ function TextEditor() {
             input.setAttribute("accept", "image/*");
             input.onchange = function () {
               var file = this.files[0];
-              console.log(file);
+              // console.log(file);
               var reader = new FileReader();
               reader.onload = function () {
                 var id = "blobid" + new Date().getTime();
@@ -70,7 +168,10 @@ function TextEditor() {
                 axios
                   .post("http://localhost:3001/v1/image", data)
                   .then(function (res) {
-                    console.log(res);
+                    res.data.images.map((image) => {
+                      return cb(image);
+                    });
+                    // console.log(res.data);
                   })
                   .catch(function (err) {
                     console.log(err);

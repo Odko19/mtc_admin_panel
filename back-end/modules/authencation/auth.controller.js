@@ -6,7 +6,6 @@ const TOKEN_KEY = process.env.TOKEN_KEY;
 const getLoginUser = async (req, res) => {
   try {
     const { firstName, password } = req.body;
-    console.log(firstName, password);
     if (Object.values(firstName).length === 0) {
       res.status(400).json({
         success: false,
@@ -14,7 +13,8 @@ const getLoginUser = async (req, res) => {
       });
     } else {
       const foundUser = await authServices.getLoginUser(req);
-      console.log(foundUser);
+
+      const validId = foundUser.data[0].id;
       const validPassword = foundUser.data[0].password;
       const validName = foundUser.data[0].firstName;
       const validPermission = foundUser.data[0].permission;
@@ -31,6 +31,7 @@ const getLoginUser = async (req, res) => {
         res.status(200).json({
           success: true,
           data: {
+            id: validId,
             firstName: validName,
             permission: validPermission,
           },

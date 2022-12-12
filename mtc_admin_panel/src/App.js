@@ -1,15 +1,15 @@
 import { useState } from "react";
 import TextEditor from "./componants/TextEditor";
-import Content from "./componants/Content";
+import Main from "./componants/Main";
 
 function App() {
   const [data, setDate] = useState();
 
   return (
-    <div className="App">
+    <div className="main">
       {/* <Content />
       <TextEditor /> */}
-      his
+      <Main />
     </div>
   );
 }
