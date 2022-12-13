@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import { useNavigate, Route, Routes } from "react-router-dom";
 import TextEditor from "./TextEditor";
-import Content1 from "./Content";
+import News from "./News";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  FileTextOutlined,
+  DollarCircleOutlined,
+  StockOutlined,
+  UserAddOutlined,
+  FileAddOutlined,
+} from "@ant-design/icons";
 const { Header, Sider, Content } = Layout;
 
 function Main() {
@@ -32,32 +34,52 @@ function Main() {
         collapsible
         collapsed={collapsed}
         style={{
-          backgroundColor: "white",
+          backgroundColor: "#2957a4",
+          color: "white",
+          height: "100%",
         }}
       >
+        <div
+          style={{
+            padding: "22px",
+            backgroundColor: "gray",
+          }}
+        >
+          logo
+        </div>
         <Menu
           style={{
+            marginTop: "10px",
             backgroundColor: "#2957a4",
             color: "white",
-            height: "100%",
           }}
           defaultSelectedKeys={["1"]}
           onClick={onSelectMenu}
           items={[
             {
               key: "/",
-              icon: <UserOutlined />,
-              label: "nav 1",
+              icon: <FileTextOutlined />,
+              label: "Мэдээ / Урамшуулал",
             },
             {
-              key: "/editor",
-              icon: <VideoCameraOutlined />,
-              label: "nav 2",
+              key: "/account",
+              icon: <DollarCircleOutlined />,
+              label: "Шилэн данс",
             },
             {
-              key: "/roi",
-              icon: <UploadOutlined />,
-              label: "nav 3",
+              key: "/shareholders",
+              icon: <StockOutlined />,
+              label: "Хувьцаа эзэмшигч",
+            },
+            {
+              key: "/job",
+              icon: <FileAddOutlined />,
+              label: "Ажлын зар",
+            },
+            {
+              key: "/user",
+              icon: <UserAddOutlined />,
+              label: "Админ нэмэх",
             },
           ]}
         />
@@ -92,7 +114,7 @@ function Main() {
           }}
         >
           <Routes>
-            <Route path="/" element={<Content1 />} />
+            <Route path="/" element={<News />} />
             <Route path="/editor" element={<TextEditor />} />
           </Routes>
         </Content>

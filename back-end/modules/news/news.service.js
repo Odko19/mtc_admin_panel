@@ -7,10 +7,12 @@ async function getAllNews(req) {
     startId = (page - 1) * limit;
     data_count = await db.query("select count(*) as count from news");
     totalPage = data_count && data_count[0].count / limit;
-    data = await db.query("select * from news limit ?, ?", [
-      JSON.stringify(startId),
-      limit,
-    ]);
+    data = await db.query(
+      ` SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
+        news.updated_at,type_status, users.firstName as created_by FROM news
+        left JOIN users ON created_by = users.id limit ?, ?`,
+      [JSON.stringify(startId), limit]
+    );
   } else {
     data;
   }
@@ -34,11 +36,13 @@ async function getNewsPage(req) {
       [type]
     );
     totalPage = data_count && data_count[0].count / 6;
-    data = await db.query("select * from news where type=? limit ?, 6", [
-      type,
-      JSON.stringify(startId),
-    ]);
-    console.log(data);
+    data = await db.query(
+      `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
+       news.updated_at,type_status, users.firstName as created_by FROM news
+       left JOIN users ON created_by = users.id limit ?, 6
+    `,
+      [type, JSON.stringify(startId)]
+    );
   } else {
     data;
   }
@@ -84,14 +88,20 @@ async function getCreateNews(req) {
 
 async function getUpdateNews(req) {
   const { id, title, body, created_by, type } = req.body;
-  console.log(req.body);
-  const coverImg = req.files[0].filename;
-  const data = await db.query(
-    `UPDATE news
+  req.files[0]
+    ? (data = await db.query(
+        `UPDATE news
      SET title=?, cover_img=?, body=?, created_by=?, type=?, updated_at=now()
      WHERE id=?`,
-    [title, coverImg, body, created_by, type, id]
-  );
+        [title, coverImg, body, created_by, type, id]
+      ))
+    : (data = await db.query(
+        `UPDATE news
+     SET title=?, cover_img=?, body=?, created_by=?, type=?, updated_at=now()
+     WHERE id=?`,
+        [title, null, body, created_by, type, id]
+      ));
+
   return {
     success: true,
     data,

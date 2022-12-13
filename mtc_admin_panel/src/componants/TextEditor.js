@@ -58,13 +58,11 @@ function TextEditor() {
   }
 
   useEffect(() => {
-    state
-      ? fetch(`http://localhost:3001/v1/news/id?id=${state}`)
-          .then((response) => response.json())
-          .then((result) => setEdit(result.data))
-          .catch((error) => console.log("error", error))
-      : console.log("error");
-  }, []);
+    fetch(`http://localhost:3001/v1/news/id?id=${state}`)
+      .then((response) => response.json())
+      .then((result) => setEdit(result.data))
+      .catch((error) => console.log("error", error));
+  }, [state]);
 
   return state ? (
     edit?.map((news, i) => {
