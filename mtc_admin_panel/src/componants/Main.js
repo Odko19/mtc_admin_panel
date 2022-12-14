@@ -15,7 +15,6 @@ import {
 const { Header, Sider, Content } = Layout;
 
 function Main() {
-  console.log(process.env.PORT);
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const onSelectMenu = (item) => {
