@@ -3,9 +3,7 @@ const router = express.Router();
 const newsController = require("../../modules/news");
 const file = require("../../helpers/image-uploader");
 
-router.get("/all?", newsController.getAllNews);
-router.get("/id?", newsController.getNewsById);
-router.get("/pagination?", newsController.getNewsPage);
+router.get("/?", newsController.getAllNews);
 router.post("/", file.upload.array("cover_img"), newsController.getCreateNews);
 router.put("/", file.upload.array("cover_img"), newsController.getUpdateNews);
 router.delete("/?", newsController.getDeleteNews);

@@ -7,7 +7,6 @@ import axios from "axios";
 function TextEditor() {
   const [body, setBody] = useState();
   const [edit, setEdit] = useState();
-  console.log(edit);
   const { state } = useLocation();
   const editorRef = useRef(null);
   const log = () => {
@@ -15,6 +14,7 @@ function TextEditor() {
       setBody(editorRef.current.getContent());
     }
   };
+
   function handleBtn(e) {
     e.preventDefault();
     var formdata = new FormData();
@@ -58,7 +58,7 @@ function TextEditor() {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:3001/v1/news/id?id=${state}`)
+    fetch(`http://localhost:3001/v1/news/?id=${state}`)
       .then((response) => response.json())
       .then((result) => setEdit(result.data))
       .catch((error) => console.log("error", error));
@@ -70,31 +70,92 @@ function TextEditor() {
         <div key={i}>
           <form onSubmit={handleBtnEdit}>
             <input accept="image/*" type="file" multiple name="image" />
+
+            <Editor
+              initialValue={news.body}
+              onInit={(evt, editor) => (editorRef.current = editor)}
+              init={{
+                height: 500,
+                menubar: false,
+                toolbar:
+                  "  undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
+                selector: "textarea",
+                plugins: "quickbars image",
+                quickbars_image_toolbar:
+                  "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+                quickbars_selection_toolbar:
+                  "bold italic alignleft aligncenter alignright alignjustify ",
+                automatic_uploads: true,
+                file_picker_types: "image",
+                file_picker_callback: function (cb, value, meta) {
+                  var input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.setAttribute("accept", "image/*");
+                  input.onchange = function () {
+                    var file = this.files[0];
+                    console.log(file);
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                      var id = "blobid" + new Date().getTime();
+                      var blobCache = editorRef.current.editorUpload.blobCache;
+                      var base64 = reader.result.split(",")[1];
+                      var blobInfo = blobCache.create(id, file, base64);
+                      let data = new FormData();
+                      data.append(
+                        "cover_img",
+                        blobInfo.blob(),
+                        blobInfo.filename()
+                      );
+                      axios
+                        .post("http://localhost:3001/v1/image", data)
+                        .then(function (res) {
+                          res.data.images.map((image) => {
+                            return cb(image);
+                          });
+                        })
+                        .catch(function (err) {
+                          console.log(err);
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                  };
+                  input.click();
+                },
+              }}
+            />
             <button onClick={log}>submit</button>
           </form>
-          <Editor
-            initialValue={news.body}
-            onInit={(evt, editor) => (editorRef.current = editor)}
-            init={{
-              height: 500,
-              menubar: false,
-              toolbar:
-                "  undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
-              selector: "textarea",
-              plugins: "quickbars image",
-              quickbars_image_toolbar:
-                "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
-              quickbars_selection_toolbar:
-                "bold italic alignleft aligncenter alignright alignjustify ",
-              automatic_uploads: true,
-              file_picker_types: "image",
-              file_picker_callback: function (cb, value, meta) {
+        </div>
+      );
+    })
+  ) : (
+    <div>
+      <form onSubmit={handleBtn}>
+        <input accept="image/*" type="file" multiple name="image" />
+        <Editor
+          onInit={(evt, editor) => (editorRef.current = editor)}
+          init={{
+            height: 500,
+            menubar: false,
+            toolbar:
+              "  undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
+            selector: "textarea",
+            plugins: "quickbars image",
+            quickbars_image_toolbar:
+              "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+            quickbars_selection_toolbar:
+              "bold italic alignleft aligncenter alignright alignjustify ",
+            automatic_uploads: true,
+            file_picker_types: "file image media",
+            file_picker_callback: function (cb, value, meta) {
+              console.log(meta);
+              if (meta.filetype == "image") {
                 var input = document.createElement("input");
                 input.setAttribute("type", "file");
                 input.setAttribute("accept", "image/*");
                 input.onchange = function () {
                   var file = this.files[0];
-                  console.log(file);
+                  // console.log(file);
                   var reader = new FileReader();
                   reader.onload = function () {
                     var id = "blobid" + new Date().getTime();
@@ -113,6 +174,7 @@ function TextEditor() {
                         res.data.images.map((image) => {
                           return cb(image);
                         });
+                        // console.log(res.data);
                       })
                       .catch(function (err) {
                         console.log(err);
@@ -121,66 +183,15 @@ function TextEditor() {
                   reader.readAsDataURL(file);
                 };
                 input.click();
-              },
-            }}
-          />
-        </div>
-      );
-    })
-  ) : (
-    <div>
-      <form onSubmit={handleBtn}>
-        <input accept="image/*" type="file" multiple name="image" />
+              }
+              if (meta.filetype == "file") {
+                console.log("file");
+              }
+            },
+          }}
+        />
         <button onClick={log}>submit</button>
       </form>
-      <Editor
-        onInit={(evt, editor) => (editorRef.current = editor)}
-        init={{
-          height: 500,
-          menubar: false,
-          toolbar:
-            "  undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
-          selector: "textarea",
-          plugins: "quickbars image",
-          quickbars_image_toolbar:
-            "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
-          quickbars_selection_toolbar:
-            "bold italic alignleft aligncenter alignright alignjustify ",
-          automatic_uploads: true,
-          file_picker_types: "image",
-          file_picker_callback: function (cb, value, meta) {
-            var input = document.createElement("input");
-            input.setAttribute("type", "file");
-            input.setAttribute("accept", "image/*");
-            input.onchange = function () {
-              var file = this.files[0];
-              // console.log(file);
-              var reader = new FileReader();
-              reader.onload = function () {
-                var id = "blobid" + new Date().getTime();
-                var blobCache = editorRef.current.editorUpload.blobCache;
-                var base64 = reader.result.split(",")[1];
-                var blobInfo = blobCache.create(id, file, base64);
-                let data = new FormData();
-                data.append("cover_img", blobInfo.blob(), blobInfo.filename());
-                axios
-                  .post("http://localhost:3001/v1/image", data)
-                  .then(function (res) {
-                    res.data.images.map((image) => {
-                      return cb(image);
-                    });
-                    // console.log(res.data);
-                  })
-                  .catch(function (err) {
-                    console.log(err);
-                  });
-              };
-              reader.readAsDataURL(file);
-            };
-            input.click();
-          },
-        }}
-      />
     </div>
   );
 }

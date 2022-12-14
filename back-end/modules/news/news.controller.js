@@ -11,28 +11,6 @@ const getAllNews = async (req, res) => {
   }
 };
 
-const getNewsById = async (req, res) => {
-  try {
-    const news = await newsServices.getNewsById(req);
-    res.json(news);
-  } catch (error) {
-    res.json({
-      error: error,
-    });
-  }
-};
-
-const getNewsPage = async (req, res) => {
-  try {
-    const news = await newsServices.getNewsPage(req);
-    res.json(news);
-  } catch (error) {
-    res.json({
-      error: error,
-    });
-  }
-};
-
 const getCreateNews = async (req, res) => {
   try {
     const news = await newsServices.getCreateNews(req);
@@ -68,8 +46,6 @@ const getDeleteNews = async (req, res) => {
 
 module.exports = {
   getAllNews,
-  getNewsById,
-  getNewsPage,
   getCreateNews,
   getUpdateNews,
   getDeleteNews,

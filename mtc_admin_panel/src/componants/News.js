@@ -1,35 +1,29 @@
-import React, { Component, useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pagination, Button, Space, Table, Tag } from "antd";
+import { Pagination, Button, Input, Table, Tag } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  UserOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import moment from "moment";
+import "../styles/news.css";
 
 function Content() {
   const [data, setData] = useState();
-  const columns = [
-    {
-      title: "title",
-      dataIndex: "title",
-      key: "title",
-    },
-    {
-      title: "createdBy",
-      dataIndex: "createdBy",
-      key: "createdBy",
-    },
-    {
-      title: "updatedAt",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-    },
-  ];
+
   useEffect(() => {
-    fetch("http://localhost:3001/v1/news/all?page=1&limit=10")
+    fetch("http://localhost:3001/v1/news/?page=1&limit=10")
       .then((response) => response.json())
       .then((result) => {
         setData(
           result.data.map((row, i) => ({
             title: row.title,
             createdBy: row.created_by,
-            updatedAt: row.updated_at,
+            created_at: moment(row.created_at).format("L"),
+            type: row.type,
+            id: row.id,
             key: i,
           }))
         );
@@ -38,7 +32,7 @@ function Content() {
   }, []);
 
   function handleChange(page) {
-    fetch(`http://localhost:3001/v1/news/all?page=${page}&limit=10`)
+    fetch(`http://localhost:3001/v1/news/?page=${page}&limit=10`)
       .then((response) => response.json())
       .then((result) => {
         setData(
@@ -51,40 +45,60 @@ function Content() {
       })
       .catch((error) => console.log("error", error));
   }
+
   let navigate = useNavigate();
   function handlerID(id) {
     navigate("editor", { state: id });
   }
+  function handleBtnEditor() {
+    navigate("/editor");
+  }
+
+  const columns = [
+    {
+      title: "Гарчиг",
+      dataIndex: "title",
+      key: "key",
+    },
+    {
+      title: "Нийтлэл",
+      dataIndex: "createdBy",
+      key: "key",
+    },
+    {
+      title: "Огноо",
+      dataIndex: "created_at",
+      key: "key",
+    },
+    {
+      title: "Төрөл",
+      dataIndex: "type",
+      key: "key",
+    },
+    {
+      title: "Засах",
+      key: "key",
+      dataIndex: "key",
+      render: (text, record) => (
+        <button className="btnEdit" onClick={() => handlerID(record.id)}>
+          <EditOutlined />
+        </button>
+      ),
+    },
+    {
+      title: "Устгах",
+      key: "key",
+      dataIndex: "key",
+      render: (text, record) => (
+        <button className="btnDlt" onClick={() => console.log(record)}>
+          <DeleteOutlined />
+        </button>
+      ),
+    },
+  ];
 
   return (
     // <div>
-    //   {data?.data.map((d, key) => {
-    //     return (
-    //       <div
-    //         key={key}
-    //         style={{
-    //           backgroundColor: "gray",
-    //           padding: "10px",
-    //           display: "flex",
-    //           justifyContent: "space-between",
-    //           borderBottom: "1px solid black",
-    //         }}
-    //       >
-    //         <div>{d.id}</div>
-    //         <div>{d.title}</div>
-    //         <div>{d.type}</div>
-    //         <div>{d.created_by}</div>
-    //         <div>{d.created_at}</div>
-    //         <Button onClick={() => handlerID(d.id)} type="primary">
-    //           Edit
-    //         </Button>
-    //         <Button onClick={() => handlerID(d.id)} type="primary">
-    //           Delete
-    //         </Button>
-    //       </div>
-    //     );
-    //   })}
-
     //   <Pagination
     //     pageSize={1}
     //     current={data?.currentPageNumber}
@@ -93,7 +107,18 @@ function Content() {
     //     style={{ bottom: "0px" }}
     //   />
     // </div>
-    <Table columns={columns} dataSource={data} />
+
+    <div className="news">
+      <div className="news_content">
+        <Button onClick={handleBtnEditor}>Мэдээ нэмэх</Button>
+        <Input
+          placeholder="Нэр"
+          className="news_search"
+          suffix={<SearchOutlined />}
+        />
+      </div>
+      <Table columns={columns} dataSource={data}></Table>
+    </div>
   );
 }
 
