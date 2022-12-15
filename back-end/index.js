@@ -6,7 +6,7 @@ const config = require("./db/config");
 const db_connection = mysql.createConnection(config.db);
 const routes = require("./routes/v1/index");
 const PORT = process.env.PORT;
-console.log(PORT);
+
 require("dotenv").config();
 app.use(cors());
 app.use(express.json());

@@ -2,25 +2,19 @@ const db = require("../../db/db");
 const bcrypt = require("bcryptjs");
 
 async function getAllUsers(req) {
-  const data = await db.query("select * from users");
-  return {
-    success: true,
-    data,
-  };
-}
-
-async function getUserById(req) {
-  let data;
   const { id } = req.query;
-  if (id !== undefined) {
-    data = await db.query("SELECT * FROM users WHERE id=?", [id]);
+  if (id) {
+    const data = await db.query("SELECT * FROM users WHERE id=?", [id]);
+    return {
+      ...data[0],
+    };
   } else {
-    data;
+    const data = await db.query("select * from users");
+    return {
+      success: true,
+      data,
+    };
   }
-  return {
-    success: true,
-    data,
-  };
 }
 
 async function getCreateUser(req) {
@@ -66,7 +60,6 @@ async function getDeleteUser(req) {
 
 module.exports = {
   getAllUsers,
-  getUserById,
   getCreateUser,
   getUpdateUser,
   getDeleteUser,

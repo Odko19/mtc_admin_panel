@@ -1,25 +1,19 @@
 const db = require("../../db/db");
 
 async function getAllShare(req) {
-  const data = await db.query("select * from shareholders");
-  return {
-    success: true,
-    data,
-  };
-}
-
-async function getShareById(req) {
-  let data;
   const { id } = req.query;
-  if (id !== undefined) {
-    data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
+  if (id) {
+    const data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
+    return {
+      ...data[0],
+    };
   } else {
-    data;
+    const data = await db.query("select * from shareholders");
+    return {
+      success: true,
+      data,
+    };
   }
-  return {
-    success: true,
-    data,
-  };
 }
 
 async function getCreateShare(req) {
@@ -58,7 +52,7 @@ async function getUpdateShare(req) {
 async function getDeleteShare(req) {
   let data;
   const { id } = req.query;
-  if (id !== undefined) {
+  if (id) {
     data = await db.query("DELETE FROM shareholders where id = ?", [id]);
   } else {
     data;
@@ -71,7 +65,6 @@ async function getDeleteShare(req) {
 
 module.exports = {
   getAllShare,
-  getShareById,
   getCreateShare,
   getUpdateShare,
   getDeleteShare,

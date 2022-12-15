@@ -9,7 +9,17 @@ const getCreateImage = async (req, res) => {
     });
   }
 };
+const getCreateFile = async (req, res) => {
+  try {
+    res.json(await imageServices.getCreateFile(req));
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
 
 module.exports = {
   getCreateImage,
+  getCreateFile,
 };

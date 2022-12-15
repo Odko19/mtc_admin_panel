@@ -17,6 +17,14 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/svg"
   ) {
     cb(null, true);
+  } else if (
+    file.mimetype === "application/pdf" ||
+    file.mimetype === "application/msword" ||
+    file.mimetype === "application/vnd.ms-powerpoint" ||
+    file.mimetype === "application/vnd.ms-excel" ||
+    file.mimetype === "text/plain"
+  ) {
+    cb(null, true);
   } else {
     cb(new Error("Unsupported files"), false);
   }

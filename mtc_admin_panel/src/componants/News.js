@@ -48,10 +48,11 @@ function Content() {
 
   let navigate = useNavigate();
   function handlerID(id) {
-    navigate("editor", { state: id });
+    // navigate("editor", { state: id });
+    navigate("test", { state: id });
   }
   function handleBtnEditor() {
-    navigate("/editor");
+    navigate("/test");
   }
 
   const columns = [

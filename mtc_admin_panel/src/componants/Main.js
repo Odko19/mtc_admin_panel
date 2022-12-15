@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Layout, Menu, theme } from "antd";
 import { useNavigate, Route, Routes } from "react-router-dom";
 import TextEditor from "./TextEditor";
+import TextEditorTest from "./TextEditorTest";
 import News from "./News";
 import {
   MenuFoldOutlined,
@@ -116,6 +117,7 @@ function Main() {
           <Routes>
             <Route path="/" element={<News />} />
             <Route path="/editor" element={<TextEditor />} />
+            <Route path="/test" element={<TextEditorTest />} />
           </Routes>
         </Content>
       </Layout>

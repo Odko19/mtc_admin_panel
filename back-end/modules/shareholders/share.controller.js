@@ -11,16 +11,6 @@ const getAllShare = async (req, res) => {
   }
 };
 
-const getShareById = async (req, res) => {
-  try {
-    const share = await shareServices.getShareById(req);
-    res.json(share);
-  } catch (error) {
-    res.json({
-      error: error,
-    });
-  }
-};
 const getCreateShare = async (req, res) => {
   try {
     const share = await shareServices.getCreateShare(req);
@@ -55,7 +45,6 @@ const getDeleteShare = async (req, res) => {
 
 module.exports = {
   getAllShare,
-  getShareById,
   getCreateShare,
   getUpdateShare,
   getDeleteShare,

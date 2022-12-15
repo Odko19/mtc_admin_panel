@@ -1,25 +1,19 @@
 const db = require("../../db/db");
 
 async function getAllAccount(req) {
-  const data = await db.query("select * from account");
-  return {
-    success: true,
-    data,
-  };
-}
-
-async function getAccountById(req) {
-  let data;
   const { id } = req.query;
-  if (id !== undefined) {
-    data = await db.query("SELECT * FROM account WHERE id=?;", [id]);
+  if (id) {
+    const data = await db.query("SELECT * FROM account WHERE id=?;", [id]);
+    return {
+      ...data[0],
+    };
   } else {
-    data;
+    const data = await db.query("select * from account");
+    return {
+      success: true,
+      data,
+    };
   }
-  return {
-    success: true,
-    data,
-  };
 }
 
 async function getCreateAccount(req) {
@@ -72,7 +66,6 @@ async function getDeleteAccount(req) {
 
 module.exports = {
   getAllAccount,
-  getAccountById,
   getCreateAccount,
   getUpdateAccount,
   getDeleteAccount,

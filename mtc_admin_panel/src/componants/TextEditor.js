@@ -77,11 +77,11 @@ function TextEditor() {
             menubar: true,
 
             toolbar:
-              "insertfile   quickbars link undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
+              "insertfile autolink  quickbars link undo redo | styleselect | bold italic |  alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | image ",
             selector: "textarea#drive",
             // plugins: "quickbars image link ",
             link_context_toolbar: true,
-            plugins: "image media link tinydrive",
+            plugins: "image media link tinydrive  autolink",
             quickbars_insert_toolbar: "quickimage quicktable ",
             quickbars_image_toolbar:
               "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",

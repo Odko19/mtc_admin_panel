@@ -11,16 +11,6 @@ const getAllAccount = async (req, res) => {
   }
 };
 
-const getAccountById = async (req, res) => {
-  try {
-    const account = await accountServices.getAccountById(req);
-    res.json(account);
-  } catch (error) {
-    res.json({
-      error: error,
-    });
-  }
-};
 const getCreateAccount = async (req, res) => {
   try {
     const account = await accountServices.getCreateAccount(req);
@@ -55,7 +45,6 @@ const getDeleteAccount = async (req, res) => {
 
 module.exports = {
   getAllAccount,
-  getAccountById,
   getCreateAccount,
   getUpdateAccount,
   getDeleteAccount,
