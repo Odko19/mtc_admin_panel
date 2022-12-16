@@ -4,14 +4,15 @@ import { Pagination, Button, Input, Table, Tag } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
-  UserOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import "../styles/news.css";
+import TextEditor from "./TextEditor";
 
 function Content() {
   const [data, setData] = useState();
+  const [select, setSelect] = useState();
 
   useEffect(() => {
     fetch("http://localhost:3001/v1/news/?page=1&limit=10")
@@ -20,10 +21,13 @@ function Content() {
         setData(
           result.data.map((row, i) => ({
             title: row.title,
-            createdBy: row.created_by,
+            created_by: row.created_by,
             created_at: moment(row.created_at).format("L"),
+            cover_img: row.cover_img,
+            expires_at: row.expires_at,
             type: row.type,
             id: row.id,
+            body: row.body,
             key: i,
           }))
         );
@@ -35,24 +39,31 @@ function Content() {
     fetch(`http://localhost:3001/v1/news/?page=${page}&limit=10`)
       .then((response) => response.json())
       .then((result) => {
-        setData(
-          result.data.map((row) => ({
-            title: row.title,
-            createdBy: row.created_by,
-            updatedAt: row.updated_at,
-          }))
-        );
+        // setData(
+        //   result.data.map((row) => (
+        //     {
+        //     title: row.title,
+        //     createdBy: row.created_by,
+        //     updatedAt: row.updated_at,
+        //     body: row.body,
+        //   }
+        //   ))
+        // );
+        console.log(result);
       })
       .catch((error) => console.log("error", error));
   }
 
   let navigate = useNavigate();
-  function handlerID(id) {
-    // navigate("editor", { state: id });
-    navigate("test", { state: id });
+  function handlerID(record) {
+    setSelect(record);
   }
   function handleBtnEditor() {
-    navigate("/test");
+    navigate("/test", {
+      state: {
+        url: "create",
+      },
+    });
   }
 
   const columns = [
@@ -81,7 +92,7 @@ function Content() {
       key: "key",
       dataIndex: "key",
       render: (text, record) => (
-        <button className="btnEdit" onClick={() => handlerID(record.id)}>
+        <button className="btnEdit" onClick={() => handlerID(record)}>
           <EditOutlined />
         </button>
       ),
@@ -110,15 +121,22 @@ function Content() {
     // </div>
 
     <div className="news">
-      <div className="news_content">
-        <Button onClick={handleBtnEditor}>Мэдээ нэмэх</Button>
-        <Input
-          placeholder="Нэр"
-          className="news_search"
-          suffix={<SearchOutlined />}
-        />
-      </div>
-      <Table columns={columns} dataSource={data}></Table>
+      {select ? (
+        <TextEditor data={select} type={"news"} />
+      ) : (
+        <>
+          <div className="news_content">
+            <Button onClick={handleBtnEditor}>Мэдээ нэмэх</Button>
+            {/* <TextEditor /> */}
+            <Input
+              placeholder="Нэр"
+              className="news_search"
+              suffix={<SearchOutlined />}
+            />
+          </div>
+          <Table columns={columns} dataSource={data}></Table>
+        </>
+      )}
     </div>
   );
 }

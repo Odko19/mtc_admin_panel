@@ -9,6 +9,7 @@ function TextEditorTest() {
   const [edit, setEdit] = useState();
 
   const { state } = useLocation();
+  console.log(state.url === "edit");
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
@@ -59,247 +60,249 @@ function TextEditorTest() {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:3001/v1/news/?id=${state}`)
-      .then((response) => response.json())
-      .then((result) => setEdit(result))
-      .catch((error) => console.log("error", error));
+    if (state.id) {
+      fetch(`http://localhost:3001/v1/news/?id=${state.id}`)
+        .then((response) => response.json())
+        .then((result) => setEdit(result))
+        .catch((error) => console.log("error", error));
+    }
   }, [state]);
 
-  return state ? (
+  return (
     <div>
-      <form onSubmit={handleBtnEdit}>
+      <form onSubmit={state.url === "edit" ? handleBtnEdit : handleBtn}>
         <input accept="image/*" type="file" multiple name="image" />
-        <Editor
-          initialValue={edit?.body}
-          onInit={(evt, editor) => (editorRef.current = editor)}
-          init={{
-            height: 500,
-            menubar: true,
-            plugins: [
-              "a11ychecker",
-              "advlist",
-              "advcode",
-              "advtable",
-              "autolink",
-              "checklist",
-              "export",
-              "lists",
-              "link",
-              "image",
-              "charmap",
-              "preview",
-              "anchor",
-              "searchreplace",
-              "visualblocks",
-              "powerpaste",
-              "fullscreen",
-              "formatpainter",
-              "insertdatetime",
-              "media",
-              "table",
-              "help",
-              "wordcount",
-            ],
-            toolbar:
-              "undo redo | casechange blocks | bold italic backcolor | " +
-              "alignleft aligncenter alignright alignjustify | " +
-              "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
-            selector: "textarea#drive",
-            file_picker_types: "file image media",
-            quickbars_insert_toolbar: "quickimage quicktable ",
-            quickbars_image_toolbar:
-              "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
-            quickbars_selection_toolbar:
-              "bold italic alignleft aligncenter alignright alignjustify ",
-            automatic_uploads: true,
-            file_picker_callback: function (cb, value, meta) {
-              if (meta.filetype === "file") {
-                var input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.onchange = function () {
-                  // console.log(this.files);
-                  var file = this.files[0];
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    var id = "blobid" + new Date().getTime();
-                    var blobCache = editorRef.current.editorUpload.blobCache;
-                    var base64 = reader.result.split(",")[1];
-                    var blobInfo = blobCache.create(id, file, base64);
-                    let data = new FormData();
-                    data.append("file", blobInfo.blob());
-                    axios
-                      .post("http://localhost:3001/v1/image/file", data)
-                      .then(function (res) {
-                        res.data.file.map((file) => {
-                          return cb(`http://localhost:3001/v1/uploads/${file}`);
+        {state.url === "edit" ? (
+          <Editor
+            initialValue={edit?.body}
+            onInit={(evt, editor) => (editorRef.current = editor)}
+            init={{
+              height: 500,
+              menubar: true,
+              plugins: [
+                "a11ychecker",
+                "advlist",
+                "advcode",
+                "advtable",
+                "autolink",
+                "checklist",
+                "export",
+                "lists",
+                "link",
+                "image",
+                "charmap",
+                "preview",
+                "anchor",
+                "searchreplace",
+                "visualblocks",
+                "powerpaste",
+                "fullscreen",
+                "formatpainter",
+                "insertdatetime",
+                "media",
+                "table",
+                "help",
+                "wordcount",
+              ],
+              toolbar:
+                "undo redo | casechange blocks | bold italic backcolor | " +
+                "alignleft aligncenter alignright alignjustify | " +
+                "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
+              selector: "textarea#drive",
+              file_picker_types: "file image media",
+              quickbars_insert_toolbar: "quickimage quicktable ",
+              quickbars_image_toolbar:
+                "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+              quickbars_selection_toolbar:
+                "bold italic alignleft aligncenter alignright alignjustify ",
+              automatic_uploads: true,
+              file_picker_callback: function (cb, value, meta) {
+                if (meta.filetype === "file") {
+                  var input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.onchange = function () {
+                    // console.log(this.files);
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                      var id = "blobid" + new Date().getTime();
+                      var blobCache = editorRef.current.editorUpload.blobCache;
+                      var base64 = reader.result.split(",")[1];
+                      var blobInfo = blobCache.create(id, file, base64);
+                      let data = new FormData();
+                      data.append("file", blobInfo.blob());
+                      axios
+                        .post("http://localhost:3001/v1/image/file", data)
+                        .then(function (res) {
+                          res.data.file.map((file) => {
+                            return cb(
+                              `http://localhost:3001/v1/uploads/${file}`
+                            );
+                          });
+                        })
+                        .catch(function (err) {
+                          console.log(err);
                         });
-                      })
-                      .catch(function (err) {
-                        console.log(err);
-                      });
+                    };
+                    reader.readAsDataURL(file);
                   };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              }
-              if (meta.filetype === "image") {
-                var input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
+                  input.click();
+                }
+                if (meta.filetype === "image") {
+                  var input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.setAttribute("accept", "image/*");
 
-                input.onchange = function () {
-                  var file = this.files[0];
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    var id = "blobid" + new Date().getTime();
-                    var blobCache = editorRef.current.editorUpload.blobCache;
-                    var base64 = reader.result.split(",")[1];
-                    var blobInfo = blobCache.create(id, file, base64);
-                    let data = new FormData();
-                    data.append(
-                      "cover_img",
-                      blobInfo.blob(),
-                      blobInfo.filename()
-                    );
-                    axios
-                      .post("http://localhost:3001/v1/image", data)
-                      .then(function (res) {
-                        res.data.images.map((image) => {
-                          return cb(
-                            `http://localhost:3001/v1/uploads/${image}`
-                          );
+                  input.onchange = function () {
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                      var id = "blobid" + new Date().getTime();
+                      var blobCache = editorRef.current.editorUpload.blobCache;
+                      var base64 = reader.result.split(",")[1];
+                      var blobInfo = blobCache.create(id, file, base64);
+                      let data = new FormData();
+                      data.append(
+                        "cover_img",
+                        blobInfo.blob(),
+                        blobInfo.filename()
+                      );
+                      axios
+                        .post("http://localhost:3001/v1/image", data)
+                        .then(function (res) {
+                          res.data.images.map((image) => {
+                            return cb(
+                              `http://localhost:3001/v1/uploads/${image}`
+                            );
+                          });
+                        })
+                        .catch(function (err) {
+                          console.log(err);
                         });
-                      })
-                      .catch(function (err) {
-                        console.log(err);
-                      });
+                    };
+                    reader.readAsDataURL(file);
                   };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              }
-            },
-          }}
-        />
-        <button onClick={log}>submit</button>
-      </form>
-    </div>
-  ) : (
-    <div>
-      <form onSubmit={handleBtn}>
-        <input accept="image/*" type="file" multiple name="image" />
-        <Editor
-          onInit={(evt, editor) => (editorRef.current = editor)}
-          init={{
-            height: 500,
-            menubar: true,
+                  input.click();
+                }
+              },
+            }}
+          />
+        ) : (
+          <Editor
+            initialValue={edit?.body}
+            onInit={(evt, editor) => (editorRef.current = editor)}
+            init={{
+              height: 500,
+              menubar: true,
+              plugins: [
+                "a11ychecker",
+                "advlist",
+                "advcode",
+                "advtable",
+                "autolink",
+                "checklist",
+                "export",
+                "lists",
+                "link",
+                "image",
+                "charmap",
+                "preview",
+                "anchor",
+                "searchreplace",
+                "visualblocks",
+                "powerpaste",
+                "fullscreen",
+                "formatpainter",
+                "insertdatetime",
+                "media",
+                "table",
+                "help",
+                "wordcount",
+              ],
+              toolbar:
+                "undo redo | casechange blocks | bold italic backcolor | " +
+                "alignleft aligncenter alignright alignjustify | " +
+                "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
+              selector: "textarea#drive",
+              file_picker_types: "file image media",
+              quickbars_insert_toolbar: "quickimage quicktable ",
+              quickbars_image_toolbar:
+                "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+              quickbars_selection_toolbar:
+                "bold italic alignleft aligncenter alignright alignjustify ",
+              automatic_uploads: true,
+              file_picker_callback: function (cb, value, meta) {
+                if (meta.filetype === "file") {
+                  var input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.onchange = function () {
+                    // console.log(this.files);
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                      var id = "blobid" + new Date().getTime();
+                      var blobCache = editorRef.current.editorUpload.blobCache;
+                      var base64 = reader.result.split(",")[1];
+                      var blobInfo = blobCache.create(id, file, base64);
+                      let data = new FormData();
+                      data.append("file", blobInfo.blob());
+                      axios
+                        .post("http://localhost:3001/v1/image/file", data)
+                        .then(function (res) {
+                          res.data.file.map((file) => {
+                            return cb(
+                              `http://localhost:3001/v1/uploads/${file}`
+                            );
+                          });
+                        })
+                        .catch(function (err) {
+                          console.log(err);
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                  };
+                  input.click();
+                }
+                if (meta.filetype === "image") {
+                  var input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.setAttribute("accept", "image/*");
 
-            plugins: [
-              "a11ychecker",
-              "advlist",
-              "advcode",
-              "advtable",
-              "autolink",
-              "checklist",
-              "export",
-              "lists",
-              "link",
-              "image",
-              "charmap",
-              "preview",
-              "anchor",
-              "searchreplace",
-              "visualblocks",
-              "powerpaste",
-              "fullscreen",
-              "formatpainter",
-              "insertdatetime",
-              "media",
-              "table",
-              "help",
-              "wordcount",
-            ],
-            toolbar:
-              "undo redo | casechange blocks | bold italic backcolor | " +
-              "alignleft aligncenter alignright alignjustify | " +
-              "bullist numlist checklist outdent indent | removeformat | a11ycheck code table help",
-            selector: "textarea#drive",
-            file_picker_types: "file image media",
-            quickbars_insert_toolbar: "quickimage quicktable ",
-            quickbars_image_toolbar:
-              "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
-            quickbars_selection_toolbar:
-              "bold italic alignleft aligncenter alignright alignjustify ",
-            automatic_uploads: true,
-            file_picker_callback: function (cb, value, meta) {
-              if (meta.filetype === "file") {
-                var input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.onchange = function () {
-                  // console.log(this.files);
-                  var file = this.files[0];
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    var id = "blobid" + new Date().getTime();
-                    var blobCache = editorRef.current.editorUpload.blobCache;
-                    var base64 = reader.result.split(",")[1];
-                    var blobInfo = blobCache.create(id, file, base64);
-                    let data = new FormData();
-                    data.append("file", blobInfo.blob());
-                    axios
-                      .post("http://localhost:3001/v1/image/file", data)
-                      .then(function (res) {
-                        res.data.file.map((file) => {
-                          return cb(`http://localhost:3001/v1/uploads/${file}`);
+                  input.onchange = function () {
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                      var id = "blobid" + new Date().getTime();
+                      var blobCache = editorRef.current.editorUpload.blobCache;
+                      var base64 = reader.result.split(",")[1];
+                      var blobInfo = blobCache.create(id, file, base64);
+                      let data = new FormData();
+                      data.append(
+                        "cover_img",
+                        blobInfo.blob(),
+                        blobInfo.filename()
+                      );
+                      axios
+                        .post("http://localhost:3001/v1/image", data)
+                        .then(function (res) {
+                          res.data.images.map((image) => {
+                            return cb(
+                              `http://localhost:3001/v1/uploads/${image}`
+                            );
+                          });
+                        })
+                        .catch(function (err) {
+                          console.log(err);
                         });
-                      })
-                      .catch(function (err) {
-                        console.log(err);
-                      });
+                    };
+                    reader.readAsDataURL(file);
                   };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              }
-              if (meta.filetype === "image") {
-                var input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
-
-                input.onchange = function () {
-                  var file = this.files[0];
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    var id = "blobid" + new Date().getTime();
-                    var blobCache = editorRef.current.editorUpload.blobCache;
-                    var base64 = reader.result.split(",")[1];
-                    var blobInfo = blobCache.create(id, file, base64);
-                    let data = new FormData();
-                    data.append(
-                      "cover_img",
-                      blobInfo.blob(),
-                      blobInfo.filename()
-                    );
-                    axios
-                      .post("http://localhost:3001/v1/image", data)
-                      .then(function (res) {
-                        res.data.images.map((image) => {
-                          return cb(
-                            `http://localhost:3001/v1/uploads/${image}`
-                          );
-                        });
-                      })
-                      .catch(function (err) {
-                        console.log(err);
-                      });
-                  };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              }
-            },
-          }}
-        />
+                  input.click();
+                }
+              },
+            }}
+          />
+        )}
         <button onClick={log}>submit</button>
       </form>
     </div>
