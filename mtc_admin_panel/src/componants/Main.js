@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu } from "antd";
 import { useNavigate, Route, Routes } from "react-router-dom";
-import TextEditor from "./TextEditor";
-import TextEditorTest from "./TextEditorTest";
+import EditorProduct from "./Product_editor/Product_editor";
+import EditorUser from "./User_editor/User_editor";
+import EditorCreate from "./Editor/EditorCreate";
+import Shareholders from "./Shareholders";
+import Account from "./Account";
+import Product from "./Product";
 import News from "./News";
+import User from "./User";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -12,6 +17,7 @@ import {
   StockOutlined,
   UserAddOutlined,
   FileAddOutlined,
+  BoxPlotOutlined,
 } from "@ant-design/icons";
 const { Header, Sider, Content } = Layout;
 
@@ -54,7 +60,7 @@ function Main() {
             backgroundColor: "#2957a4",
             color: "white",
           }}
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={"/"}
           onClick={onSelectMenu}
           items={[
             {
@@ -71,6 +77,11 @@ function Main() {
               key: "/shareholders",
               icon: <StockOutlined />,
               label: "Хувьцаа эзэмшигч",
+            },
+            {
+              key: "/product",
+              icon: <BoxPlotOutlined />,
+              label: "Бүтээгдэхүүн",
             },
             {
               key: "/job",
@@ -112,12 +123,18 @@ function Main() {
             borderRadius: "0 10px 10px 0",
             padding: "20px",
             height: "100%",
+            width: "100%",
           }}
         >
           <Routes>
             <Route path="/" element={<News />} />
-            <Route path="/editor" element={<TextEditor />} />
-            <Route path="/test" element={<TextEditorTest />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/shareholders" element={<Shareholders />} />
+            <Route path="/product" element={<Product />}></Route>
+            <Route path="/editor" element={<EditorCreate />} />
+            <Route path="/product/create" element={<EditorProduct />} />
+            <Route path="/user" element={<User />} />
+            <Route path="/user/create" element={<EditorUser />} />
           </Routes>
         </Content>
       </Layout>

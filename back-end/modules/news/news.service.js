@@ -55,7 +55,6 @@ async function getAllNews(req) {
 
 async function getCreateNews(req) {
   const { title, body, created_by, type, expires_at } = req.body;
-  console.log(req.body);
   let data;
   expires_at
     ? (data = await db.query(

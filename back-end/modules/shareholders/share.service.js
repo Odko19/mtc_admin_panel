@@ -8,7 +8,9 @@ async function getAllShare(req) {
       ...data[0],
     };
   } else {
-    const data = await db.query("select * from shareholders");
+    const data = await db.query(
+      "select * from shareholders ORDER BY created_at desc "
+    );
     return {
       success: true,
       data,
@@ -36,13 +38,21 @@ async function getCreateShare(req) {
 
 async function getUpdateShare(req) {
   const { id, title, body, created_by } = req.body;
-  const cover_img = req.files[0].filename;
-  const data = await db.query(
-    `UPDATE shareholders
+
+  let data;
+  req.files[0]
+    ? (data = await db.query(
+        `UPDATE shareholders
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
      WHERE id=?`,
-    [title, cover_img, body, created_by, id]
-  );
+        [title, req.files[0].filename, body, created_by, id]
+      ))
+    : (data = await db.query(
+        `UPDATE shareholders
+     SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
+     WHERE id=?`,
+        [title, null, body, created_by, id]
+      ));
   return {
     success: true,
     data,

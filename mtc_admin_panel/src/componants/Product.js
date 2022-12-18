@@ -1,34 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Table } from "antd";
-import EditorUpdate from "./Editor/EditorUpdate";
-import moment from "moment";
+import Editor from "./Product_editor/Product_editor";
 import {
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { notification } from "antd";
 import "../styles/news.css";
 
-function Content() {
+function Product() {
   const [data, setData] = useState();
   const [select, setSelect] = useState();
   const [page, setPage] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3001/v1/news/?page=1&limit=6")
+    fetch("http://localhost:3001/v1/product/?page=1&limit=6")
       .then((response) => response.json())
       .then((result) => {
         setData(
           result.data.map((row, i) => ({
-            title: row.title,
+            product_id: row.product_id,
+            product_img: row.product_img,
+            product_name: row.product_name,
+            product_performance: row.product_performance,
+            product_price: row.product_price,
+            product_type: row.product_type,
             created_by: row.created_by,
-            created_at: moment(row.created_at).format("L"),
-            cover_img: row.cover_img,
-            expires_at: row.expires_at,
-            type: row.type,
-            id: row.id,
-            body: row.body,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
             key: i,
           }))
         );
@@ -43,29 +44,14 @@ function Content() {
   }
 
   function handleBtnCreate() {
-    navigate("/editor", {
-      state: "news",
-    });
+    navigate("/product/create");
   }
 
   function handlePageChange(page) {
-    fetch(`http://localhost:3001/v1/news/?page=${page}&limit=6`)
+    fetch(`http://localhost:3001/v1/product/?page=${page}&limit=6`)
       .then((response) => response.json())
       .then((result) => {
-        setData(
-          result.data.map((row, i) => ({
-            title: row.title,
-            created_by: row.created_by,
-            created_at: moment(row.created_at).format("L"),
-            cover_img: row.cover_img,
-            expires_at: row.expires_at,
-            type: row.type,
-            id: row.id,
-            body: row.body,
-            key: i,
-          }))
-        );
-        setPage(result);
+        console.log(result);
       })
       .catch((error) => console.log("error", error));
   }
@@ -76,28 +62,45 @@ function Content() {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3001/v1/news/?id=${id}`, requestOptions)
+    fetch(`http://localhost:3001/v1/product/?id=${id}`, requestOptions)
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((result) => {
+        setData(
+          result.data.map((row, i) => ({
+            product_id: row.product_id,
+            product_img: row.product_img,
+            product_name: row.product_name,
+            product_performance: row.product_performance,
+            product_price: row.product_price,
+            product_type: row.product_type,
+            created_by: row.created_by,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
+            key: i,
+          }))
+        );
+        setPage(result);
+      })
       .catch((error) => console.log("error", error));
   }
 
   const columns = [
     {
-      title: "Гарчиг",
-      dataIndex: "title",
+      title: "Нэр",
+      dataIndex: "product_name",
       key: "key",
     },
     {
-      title: "Огноо",
-      dataIndex: "created_at",
+      title: "Үнэ",
+      dataIndex: "product_price",
       key: "key",
     },
     {
       title: "Төрөл",
-      dataIndex: "type",
+      dataIndex: "product_type",
       key: "key",
     },
+
     {
       title: "Засах",
       key: "key",
@@ -113,7 +116,10 @@ function Content() {
       key: "key",
       dataIndex: "key",
       render: (text, record) => (
-        <button className="btnDlt" onClick={() => handlerBtnDlt(record.id)}>
+        <button
+          className="btnDlt"
+          onClick={() => handlerBtnDlt(record.product_id)}
+        >
           <DeleteOutlined />
         </button>
       ),
@@ -123,7 +129,7 @@ function Content() {
   return (
     <div className="news">
       {select ? (
-        <EditorUpdate data={select} type={"news"} className="width" />
+        <Editor data={select} className="width" />
       ) : (
         <div>
           <div className="news_content">
@@ -152,4 +158,4 @@ function Content() {
   );
 }
 
-export default Content;
+export default Product;

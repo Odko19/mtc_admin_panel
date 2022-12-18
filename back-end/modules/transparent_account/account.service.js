@@ -3,12 +3,14 @@ const db = require("../../db/db");
 async function getAllAccount(req) {
   const { id } = req.query;
   if (id) {
-    const data = await db.query("SELECT * FROM account WHERE id=?;", [id]);
+    const data = await db.query("SELECT * FROM account WHERE id=?; ", [id]);
     return {
       ...data[0],
     };
   } else {
-    const data = await db.query("select * from account");
+    const data = await db.query(
+      "select * from account ORDER BY created_at desc "
+    );
     return {
       success: true,
       data,
@@ -18,6 +20,7 @@ async function getAllAccount(req) {
 
 async function getCreateAccount(req) {
   let data;
+
   const { title, body, created_by } = req.body;
   req.files[0]
     ? (data = await db.query(
@@ -36,14 +39,23 @@ async function getCreateAccount(req) {
 
 async function getUpdateAccount(req) {
   const { id, title, body, created_by } = req.body;
-  const cover_img = req.files[0].filename;
 
-  const data = await db.query(
-    `UPDATE account
+  let data;
+  console.log(req.files[0]);
+  req.files[0]
+    ? (data = await db.query(
+        `UPDATE account
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
      WHERE id=?`,
-    [title, cover_img, body, created_by, id]
-  );
+        [title, req.files[0].filename, body, created_by, id]
+      ))
+    : (data = await db.query(
+        `UPDATE account
+     SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
+     WHERE id=?`,
+        [title, null, body, created_by, id]
+      ));
+
   return {
     success: true,
     data,
