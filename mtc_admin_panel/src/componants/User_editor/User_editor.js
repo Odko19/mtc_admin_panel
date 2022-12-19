@@ -1,5 +1,5 @@
 import React from "react";
-import { notification } from "antd";
+import { notification, Checkbox } from "antd";
 import "../../styles/product.css";
 
 function User_editor({ data }) {
@@ -34,7 +34,7 @@ function User_editor({ data }) {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3001/v1/product", requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/product`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.success === true) {
@@ -62,7 +62,7 @@ function User_editor({ data }) {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3001/v1/product", requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/product`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.success === true) {
@@ -72,6 +72,10 @@ function User_editor({ data }) {
         }
       })
       .catch((error) => console.log("error", error));
+  }
+
+  function onChange(e) {
+    console.log(e.target.checked);
   }
 
   return (
@@ -121,6 +125,7 @@ function User_editor({ data }) {
             </div>
             <div className="input_div_in_pro">
               <label className="input_label">Зөвшөөрөл</label>
+              <Checkbox onChange={onChange}>news</Checkbox>
             </div>
           </div>
           <button className="btn_submit" type="submit">

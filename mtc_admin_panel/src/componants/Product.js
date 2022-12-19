@@ -16,7 +16,7 @@ function Product() {
   const [page, setPage] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3001/v1/product/?page=1&limit=6")
+    fetch(`${process.env.REACT_APP_BASE_URL}/product/?page=1&limit=6`)
       .then((response) => response.json())
       .then((result) => {
         setData(
@@ -48,7 +48,7 @@ function Product() {
   }
 
   function handlePageChange(page) {
-    fetch(`http://localhost:3001/v1/product/?page=${page}&limit=6`)
+    fetch(`${process.env.REACT_APP_BASE_URL}/product/?page=${page}&limit=6`)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -62,7 +62,7 @@ function Product() {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3001/v1/product/?id=${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/product/?id=${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         setData(

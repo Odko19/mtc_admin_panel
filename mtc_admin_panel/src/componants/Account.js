@@ -15,7 +15,7 @@ function Account() {
   const [select, setSelect] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3001/v1/account")
+    fetch(`${process.env.REACT_APP_BASE_URL}/account`)
       .then((response) => response.json())
       .then((result) => {
         setData(
@@ -50,7 +50,7 @@ function Account() {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3001/v1/account/?id=${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/account/?id=${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));

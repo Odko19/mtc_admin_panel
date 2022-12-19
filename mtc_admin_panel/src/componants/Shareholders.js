@@ -15,7 +15,7 @@ function Shareholders() {
   const [select, setSelect] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3001/v1/shareholders")
+    fetch(`${process.env.REACT_APP_BASE_URL}/shareholders`)
       .then((response) => response.json())
       .then((result) => {
         setData(
@@ -50,7 +50,7 @@ function Shareholders() {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3001/v1/shareholders/?id=${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/shareholders/?id=${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));

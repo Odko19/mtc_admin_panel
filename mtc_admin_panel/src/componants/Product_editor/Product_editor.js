@@ -34,7 +34,7 @@ function Product_editor({ data }) {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3001/v1/product", requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/product`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.success === true) {
@@ -62,7 +62,7 @@ function Product_editor({ data }) {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3001/v1/product", requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/product`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.success === true) {

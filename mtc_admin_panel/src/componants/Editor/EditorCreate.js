@@ -7,10 +7,10 @@ import "../../styles/editor.css";
 
 function EditorCreate() {
   const { state } = useLocation();
-
   const [body, setBody] = useState();
   const [selectType, setSelectType] = useState();
   const editorRef = useRef(null);
+
   const log = () => {
     if (editorRef.current) {
       setBody(editorRef.current.getContent());
@@ -45,6 +45,7 @@ function EditorCreate() {
     formdata.append("created_by", "1");
     if (state === "news") {
       formdata.append("type", e.target.select.value);
+      formdata.append("customer_type", e.target.customer.value);
       if (selectType === "bonus") {
         formdata.append("expires_at", e.target.expire.value);
       }
@@ -54,7 +55,7 @@ function EditorCreate() {
       body: formdata,
       redirect: "follow",
     };
-    fetch(`http://localhost:3001/v1/${state}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/${state}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.success === true) {
@@ -86,26 +87,38 @@ function EditorCreate() {
               </div>
             </div>
             {state === "news" ? (
-              <div className="input_div">
+              <div>
+                <div className="input_div">
+                  <div className="input_div_in">
+                    <label className="input_label">Төрөл</label>
+                    <select
+                      className="input"
+                      name="select"
+                      onChange={handleSelect}
+                    >
+                      <option value="news">Мэдээ</option>
+                      <option value="bonus">Урамшуулал</option>
+                    </select>
+                  </div>
+
+                  {selectType === "bonus" ? (
+                    <div className="input_div_in">
+                      <label className="input_label m_left">
+                        Дуусах хугацаа
+                      </label>
+                      <input type="date" name="expire" className="input" />
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 <div className="input_div_in">
-                  <label className="input_label">Төрөл</label>
-                  <select
-                    className="input"
-                    name="select"
-                    onChange={handleSelect}
-                  >
-                    <option value="news">Мэдээ</option>
-                    <option value="bonus">Урамшуулал</option>
+                  <label className="input_label">Хэрэглэгчийн төрөл</label>
+                  <select className="input" name="customer">
+                    <option value="personality">Хувь хүн</option>
+                    <option value="organization">Байгуулага</option>
                   </select>
                 </div>
-                {selectType === "bonus" ? (
-                  <div className="input_div_in">
-                    <label className="input_label m_left">Дуусах хугацаа</label>
-                    <input type="date" name="expire" className="input" />
-                  </div>
-                ) : (
-                  ""
-                )}
               </div>
             ) : (
               ""
@@ -168,11 +181,14 @@ function EditorCreate() {
                       let data = new FormData();
                       data.append("file", blobInfo.blob());
                       axios
-                        .post("http://localhost:3001/v1/image/file", data)
+                        .post(
+                          `${process.env.REACT_APP_BASE_URL}/image/file`,
+                          data
+                        )
                         .then(function (res) {
                           res.data.file.map((file) => {
                             return cb(
-                              `http://localhost:3001/v1/uploads/${file}`
+                              `${process.env.REACT_APP_BASE_URL}/uploads/${file}`
                             );
                           });
                         })
@@ -204,11 +220,11 @@ function EditorCreate() {
                         blobInfo.filename()
                       );
                       axios
-                        .post("http://localhost:3001/v1/image", data)
+                        .post(`${process.env.REACT_APP_BASE_URL}/image`, data)
                         .then(function (res) {
                           res.data.images.map((image) => {
                             return cb(
-                              `http://localhost:3001/v1/uploads/${image}`
+                              `${process.env.REACT_APP_BASE_URL}/uploads/${image}`
                             );
                           });
                         })

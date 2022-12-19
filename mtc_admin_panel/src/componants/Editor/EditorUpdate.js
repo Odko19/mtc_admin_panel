@@ -7,7 +7,7 @@ import "../../styles/editor.css";
 function EditorUpdate({ data, type }) {
   const [body, setBody] = useState();
   const [selectType, setSelectType] = useState();
-
+  console.log(data);
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
@@ -44,6 +44,7 @@ function EditorUpdate({ data, type }) {
     formdata.append("cover_img", e.target.image.files[0]);
     if (type === "news") {
       formdata.append("type", e.target.select.value);
+      formdata.append("customer_type", e.target.customer.value);
       if (selectType === "bonus") {
         formdata.append("expires_at", e.target.expire.value);
       }
@@ -53,7 +54,7 @@ function EditorUpdate({ data, type }) {
       body: formdata,
       redirect: "follow",
     };
-    fetch(`http://localhost:3001/v1/${type}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/${type}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.success === true) {
@@ -91,28 +92,43 @@ function EditorUpdate({ data, type }) {
               </div>
             </div>
             {type === "news" ? (
-              <div className="input_div">
+              <div>
+                <div className="input_div">
+                  <div className="input_div_in">
+                    <label className="input_label">Төрөл</label>
+                    <select
+                      className="input"
+                      onChange={handleSelect}
+                      selected
+                      defaultValue={data.type}
+                      name="select"
+                    >
+                      <option value="news">Мэдээ</option>
+                      <option value="bonus">Урамшуулал</option>
+                    </select>
+                  </div>
+                  {data.type === "bonus" ? (
+                    <div className="input_div_in">
+                      <label className="input_label m_left">
+                        Дуусах хугацаа
+                      </label>
+                      <input type="date" name="expire" className="input" />
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
                 <div className="input_div_in">
-                  <label className="input_label">Төрөл</label>
+                  <label className="input_label">Хэрэглэгчийн төрөл</label>
                   <select
                     className="input"
-                    onChange={handleSelect}
-                    selected
-                    defaultValue={data.type}
-                    name="select"
+                    name="customer"
+                    defaultValue={data.customer_type}
                   >
-                    <option value="news">Мэдээ</option>
-                    <option value="bonus">Урамшуулал</option>
+                    <option value="personality">Хувь хүн</option>
+                    <option value="organization">Байгуулага</option>
                   </select>
                 </div>
-                {data.type === "bonus" ? (
-                  <div className="input_div_in">
-                    <label className="input_label m_left">Дуусах хугацаа</label>
-                    <input type="date" name="expire" className="input" />
-                  </div>
-                ) : (
-                  ""
-                )}
               </div>
             ) : (
               ""
@@ -176,11 +192,14 @@ function EditorUpdate({ data, type }) {
                       let data = new FormData();
                       data.append("file", blobInfo.blob());
                       axios
-                        .post("http://localhost:3001/v1/image/file", data)
+                        .post(
+                          `${process.env.REACT_APP_BASE_URL}/image/file`,
+                          data
+                        )
                         .then(function (res) {
                           res.data.file.map((file) => {
                             return cb(
-                              `http://localhost:3001/v1/uploads/${file}`
+                              `${process.env.REACT_APP_BASE_URL}/uploads/${file}`
                             );
                           });
                         })
@@ -212,11 +231,11 @@ function EditorUpdate({ data, type }) {
                         blobInfo.filename()
                       );
                       axios
-                        .post("http://localhost:3001/v1/image", data)
+                        .post(`${process.env.REACT_APP_BASE_URL}/image`, data)
                         .then(function (res) {
                           res.data.images.map((image) => {
                             return cb(
-                              `http://localhost:3001/v1/uploads/${image}`
+                              `${process.env.REACT_APP_BASE_URL}/uploads/${image}`
                             );
                           });
                         })

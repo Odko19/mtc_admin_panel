@@ -16,7 +16,7 @@ function Content() {
   const [page, setPage] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3001/v1/news/?page=1&limit=6")
+    fetch(`${process.env.REACT_APP_BASE_URL}/news/?page=1&limit=6`)
       .then((response) => response.json())
       .then((result) => {
         setData(
@@ -29,6 +29,7 @@ function Content() {
             type: row.type,
             id: row.id,
             body: row.body,
+            customer_type: row.customer_type,
             key: i,
           }))
         );
@@ -49,7 +50,7 @@ function Content() {
   }
 
   function handlePageChange(page) {
-    fetch(`http://localhost:3001/v1/news/?page=${page}&limit=6`)
+    fetch(`${process.env.REACT_APP_BASE_URL}/news/?page=${page}&limit=6`)
       .then((response) => response.json())
       .then((result) => {
         setData(
@@ -62,6 +63,7 @@ function Content() {
             type: row.type,
             id: row.id,
             body: row.body,
+            customer_type: row.customer_type,
             key: i,
           }))
         );
@@ -76,10 +78,22 @@ function Content() {
       redirect: "follow",
     };
 
-    fetch(`http://localhost:3001/v1/news/?id=${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}news/?id=${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
+  }
+
+  function handleBtnSearch(e) {
+    e.preventDefault();
+    const result = data.filter((subject) =>
+      subject.title.toLowerCase().includes(e.target.value)
+    );
+    if (result.length === 0) {
+      console.log("Илэрч алга");
+    } else {
+      setData(result);
+    }
   }
 
   const columns = [
@@ -132,6 +146,7 @@ function Content() {
               placeholder="Нэр"
               className="news_search"
               suffix={<SearchOutlined />}
+              onClick={handleBtnSearch}
             />
           </div>
           <Table

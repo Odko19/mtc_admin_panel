@@ -38,7 +38,6 @@ async function getCreateShare(req) {
 
 async function getUpdateShare(req) {
   const { id, title, body, created_by } = req.body;
-
   let data;
   req.files[0]
     ? (data = await db.query(
