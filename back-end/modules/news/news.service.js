@@ -8,7 +8,8 @@ async function getAllNews(req) {
     const totalPage = data_count && data_count[0].count / limit;
     const data = await db.query(
       ` SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
-          news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by FROM news
+          news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
+          datediff(news.expires_at, now()) as duration FROM news
           left JOIN users ON created_by = users.id ORDER BY created_at desc limit ?, ?`,
       [JSON.stringify(startId), limit]
     );
@@ -21,7 +22,14 @@ async function getAllNews(req) {
     };
   }
   if (id) {
-    const data = await db.query("SELECT * FROM news where id = ?", [id]);
+    const data = await db.query(
+      `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
+       news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
+       datediff(news.expires_at, now()) as duration FROM news
+       left JOIN users ON created_by = users.id where news.id=?
+      `,
+      [id]
+    );
     return {
       ...data[0],
     };
@@ -33,10 +41,12 @@ async function getAllNews(req) {
       "select count(*) as count  from news where type=?",
       [type]
     );
+
     const totalPage = data_count && data_count[0].count / 6;
     const data = await db.query(
       `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
-        news.updated_at, news.expires_at,  news.customer_type, users.firstName as created_by FROM news
+        news.updated_at, news.expires_at,  news.customer_type, users.firstName as created_by,
+        datediff(news.expires_at, now()) as duration  FROM news
         left JOIN users ON created_by = users.id where type=? && customer_type=? ORDER BY created_at desc limit ?, 6  
       `,
       [type, customer, JSON.stringify(startId)]

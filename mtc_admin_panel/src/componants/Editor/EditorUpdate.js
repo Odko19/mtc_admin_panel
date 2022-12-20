@@ -7,7 +7,7 @@ import "../../styles/editor.css";
 function EditorUpdate({ data, type }) {
   const [body, setBody] = useState();
   const [selectType, setSelectType] = useState();
-  console.log(data);
+
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
@@ -138,6 +138,7 @@ function EditorUpdate({ data, type }) {
             initialValue={data?.body}
             onInit={(evt, editor) => (editorRef.current = editor)}
             init={{
+              height: "65vh",
               menubar: true,
               plugins: [
                 "a11ychecker",

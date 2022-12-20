@@ -29,12 +29,12 @@ async function getAllProduct(req) {
   }
   if (page && type) {
     const { page, type } = req.query;
-    console.log(req.query);
     const startId = (page - 1) * 6;
     const data_count = await db.query(
       "select count(*) as count  from product where product_type=?",
       [type]
     );
+
     const totalPage = data_count && data_count[0].count / 6;
     const data = await db.query(
       `select * from product where product_type=? ORDER BY created_at desc limit ?, 6 `,

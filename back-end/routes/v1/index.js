@@ -7,6 +7,7 @@ const authRoute = require("./auth.route");
 const shareholdersRoute = require("./shareholders.route");
 const transparentAccountRoute = require("./transparent_account.route");
 const productRoute = require("./product.route");
+const oracle = require("../../db/oracle_db/oracle");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);

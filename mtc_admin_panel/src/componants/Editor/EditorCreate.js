@@ -127,6 +127,7 @@ function EditorCreate() {
           <Editor
             onInit={(evt, editor) => (editorRef.current = editor)}
             init={{
+              height: "65vh",
               menubar: true,
               plugins: [
                 "a11ychecker",
