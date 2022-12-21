@@ -1,22 +1,22 @@
-const express = require("express");
-const app = express();
 const oracledb = require("oracledb");
+const config = require("./config_oracle");
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
-require("dotenv").config();
-async function fun() {
-  let con;
-  try {
-    con = await oracledb.getConnection({
-      user: "cbsadm",
-      password: "uangel123",
-      connectString: "10.0.125.9/MTCCBS",
-    });
-    const data = await con.execute(`SELECT * FROM ut_re_num_mst`);
-    console.log(data.rows);
-  } catch (err) {
-    console.error(err);
-  }
+async function query(sql) {
+  const connection = await oracledb.getConnection(config.db);
+  const { rows } =  await connection.execute(sql)
+  return rows;
 }
 
-fun();
+async function roleBack() {
+  return await connection.roleBack();
+}
+
+async function commit() {
+  return await connection.commit();
+}
+module.exports = { query, roleBack, commit};
+
+
+
+

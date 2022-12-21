@@ -103,11 +103,11 @@ async function getUpdateNews(req) {
   expires_at
     ? (data = await db.query(
         `UPDATE news
-     SET title=?, cover_img=?, body=?, created_by=?, type=?, updated_at=now() , expires_at=?, customer_type=?
+     SET title=?, body=?, created_by=?, type=?, updated_at=now() , expires_at=?, customer_type=?
      WHERE id=?`,
         [
           title,
-          req.files[0].filename,
+          
           body,
           created_by,
           type,
@@ -118,11 +118,11 @@ async function getUpdateNews(req) {
       ))
     : (data = await db.query(
         `UPDATE news
-     SET title=?, cover_img=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
+     SET title=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
      WHERE id=?`,
         [
           title,
-          req.files[0].filename,
+          
           body,
           created_by,
           type,
@@ -130,7 +130,7 @@ async function getUpdateNews(req) {
           customer_type,
           id,
         ]
-      ));
+      ))
   return {
     success: true,
     data,

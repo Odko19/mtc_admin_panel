@@ -7,7 +7,7 @@ const authRoute = require("./auth.route");
 const shareholdersRoute = require("./shareholders.route");
 const transparentAccountRoute = require("./transparent_account.route");
 const productRoute = require("./product.route");
-const oracle = require("../../db/oracle_db/oracle");
+const resnum = require("./resnum.route");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);
@@ -16,5 +16,6 @@ router.use("/login", authRoute);
 router.use("/shareholders", shareholdersRoute);
 router.use("/account", transparentAccountRoute);
 router.use("/product", productRoute);
+router.use("/resnum", resnum );
 
 module.exports = router;
