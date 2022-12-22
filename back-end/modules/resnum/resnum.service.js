@@ -3,7 +3,6 @@ const oracle_db = require("../../db/oracle_db/oracle");
 async function getAllResNum(req) {
   const { page, limit, number, one, two, value } = req.query;
   const startId = (page - 1) * limit;
-
   if (page && limit) {
     const mtcs_count = await oracle_db.query(
       "select count(*) as count from RESNUM_USER_PID"
