@@ -16,6 +16,6 @@ router.use("/login", authRoute);
 router.use("/shareholders", shareholdersRoute);
 router.use("/account", transparentAccountRoute);
 router.use("/product", productRoute);
-router.use("/resnum", resnum );
+router.use("/resnum", resnum);
 
 module.exports = router;
