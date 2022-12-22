@@ -9,6 +9,7 @@ import Account from "./Account";
 import Product from "./Product";
 import News from "./News";
 import User from "./User";
+import ResNum from "./Resnum";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -84,7 +85,7 @@ function Main() {
               label: "Бүтээгдэхүүн",
             },
             {
-              key: "/job",
+              key: "/resnum",
               icon: <FileAddOutlined />,
               label: "Ажлын зар",
             },
@@ -135,6 +136,7 @@ function Main() {
             <Route path="/product/create" element={<EditorProduct />} />
             <Route path="/user" element={<User />} />
             <Route path="/user/create" element={<EditorUser />} />
+            <Route path="/resnum" element={<ResNum />} />
           </Routes>
         </Content>
       </Layout>
