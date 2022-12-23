@@ -11,7 +11,6 @@ const getAllResNum = async (req, res) => {
   }
 };
 
-
 module.exports = {
   getAllResNum,
 };

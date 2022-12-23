@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const resNumController = require("../../modules/resnum")
+const resNumController = require("../../modules/resnum");
 
 router.get("/?", resNumController.getAllResNum);
 
