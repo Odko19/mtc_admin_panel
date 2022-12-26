@@ -1,55 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, Table, Select, Pagination } from "antd";
+import { Input, Select, Pagination } from "antd";
 import "../styles/resnum.css";
 
 function Resnum() {
   const [data, setData] = useState();
   const [page, setPage] = useState();
   const { Search } = Input;
-  let navigate = useNavigate();
-  const columns = [
-    {
-      title: "Гарчиг",
-      dataIndex: "RESNUM",
-      key: 1,
-    },
-    {
-      title: "Огноо",
-      dataIndex: "STATUS",
-      key: 2,
-    },
-    {
-      title: "EMAIL",
-      dataIndex: "EMAIL",
-      key: 3,
-    },
-    {
-      title: "PID",
-      dataIndex: "PID",
-      key: 4,
-    },
-  ];
-
+  console.log(data);
+  /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?page=1&limit=10`)
       .then((response) => response.json())
       .then((result) => {
-        // setData(
-        //   result.data.map((row, i) => ({
-        //     RESNUM: row.RESNUM,
-        //     STATUS: row.STATUS,
-        //     EMAIL: row.EMAIL,
-        //     PID: row.PID,
-        //     key: i,
-        //   }))
-        // );
         setData(result.data);
         setPage(result);
       })
       .catch((error) => console.log("error", error));
   }, []);
 
+  /****  Select option 1,2  ****/
   const [choiceOne, setChoiceOne] = useState("ALL");
   const [choiceTwo, setChoiceTwo] = useState("RESNUM");
   const handlerBtnOne = (value) => {
@@ -59,14 +28,14 @@ function Resnum() {
     setChoiceTwo(value);
   };
 
+  /****  Search  ****/
   const onSearch = (value) => {
     let result;
-
     if (
       (choiceOne === "A" && choiceTwo === "RESNUM") ||
-      (choiceOne === "T" && choiceTwo === "RESNUM") ||
       (choiceOne === "R" && choiceTwo === "RESNUM") ||
-      (choiceOne === "E" && choiceTwo === "RESNUM")
+      (choiceOne === "E" && choiceTwo === "RESNUM") ||
+      (choiceOne === "T" && choiceTwo === "RESNUM")
     ) {
       fetch(
         `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}`
@@ -85,7 +54,18 @@ function Resnum() {
         `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&value=${value}`
       )
         .then((response) => response.json())
-        .then((result) => setData(result.data))
+        .then((result) => {
+          if (result.data.length > 0) {
+            setData(result.data);
+          } else {
+            fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+              .then((response) => response.json())
+              .then((result) => {
+                setData(result.data);
+              })
+              .catch((error) => console.log("error", error));
+          }
+        })
         .catch((error) => console.log("error", error));
     }
     if (choiceTwo === "RESNUM") {
@@ -114,28 +94,20 @@ function Resnum() {
     }
   };
 
+  /****  Pagination  ****/
   function handleChange(page) {
     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?page=${page}&limit=10`)
       .then((response) => response.json())
       .then((result) => {
         setPage(result);
-        setData(
-          result.data.map((row, i) => ({
-            id: i,
-            RESNUM: row.RESNUM,
-            STATUS: row.STATUS,
-            EMAIL: row.EMAIL,
-            PID: row.PID,
-            key: i,
-          }))
-        );
+        setData(result.data);
       })
       .catch((error) => console.log("error", error));
   }
 
   return (
     <div>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", marginBottom: "20px" }}>
         <Select
           defaultValue={{
             value: "all",
@@ -155,17 +127,17 @@ function Resnum() {
               label: "Ашиглаж байгаа",
             },
             {
-              value: "T",
-              label: "Зарагдахад бэлэн",
-            },
-            {
               value: "R",
               label: "Захиалга өгсөн",
             },
-            {
-              value: "E",
-              label: "E",
-            },
+            // {
+            //   value: "T",
+            //   label: "Зарагдахад бэлэн",
+            // },
+            // {
+            //   value: "E",
+            //   label: "E",
+            // },
           ]}
         />
         <Select
@@ -196,53 +168,71 @@ function Resnum() {
 
         <Search onSearch={onSearch} />
       </div>
-      {/* <Table
-        columns={columns}
-        dataSource={data}
-        className="news_table"
-        pagination={{
-          position: ["bottomCenter"],
-          pageSize: page?.currentPageSize,
-          current: page?.currentPage,
-          total: page && page?.totalPages,
-          onChange: (page) => handlePageChange(page),
-        }}
-      /> */}
+      <table>
+        <tbody>
+          <tr>
+            <th style={{ paddingLeft: " 16px" }}>Id</th>
+            <th>
+              <span className="b1">Created_at</span>
+            </th>
+            <th>
+              <span className="b1">Resnum</span>
+            </th>
+            <th>
+              <span className="b1">Pid</span>
+            </th>
+            <th>
+              <span className="b1">Email</span>
+            </th>
+            <th>
+              <span className="b1">Place</span>
+            </th>
+            <th>
+              <span className="b1">Status</span>
+            </th>
+          </tr>
+          {data?.map((text, i) => {
+            return (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{text.CREATED_AT}</td>
+                <td>{text.RESNUM}</td>
+                <td>{text.PID}</td>
+                <td>{text.EMAIL}</td>
+                <td>{text.PLACE}</td>
+                <td
+                  style={
+                    text.STATUS === "A"
+                      ? { backgroundColor: "green" }
+                      : text.STATUS === "T"
+                      ? { backgroundColor: "blue" }
+                      : text.STATUS === "R"
+                      ? { backgroundColor: "orange" }
+                      : { backgroundColor: "red" }
+                  }
+                >
+                  {text.STATUS === "A"
+                    ? "Ашиглаж байгаа"
+                    : text.STATUS === "R"
+                    ? "Захиалга өгсөн"
+                    : text.STATUS === "T"
+                    ? "Зарагдахад бэлэн"
+                    : "статус E"}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
       <div>
-        <table>
-          <tbody>
-            <tr>
-              <th>ID</th>
-              <th>CREATED_AT</th>
-              <th>RESNUM</th>
-              <th>PID</th>
-              <th>EMAIL</th>
-              <th>PLACE</th>
-              <th>STATUS</th>
-            </tr>
-            {data?.map((text, i) => {
-              return (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{text.CREATED_AT}</td>
-                  <td>{text.RESNUM}</td>
-                  <td>{text.PID}</td>
-                  <td>{text.EMAIL}</td>
-                  <td>{text.PLACE}</td>
-                  <td>{text.STATUS}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
         <Pagination
           pageSize={1}
           current={page?.currentPageSize}
           total={page?.totalPages}
           onChange={handleChange}
-          position={"bottomCenter"}
           style={{
-            borderTop: " 1px solid rgba(5, 5, 5, 0.06)",
+            textAlign: "center",
+            marginTop: "20px",
           }}
         />
       </div>

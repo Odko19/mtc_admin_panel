@@ -77,8 +77,7 @@ function Content() {
       method: "DELETE",
       redirect: "follow",
     };
-
-    fetch(`${process.env.REACT_APP_BASE_URL}news/?id=${id}`, requestOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/news/?id=${id}`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
@@ -153,6 +152,11 @@ function Content() {
             columns={columns}
             dataSource={data}
             className="news_table"
+            onRow={(record) => ({
+              onClick: () => {
+                window.location.href = `http://10.0.10.126:3000/promos/${record.id}`;
+              },
+            })}
             pagination={{
               position: ["bottomCenter"],
               pageSize: page?.currentPageSize,

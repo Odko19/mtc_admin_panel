@@ -18,7 +18,7 @@ db_connection.connect((error) => {
   if (error) {
     console.log("mysql not connection");
   } else {
-    console.log("mysql connection");
+    console.log("mysql  connection");
     app.listen(PORT, () => {
       console.log("Running server" + " " + PORT);
     });

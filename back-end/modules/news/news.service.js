@@ -38,8 +38,8 @@ async function getAllNews(req) {
     const { page, type } = req.query;
     const startId = (page - 1) * 6;
     const data_count = await db.query(
-      "select count(*) as count  from news where type=?",
-      [type]
+      "select count(*) as count  from news where type=? and customer_type =?",
+      [type, customer]
     );
 
     const totalPage = data_count && data_count[0].count / 6;
@@ -100,19 +100,44 @@ async function getUpdateNews(req) {
   const { id, title, body, created_by, type, expires_at, customer_type } =
     req.body;
   let data;
-  expires_at
-    ? (data = await db.query(
-        `UPDATE news
-     SET title=?,  body=?, created_by=?, type=?, updated_at=now() , expires_at=?, customer_type=?
-     WHERE id=?`,
-        [title, body, created_by, type, expires_at, customer_type, id]
-      ))
-    : (data = await db.query(
-        `UPDATE news
-     SET title=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
-     WHERE id=?`,
-        [title, body, created_by, type, null, customer_type, id]
-      ));
+  if (req.files[0] === undefined) {
+    expires_at
+      ? (data = await db.query(
+          `UPDATE news
+   SET title=?,  body=?, created_by=?, type=?, updated_at=now() , expires_at=?, customer_type=?
+   WHERE id=?`,
+          [title, body, created_by, type, expires_at, customer_type, id]
+        ))
+      : (data = await db.query(
+          `UPDATE news
+   SET title=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
+   WHERE id=?`,
+          [title, body, created_by, type, null, customer_type, id]
+        ));
+  } else {
+    expires_at
+      ? (data = await db.query(
+          `UPDATE news
+SET title=?, cover_img=?, body=?,  created_by=?, type=?, updated_at=now() , expires_at=?, customer_type=?
+WHERE id=?`,
+          [
+            title,
+            req.files[0].filename,
+            body,
+            created_by,
+            type,
+            expires_at,
+            customer_type,
+            id,
+          ]
+        ))
+      : (data = await db.query(
+          `UPDATE news
+SET title=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
+WHERE id=?`,
+          [title, body, created_by, type, null, customer_type, id]
+        ));
+  }
 
   return {
     success: true,
