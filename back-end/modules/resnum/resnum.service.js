@@ -80,7 +80,7 @@ async function getAllResNum(req) {
     let data;
     if (choiceOne === "R") {
       data = await oracle_db.query(
-        "select RESNUM_USER_PID.CREATED_AT +1 AS CREATED_AT,  RESNUM_USER_PID.PID, RESNUM_USER_PID.PLACE, RESNUM_USER_PID.EMAIL, RESNUM_USER_PID.STATUS, RESNUM_USER_PID.RESNUM  from RESNUM_USER_PID   WHERE STATUS='" +
+        "select RESNUM_USER_PID.CREATED_AT,  RESNUM_USER_PID.PID, RESNUM_USER_PID.PLACE, RESNUM_USER_PID.EMAIL, RESNUM_USER_PID.STATUS, RESNUM_USER_PID.RESNUM  from RESNUM_USER_PID   WHERE STATUS='" +
           choiceOne +
           "' order by CREATED_AT OFFSET '" +
           startId +
