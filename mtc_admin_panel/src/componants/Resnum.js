@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Input, Select, Pagination } from "antd";
+import { Input, Select, Pagination, DatePicker, Space } from "antd";
+import moment from "moment";
 import "../styles/resnum.css";
 
 function Resnum() {
   const [data, setData] = useState();
   const [page, setPage] = useState();
   const { Search } = Input;
-  console.log(data);
+  const { RangePicker } = DatePicker;
+
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?page=1&limit=10`)
@@ -21,6 +23,8 @@ function Resnum() {
   /****  Select option 1,2  ****/
   const [choiceOne, setChoiceOne] = useState("ALL");
   const [choiceTwo, setChoiceTwo] = useState("RESNUM");
+  const [dates, setDates] = useState();
+
   const handlerBtnOne = (value) => {
     setChoiceOne(value);
   };
@@ -68,6 +72,16 @@ function Resnum() {
         })
         .catch((error) => console.log("error", error));
     }
+    if (dates && value) {
+      fetch(
+        `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}&value=${value}`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setData(result.data);
+        })
+        .catch((error) => console.log("error", error));
+    }
     if (choiceTwo === "RESNUM") {
       result = data.filter((subject) =>
         subject.RESNUM.toString().toLowerCase().includes(value)
@@ -92,6 +106,16 @@ function Resnum() {
         })
         .catch((error) => console.log("error", error));
     }
+    if (dates) {
+      fetch(
+        `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setData(result.data);
+        })
+        .catch((error) => console.log("error", error));
+    }
   };
 
   /****  Pagination  ****/
@@ -108,13 +132,26 @@ function Resnum() {
   return (
     <div>
       <div style={{ display: "flex", marginBottom: "20px" }}>
+        <Space direction="vertical" size={12}>
+          <RangePicker
+            style={{ width: 220 }}
+            onChange={(values) => {
+              setDates(
+                values.map((item) => {
+                  return moment(item.$d).format("YYYY-DD-MM");
+                })
+              );
+            }}
+          />
+        </Space>
         <Select
           defaultValue={{
             value: "all",
             label: "Бүгд",
           }}
           style={{
-            width: 200,
+            width: 300,
+            margin: "0 0 0 5px",
           }}
           onChange={handlerBtnOne}
           options={[
