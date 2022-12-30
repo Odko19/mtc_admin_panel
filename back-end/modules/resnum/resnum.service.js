@@ -69,6 +69,9 @@ async function getAllResNum(req) {
       };
     }
     if (date1 && date2 && value) {
+      console.log(date1);
+      console.log(date2);
+      console.log(value);
       // const data = await oracle_db.query(
       //   "select * from RESNUM_USER_PID WHERE CREATED_AT BETWEEN '" +
       //     date1 +
@@ -78,7 +81,17 @@ async function getAllResNum(req) {
       //     value +
       //     "'"
       // );
-      // console.log(data);
+      data = await oracle_db.query(
+        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+          date1 +
+          "' AND '" +
+          date2 +
+          "') AND RESNUM = '" +
+          value +
+          "' "
+      );
+
+      console.log(data);
       // return {
       //   data,
       // };
@@ -151,6 +164,7 @@ async function getAllResNum(req) {
         startId +
         "' ROWS FETCH NEXT 10 ROWS ONLY  "
     );
+
     return {
       totalPages: Math.ceil(totalPage),
       totalDatas: mtcs_count[0].count,

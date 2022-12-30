@@ -138,7 +138,7 @@ function Resnum() {
             onChange={(values) => {
               setDates(
                 values.map((item) => {
-                  return moment(item.$d).format("YYYY-DD-MM");
+                  return moment(item.$d).format("YYYY-MM-DD");
                 })
               );
             }}
