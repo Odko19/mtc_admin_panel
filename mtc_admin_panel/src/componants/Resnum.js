@@ -78,7 +78,7 @@ function Resnum() {
       )
         .then((response) => response.json())
         .then((result) => {
-          setData(result.data);
+          console.log(result.data);
         })
         .catch((error) => console.log("error", error));
     }

@@ -69,19 +69,7 @@ async function getAllResNum(req) {
       };
     }
     if (date1 && date2 && value) {
-      console.log(date1);
-      console.log(date2);
-      console.log(value);
-      // const data = await oracle_db.query(
-      //   "select * from RESNUM_USER_PID WHERE CREATED_AT BETWEEN '" +
-      //     date1 +
-      //     "' AND '" +
-      //     date2 +
-      //     "' AND RESNUM ='" +
-      //     value +
-      //     "'"
-      // );
-      data = await oracle_db.query(
+      const data = await oracle_db.query(
         "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
           date1 +
           "' AND '" +
@@ -90,11 +78,10 @@ async function getAllResNum(req) {
           value +
           "' "
       );
-
       console.log(data);
-      // return {
-      //   data,
-      // };
+      return {
+        data,
+      };
     }
   } else if (choiceOne && choiceTwo) {
     const startId = (1 - 1) * 10;
