@@ -1,4 +1,5 @@
-const resnumServices = require("./resnum.service");
+// const resnumServices = require("./resnum.service");
+const resnumServices = require("./resnum.service1");
 
 const getAllResNum = async (req, res) => {
   try {

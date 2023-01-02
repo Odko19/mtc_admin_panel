@@ -100,6 +100,7 @@ async function getUpdateNews(req) {
   const { id, title, body, created_by, type, expires_at, customer_type } =
     req.body;
   let data;
+
   if (req.files[0] === undefined) {
     expires_at
       ? (data = await db.query(
@@ -133,9 +134,18 @@ WHERE id=?`,
         ))
       : (data = await db.query(
           `UPDATE news
-SET title=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
+SET title=?,  cover_img=?, body=?, created_by=?, type=?, updated_at=now(), expires_at=?, customer_type=?
 WHERE id=?`,
-          [title, body, created_by, type, null, customer_type, id]
+          [
+            title,
+            req.files[0].filename,
+            body,
+            created_by,
+            type,
+            null,
+            customer_type,
+            id,
+          ]
         ));
   }
 

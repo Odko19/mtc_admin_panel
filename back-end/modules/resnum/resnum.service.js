@@ -1,10 +1,25 @@
 const oracle_db = require("../../db/oracle_db/oracle");
+const moment = require("moment");
 
 async function getAllResNum(req) {
-  const { page, limit, number, choiceOne, choiceTwo, value, date1, date2 } =
-    req.query;
+  const {
+    all,
+    page,
+    limit,
+    number,
+    choiceOne,
+    choiceTwo,
+    value,
+    date1,
+    date2,
+  } = req.query;
   const startId = (page - 1) * limit;
-
+  if (all) {
+    const data = await oracle_db.query("select * from RESNUM_USER_PID  ");
+    return {
+      data,
+    };
+  }
   if (page && limit) {
     const mtcs_count = await oracle_db.query(
       "select count(*) as count from RESNUM_USER_PID "
@@ -91,15 +106,40 @@ async function getAllResNum(req) {
         "'"
     );
     const totalPage = mtcs_count[0].COUNT / 10;
+    let result;
     let data;
     if (choiceOne === "R") {
-      data = await oracle_db.query(
-        "select RESNUM_USER_PID.CREATED_AT AS CREATED_AT,  RESNUM_USER_PID.PID, RESNUM_USER_PID.PLACE, RESNUM_USER_PID.EMAIL, RESNUM_USER_PID.STATUS, RESNUM_USER_PID.RESNUM  from RESNUM_USER_PID   WHERE STATUS='" +
+      result = await oracle_db.query(
+        "select  RESNUM_USER_PID.CREATED_AT  AS CREATED_AT,  RESNUM_USER_PID.PID, RESNUM_USER_PID.PLACE, RESNUM_USER_PID.EMAIL, RESNUM_USER_PID.STATUS, RESNUM_USER_PID.RESNUM from RESNUM_USER_PID   WHERE STATUS='" +
           choiceOne +
           "' order by CREATED_AT OFFSET '" +
           startId +
           "' ROWS FETCH NEXT 10 ROWS ONLY  "
       );
+      data = result.map((e) => {
+        return {
+          CREATED_AT: e.CREATED_AT,
+          EXPIRES_AT: moment(
+            new Date(e.CREATED_AT).setDate(
+              new Date(e.CREATED_AT).getDate() + 5
+            ) -
+              Math.ceil(
+                Math.abs(
+                  new Date(e.CREATED_AT) -
+                    new Date(e.CREATED_AT).setDate(
+                      new Date(e.CREATED_AT).getDate() + 5
+                    )
+                ) /
+                  (1000 * 60 * 60 * 24)
+              )
+          ).format("YYYY-MM-DD hh:mm:ss"),
+          PID: e.PID,
+          PLACE: e.PLACE,
+          EMAIL: e.EMAIL,
+          STATUS: e.STATUS,
+          RESNUM: e.RESNUM,
+        };
+      });
     } else {
       data = await oracle_db.query(
         "select * from RESNUM_USER_PID WHERE STATUS='" +
@@ -109,7 +149,6 @@ async function getAllResNum(req) {
           "' ROWS FETCH NEXT 10 ROWS ONLY  "
       );
     }
-
     return {
       totalPages: Math.ceil(totalPage),
       totalDatas: mtcs_count[0].count,
@@ -119,16 +158,16 @@ async function getAllResNum(req) {
     };
   }
   if (number) {
-    // const data = await oracle_db.query(
-    //   "select ut_re_num_mst.num as RESNUM,ut_re_num_mst.status as STATUS from ut_re_num_mst where NUM = '" +
-    //     number +
-    //     "'"
-    // );
     const data = await oracle_db.query(
-      "select ut_re_num_mst.num as RESNUM,ut_re_num_mst.status as STATUS from ut_re_num_mst WHERE STATUS = 'R' and NUM = '" +
+      "select ut_re_num_mst.num as RESNUM,ut_re_num_mst.status as STATUS from ut_re_num_mst where NUM = '" +
         number +
         "'"
     );
+    // const data = await oracle_db.query(
+    //   "select ut_re_num_mst.num as RESNUM,ut_re_num_mst.status as STATUS from ut_re_num_mst WHERE STATUS = 'R' and NUM = '" +
+    //     number +
+    //     "'"
+    // );
     Object.assign(data[0], { EMAIL: "MTCS" });
     return {
       data,

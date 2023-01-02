@@ -5,10 +5,10 @@ import "../styles/resnum.css";
 
 function Resnum() {
   const [data, setData] = useState();
+  const [allData, setAllData] = useState();
   const [page, setPage] = useState();
   const { Search } = Input;
   const { RangePicker } = DatePicker;
-
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?page=1&limit=10`)
@@ -18,7 +18,14 @@ function Resnum() {
         setPage(result);
       })
       .catch((error) => console.log("error", error));
+    fetch(`${process.env.REACT_APP_BASE_URL}/resnum?all=all`)
+      .then((response) => response.json())
+      .then((result) => {
+        setAllData(result.data);
+      })
+      .catch((error) => console.log("error", error));
   }, []);
+  useEffect(() => {}, []);
 
   /****  Select option 1,2  ****/
   const [choiceOne, setChoiceOne] = useState("ALL");
@@ -78,35 +85,10 @@ function Resnum() {
       )
         .then((response) => response.json())
         .then((result) => {
-          console.log(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    }
-    if (choiceTwo === "RESNUM") {
-      result = data.filter((subject) =>
-        subject.RESNUM.toString().toLowerCase().includes(value)
-      );
-      if (result.length > 0) {
-        setData(result);
-      } else {
-        fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
-          .then((response) => response.json())
-          .then((result) => {
-            setData(result.data);
-          })
-          .catch((error) => console.log("error", error));
-      }
-    } else if (choiceTwo === "PID" || choiceTwo === "EMAIL") {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?choiceTwo=${choiceTwo}&value=${value}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
           setData(result.data);
         })
         .catch((error) => console.log("error", error));
-    }
-    if (dates) {
+    } else if (dates) {
       fetch(
         `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}`
       )
@@ -116,6 +98,30 @@ function Resnum() {
         })
         .catch((error) => console.log("error", error));
     }
+    // if (choiceTwo === "RESNUM") {
+    //   result = allData.filter((subject) =>
+    //     subject.RESNUM.toString().toLowerCase().includes(value)
+    //   );
+    //   if (result.length > 0) {
+    //     setData(result);
+    //   } else {
+    //     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+    //       .then((response) => response.json())
+    //       .then((result) => {
+    //         setData(result.data);
+    //       })
+    //       .catch((error) => console.log("error", error));
+    //   }
+    // } else if (choiceTwo === "PID" || choiceTwo === "EMAIL") {
+    //   fetch(
+    //     `${process.env.REACT_APP_BASE_URL}/resnum?choiceTwo=${choiceTwo}&value=${value}`
+    //   )
+    //     .then((response) => response.json())
+    //     .then((result) => {
+    //       setData(result.data);
+    //     })
+    //     .catch((error) => console.log("error", error));
+    // }
   };
 
   /****  Pagination  ****/
@@ -212,6 +218,14 @@ function Resnum() {
             <th>
               <span className="b1">Created_at</span>
             </th>
+            {data && data[0].EXPIRES_AT ? (
+              <th>
+                <span className="b1">expires_at</span>
+              </th>
+            ) : (
+              ""
+            )}
+
             <th>
               <span className="b1">Resnum</span>
             </th>
@@ -228,31 +242,32 @@ function Resnum() {
               <span className="b1">Status</span>
             </th>
           </tr>
-          {data?.map((text, i) => {
+          {data?.map((e, i) => {
             return (
               <tr key={i}>
                 <td>{i + 1}</td>
-                <td>{text.CREATED_AT}</td>
-                <td>{text.RESNUM}</td>
-                <td>{text.PID}</td>
-                <td>{text.EMAIL}</td>
-                <td>{text.PLACE}</td>
+                <td>{e.CREATED_AT}</td>
+                {e.EXPIRES_AT ? <td>{e.EXPIRES_AT}</td> : ""}
+                <td>{e.RESNUM}</td>
+                <td>{e.PID}</td>
+                <td>{e.EMAIL}</td>
+                <td>{e.PLACE}</td>
                 <td
                   style={
-                    text.STATUS === "A"
+                    e.STATUS === "A"
                       ? { backgroundColor: "green" }
-                      : text.STATUS === "T"
+                      : e.STATUS === "T"
                       ? { backgroundColor: "blue" }
-                      : text.STATUS === "R"
+                      : e.STATUS === "R"
                       ? { backgroundColor: "orange" }
                       : { backgroundColor: "red" }
                   }
                 >
-                  {text.STATUS === "A"
+                  {e.STATUS === "A"
                     ? "Ашиглаж байгаа"
-                    : text.STATUS === "R"
+                    : e.STATUS === "R"
                     ? "Захиалга өгсөн"
-                    : text.STATUS === "T"
+                    : e.STATUS === "T"
                     ? "Зарагдахад бэлэн"
                     : "статус E"}
                 </td>
