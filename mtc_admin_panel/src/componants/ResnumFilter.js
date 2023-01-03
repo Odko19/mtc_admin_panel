@@ -4,12 +4,13 @@ import moment from "moment";
 import "../styles/resnum.css";
 
 function ResnumFilter() {
-  const [data, setData] = useState([]);
-  console.log(data);
+  const [data, setData] = useState();
   const [allData, setAllData] = useState();
+  const [search, setSearch] = useState();
   const [page, setPage] = useState();
   const { Search } = Input;
   const { RangePicker } = DatePicker;
+
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?page=1&limit=10`)
@@ -39,7 +40,7 @@ function ResnumFilter() {
     setChoiceTwo(value);
   };
 
-  /****  Search  ****/
+  /****  Search  filter ****/
   const onSearch = (value) => {
     if (choiceOne && choiceTwo && dates && value) {
       fetch(
@@ -82,7 +83,14 @@ function ResnumFilter() {
         subject.RESNUM.toString().toLowerCase().includes(value)
       );
       if (result.length > 0) {
-        setData(result);
+        setSearch(result);
+      } else {
+        fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+          .then((response) => response.json())
+          .then((result) => {
+            setSearch(result.data);
+          })
+          .catch((error) => console.log("error", error));
       }
     }
   };
@@ -173,13 +181,21 @@ function ResnumFilter() {
             <th>
               <span className="b1">Created_at</span>
             </th>
-            {/* {data && data[0].EXPIRES_AT ? (
+            {search ? (
+              search && search[0].EXPIRES_AT ? (
+                <th>
+                  <span className="b1">expires_at</span>
+                </th>
+              ) : (
+                ""
+              )
+            ) : data && data[0].EXPIRES_AT ? (
               <th>
                 <span className="b1">expires_at</span>
               </th>
             ) : (
               ""
-            )} */}
+            )}
 
             <th>
               <span className="b1">Resnum</span>
@@ -197,39 +213,71 @@ function ResnumFilter() {
               <span className="b1">Status</span>
             </th>
           </tr>
-          {data &&
-            data?.map((e, i) => {
-              return (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{e.CREATED_AT}</td>
-                  {e.EXPIRES_AT ? <td>{e.EXPIRES_AT}</td> : ""}
-                  <td>{e.RESNUM}</td>
-                  <td>{e.PID}</td>
-                  <td>{e.EMAIL}</td>
-                  <td>{e.PLACE}</td>
-                  <td
-                    style={
-                      e.STATUS === "A"
-                        ? { backgroundColor: "green" }
-                        : e.STATUS === "T"
-                        ? { backgroundColor: "blue" }
+          {search
+            ? search?.map((e, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{e.CREATED_AT}</td>
+                    {e.EXPIRES_AT ? <td>{e.EXPIRES_AT}</td> : ""}
+                    <td>{e.RESNUM}</td>
+                    <td>{e.PID}</td>
+                    <td>{e.EMAIL}</td>
+                    <td>{e.PLACE}</td>
+                    <td
+                      style={
+                        e.STATUS === "A"
+                          ? { backgroundColor: "green" }
+                          : e.STATUS === "T"
+                          ? { backgroundColor: "blue" }
+                          : e.STATUS === "R"
+                          ? { backgroundColor: "orange" }
+                          : { backgroundColor: "red" }
+                      }
+                    >
+                      {e.STATUS === "A"
+                        ? "Ашиглаж байгаа"
                         : e.STATUS === "R"
-                        ? { backgroundColor: "orange" }
-                        : { backgroundColor: "red" }
-                    }
-                  >
-                    {e.STATUS === "A"
-                      ? "Ашиглаж байгаа"
-                      : e.STATUS === "R"
-                      ? "Захиалга өгсөн"
-                      : e.STATUS === "T"
-                      ? "Зарагдахад бэлэн"
-                      : "статус E"}
-                  </td>
-                </tr>
-              );
-            })}
+                        ? "Захиалга өгсөн"
+                        : e.STATUS === "T"
+                        ? "Зарагдахад бэлэн"
+                        : "статус E"}
+                    </td>
+                  </tr>
+                );
+              })
+            : data?.map((e, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{e.CREATED_AT}</td>
+                    {e.EXPIRES_AT ? <td>{e.EXPIRES_AT}</td> : ""}
+                    <td>{e.RESNUM}</td>
+                    <td>{e.PID}</td>
+                    <td>{e.EMAIL}</td>
+                    <td>{e.PLACE}</td>
+                    <td
+                      style={
+                        e.STATUS === "A"
+                          ? { backgroundColor: "green" }
+                          : e.STATUS === "T"
+                          ? { backgroundColor: "blue" }
+                          : e.STATUS === "R"
+                          ? { backgroundColor: "orange" }
+                          : { backgroundColor: "red" }
+                      }
+                    >
+                      {e.STATUS === "A"
+                        ? "Ашиглаж байгаа"
+                        : e.STATUS === "R"
+                        ? "Захиалга өгсөн"
+                        : e.STATUS === "T"
+                        ? "Зарагдахад бэлэн"
+                        : "статус E"}
+                    </td>
+                  </tr>
+                );
+              })}
         </tbody>
       </table>
       <div>

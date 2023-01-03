@@ -1,6 +1,5 @@
 const oracle_db = require("../../db/oracle_db/oracle");
 const moment = require("moment");
-const { DATE } = require("oracledb");
 
 async function getAllResNum(req) {
   const {

@@ -10,6 +10,7 @@ import Product from "./Product";
 import News from "./News";
 import User from "./User";
 import ResnumFilter from "./ResnumFilter";
+import Order from "./Order";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -90,6 +91,11 @@ function Main() {
               label: "Ажлын зар",
             },
             {
+              key: "/order",
+              icon: <FileAddOutlined />,
+              label: "order",
+            },
+            {
               key: "/user",
               icon: <UserAddOutlined />,
               label: "Админ нэмэх",
@@ -136,7 +142,7 @@ function Main() {
             <Route path="/product/create" element={<EditorProduct />} />
             <Route path="/user" element={<User />} />
             <Route path="/user/create" element={<EditorUser />} />
-            {/* <Route path="/resnum" element={<ResNum />} /> */}
+            <Route path="/order" element={<Order />} />
             <Route path="/resnum" element={<ResnumFilter />} />
           </Routes>
         </Content>
