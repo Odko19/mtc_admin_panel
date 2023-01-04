@@ -10,7 +10,18 @@ const getAllOrder = async (req, res) => {
     });
   }
 };
+const getUpdateOrder = async (req, res) => {
+  try {
+    const data = await orderServices.getUpdateOrder(req);
+    res.json(data);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
 
 module.exports = {
   getAllOrder,
+  getUpdateOrder,
 };

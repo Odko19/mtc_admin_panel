@@ -4,7 +4,8 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 async function query(sql) {
   const connection = await oracledb.getConnection(config.db);
-  const { rows } =  await connection.execute(sql)
+  const { rows } = await connection.execute(sql);
+  await connection.commit();
   return rows;
 }
 
@@ -15,8 +16,4 @@ async function roleBack() {
 async function commit() {
   return await connection.commit();
 }
-module.exports = { query, roleBack, commit};
-
-
-
-
+module.exports = { query, roleBack, commit };

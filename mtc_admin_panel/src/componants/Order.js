@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Pagination, DatePicker, Space } from "antd";
+import { Input, Pagination, DatePicker, Space, Checkbox } from "antd";
 import moment from "moment";
 import "../styles/resnum.css";
 
@@ -8,7 +8,6 @@ function Order() {
   const [allData, setAllData] = useState();
   const [page, setPage] = useState();
   const { Search } = Input;
-
   console.log(allData);
   /****  Default all data  ****/
   useEffect(() => {
@@ -48,6 +47,29 @@ function Order() {
       .catch((error) => console.log("error", error));
   }
 
+  const onClickId = (id) => {
+    const status = (document.querySelector("input").checked = true);
+    if (status) {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify({
+        ID: id,
+        OPERATOR_ID: 1,
+        OPERATOR_STATUS: "ALALAL",
+      });
+      var requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    }
+  };
+
   return (
     <div>
       <div style={{ display: "flex", marginBottom: "20px" }}>
@@ -78,9 +100,7 @@ function Order() {
             <th>
               <span className="b1">ADDRESS</span>
             </th>
-            <th>
-              <span className="b1">ADDITIONAL</span>
-            </th>
+
             <th>
               <span className="b1">RESULT</span>
             </th>
@@ -91,7 +111,6 @@ function Order() {
                 <td>
                   {e.LAST_NAME} {e.FIRST_NAME}
                 </td>
-
                 <td>{e.MOBILE}</td>
                 <td>{e.EMAIL}</td>
                 <td>{e.CUST_TYPE}</td>
@@ -103,8 +122,10 @@ function Order() {
                   {e.CITY} {e.DISTRICT} {e.KHOROO} {e.ENTRACE} {e.APARTMENT}
                   {e.DOOR}
                 </td>
-                <td>{e.ADDITIONAL}</td>
                 <td style={{ width: "100px" }}>{e.RESULT}</td>
+                <td>
+                  <Checkbox onClick={() => onClickId(e.ID)}>Checkbox</Checkbox>
+                </td>
               </tr>
             );
           })}

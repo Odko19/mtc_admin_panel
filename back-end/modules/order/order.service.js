@@ -31,6 +31,27 @@ async function getAllOrder(req) {
   }
 }
 
+async function getUpdateOrder(req) {
+  const { ID, OPERATOR_ID, OPERATOR_STATUS } = req.body;
+  console.log(ID);
+  console.log(OPERATOR_ID);
+  console.log(OPERATOR_STATUS);
+  const id = 4;
+  const name = "update";
+  let data = await oracle_db.query(
+    "UPDATE MTC_SELF_ORDER_FORM SET FIRST_NAME ='" +
+      name +
+      "' WHERE ID ='" +
+      id +
+      "'"
+  );
+  return {
+    success: true,
+    data,
+  };
+}
+
 module.exports = {
   getAllOrder,
+  getUpdateOrder,
 };
