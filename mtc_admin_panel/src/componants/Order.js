@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Pagination, DatePicker, Space, Checkbox } from "antd";
+import { Input, Pagination, DatePicker, Space, Checkbox, Modal } from "antd";
 import moment from "moment";
 import "../styles/resnum.css";
 
@@ -8,7 +8,39 @@ function Order() {
   const [allData, setAllData] = useState();
   const [page, setPage] = useState();
   const { Search } = Input;
-  console.log(allData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dataModal, setDataModal] = useState();
+
+  const handleOk = (e) => {
+    if (e.RESULT === null) {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify({
+        ID: e.ID,
+        OPERATOR_ID: 1,
+        OPERATOR_STATUS: 1,
+        RESULT: true,
+      });
+      var requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    }
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  function handleBtnEdit(e) {
+    setDataModal(e);
+    setIsModalOpen(true);
+  }
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/order?page=1&limit=6`)
@@ -47,29 +79,36 @@ function Order() {
       .catch((error) => console.log("error", error));
   }
 
-  const onClickId = (id) => {
-    const status = (document.querySelector("input").checked = true);
-    if (status) {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      var raw = JSON.stringify({
-        ID: id,
-        OPERATOR_ID: 1,
-        OPERATOR_STATUS: "ALALAL",
-      });
-      var requestOptions = {
-        method: "PUT",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-      fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
-    }
-  };
+  // const onClickId = (id) => {
+  //   const status = (document.querySelector("input").checked = true);
+  //   if (status) {
+  //     var myHeaders = new Headers();
+  //     myHeaders.append("Content-Type", "application/json");
+  //     var raw = JSON.stringify({
+  //       ID: id,
+  //       OPERATOR_ID: 1,
+  //       OPERATOR_STATUS: 1,
+  //       RESULT: true,
+  //     });
+  //     var requestOptions = {
+  //       method: "PUT",
+  //       headers: myHeaders,
+  //       body: raw,
+  //       redirect: "follow",
+  //     };
+  //     fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
+  //       .then((response) => response.text())
+  //       .then((result) => console.log(result))
+  //       .catch((error) => console.log("error", error));
+  //   }
+  // };
 
+  const [checkState, setCheckState] = useState();
+
+  const onChange = (e) => {
+    // setCheckState(e.target.checked);
+    setCheckState(e.target.value);
+  };
   return (
     <div>
       <div style={{ display: "flex", marginBottom: "20px" }}>
@@ -94,15 +133,14 @@ function Order() {
               <span className="b1">SERVICE</span>
             </th>
             <th>
-              <span className="b1">CREATED_AT</span>
-            </th>
-
-            <th>
               <span className="b1">ADDRESS</span>
             </th>
 
             <th>
               <span className="b1">RESULT</span>
+            </th>
+            <th>
+              <span className="b1">EDIT</span>
             </th>
           </tr>
           {data?.map((e, i) => {
@@ -115,17 +153,18 @@ function Order() {
                 <td>{e.EMAIL}</td>
                 <td>{e.CUST_TYPE}</td>
                 <td>{e.SERVICE}</td>
-                <td style={{ width: "150px" }}>
-                  {moment(e.CREATED_AT).format("YYYY-MM-DD")}
-                </td>
+
                 <td style={{ width: "300px" }}>
                   {e.CITY} {e.DISTRICT} {e.KHOROO} {e.ENTRACE} {e.APARTMENT}
                   {e.DOOR}
                 </td>
                 <td style={{ width: "100px" }}>{e.RESULT}</td>
-                <td>
-                  <Checkbox onClick={() => onClickId(e.ID)}>Checkbox</Checkbox>
+                <td style={{ width: "100px" }}>
+                  <button onClick={() => handleBtnEdit(e)}>edit</button>
                 </td>
+                {/* <td>
+                  <Checkbox onClick={() => onClickId(e.ID)}>Checkbox</Checkbox>
+                </td> */}
               </tr>
             );
           })}
@@ -143,6 +182,37 @@ function Order() {
           }}
         />
       </div>
+      {dataModal ? (
+        <Modal
+          title="Basic Modal"
+          open={isModalOpen}
+          onOk={() => handleOk(dataModal)}
+          onCancel={handleCancel}
+        >
+          <p>FIRST_NAME : {dataModal.FIRST_NAME}</p>
+          <p>LAST_NAME : {dataModal.LAST_NAME}</p>
+          <p>MOBILE : {dataModal.MOBILE}</p>
+          <p>EMAIL : {dataModal.EMAIL}</p>
+          <p>CUST_TYPE : {dataModal.CUST_TYPE}</p>
+          <p>SERVICE : {dataModal.SERVICE}</p>
+          <p>RESULT : {dataModal.RESULT}</p>
+          <>
+            {dataModal.RESULT === null ? (
+              <Checkbox
+                onChange={onChange}
+                checked={checkState === dataModal.ID ? true : false}
+                value={dataModal.ID}
+              >
+                захиалага биелээгүй
+              </Checkbox>
+            ) : (
+              <Checkbox checked={true}>захиалага биелэсэн</Checkbox>
+            )}
+          </>
+        </Modal>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
