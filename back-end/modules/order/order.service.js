@@ -5,11 +5,11 @@ async function getAllOrder(req) {
   if (page && limit) {
     const startId = (page - 1) * limit;
     const data_count = await oracle_db.query(
-      "select count(*) as count from MTC_SELF_ORDER_FORM "
+      "select count(*) as count from MTC_SC_ORDER_FORM   "
     );
     const totalPage = data_count[0].COUNT / limit;
     const data = await oracle_db.query(
-      "select * from MTC_SELF_ORDER_FORM  order by ID OFFSET '" +
+      "select * from MTC_SC_ORDER_FORM    order by ID OFFSET '" +
         startId +
         "' ROWS FETCH NEXT '" +
         limit +
@@ -24,7 +24,7 @@ async function getAllOrder(req) {
     };
   }
   if (all) {
-    const data = await oracle_db.query("select * from MTC_SELF_ORDER_FORM ");
+    const data = await oracle_db.query("select * from MTC_SC_ORDER_FORM   ");
     return {
       data,
     };
@@ -34,7 +34,7 @@ async function getAllOrder(req) {
 async function getUpdateOrder(req) {
   const { ID, OPERATOR_ID, OPERATOR_STATUS, RESULT } = req.body;
   let data = await oracle_db.query(
-    "UPDATE MTC_SELF_ORDER_FORM SET OPERATOR_ID = '" +
+    "UPDATE MTC_SC_ORDER_FORM   SET OPERATOR_ID = '" +
       OPERATOR_ID +
       "', OPERATOR_STATUS='" +
       OPERATOR_STATUS +
