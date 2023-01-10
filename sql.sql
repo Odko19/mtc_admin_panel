@@ -64,5 +64,14 @@ CREATE TABLE users(
  password INT,
  permission json
 );
+
 ALTER TABLE users
-MODIFY COLUMN password varchar(255) ;
+MODIFY COLUMN password varchar(255);
+
+
+
+
+
+
+SELECT GREATEST(1, 4, 5, 6) AS NUM;
+SELECT least(1, 4, 5, 6) AS NUM;

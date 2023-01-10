@@ -25,12 +25,12 @@ function Resnum() {
       })
       .catch((error) => console.log("error", error));
   }, []);
-  useEffect(() => {}, []);
 
   /****  Select option 1,2  ****/
   const [choiceOne, setChoiceOne] = useState("ALL");
   const [choiceTwo, setChoiceTwo] = useState("RESNUM");
   const [dates, setDates] = useState();
+  console.log(dates);
 
   const handlerBtnOne = (value) => {
     setChoiceOne(value);
@@ -40,89 +40,90 @@ function Resnum() {
   };
 
   /****  Search  ****/
-  const onSearch = (value) => {
-    let result;
-    if (
-      (choiceOne === "A" && choiceTwo === "RESNUM") ||
-      (choiceOne === "R" && choiceTwo === "RESNUM") ||
-      (choiceOne === "E" && choiceTwo === "RESNUM") ||
-      (choiceOne === "T" && choiceTwo === "RESNUM")
-    ) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}`
-      )
-        .then((response) => response.json())
-        .then((result) => setData(result.data))
-        .catch((error) => console.log("error", error));
-    }
-    if (
-      (choiceOne === "A" && value) ||
-      (choiceOne === "T" && value) ||
-      (choiceOne === "R" && value) ||
-      (choiceOne === "E" && value)
-    ) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&value=${value}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.data.length > 0) {
-            setData(result.data);
-          } else {
-            fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
-              .then((response) => response.json())
-              .then((result) => {
-                setData(result.data);
-              })
-              .catch((error) => console.log("error", error));
-          }
-        })
-        .catch((error) => console.log("error", error));
-    }
-    if (dates && value) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}&value=${value}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    } else if (dates) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    }
-    // if (choiceTwo === "RESNUM") {
-    //   result = allData.filter((subject) =>
-    //     subject.RESNUM.toString().toLowerCase().includes(value)
-    //   );
-    //   if (result.length > 0) {
-    //     setData(result);
-    //   } else {
-    //     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
-    //       .then((response) => response.json())
-    //       .then((result) => {
-    //         setData(result.data);
-    //       })
-    //       .catch((error) => console.log("error", error));
-    //   }
-    // } else if (choiceTwo === "PID" || choiceTwo === "EMAIL") {
-    //   fetch(
-    //     `${process.env.REACT_APP_BASE_URL}/resnum?choiceTwo=${choiceTwo}&value=${value}`
-    //   )
-    //     .then((response) => response.json())
-    //     .then((result) => {
-    //       setData(result.data);
-    //     })
-    //     .catch((error) => console.log("error", error));
-    // }
-  };
+  // const onSearch = (value) => {
+  //   let result;
+  //   if (
+  //     (choiceOne === "A" && choiceTwo === "RESNUM") ||
+  //     (choiceOne === "R" && choiceTwo === "RESNUM") ||
+  //     (choiceOne === "E" && choiceTwo === "RESNUM") ||
+  //     (choiceOne === "T" && choiceTwo === "RESNUM")
+  //   ) {
+  //     fetch(
+  //       `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}`
+  //     )
+  //       .then((response) => response.json())
+  //       .then((result) => setData(result.data))
+  //       .catch((error) => console.log("error", error));
+  //   }
+  //   if (
+  //     (choiceOne === "A" && value) ||
+  //     (choiceOne === "T" && value) ||
+  //     (choiceOne === "R" && value) ||
+  //     (choiceOne === "E" && value)
+  //   ) {
+  //     fetch(
+  //       `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&value=${value}`
+  //     )
+  //       .then((response) => response.json())
+  //       .then((result) => {
+  //         if (result.data.length > 0) {
+  //           setData(result.data);
+  //         } else {
+  //           fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+  //             .then((response) => response.json())
+  //             .then((result) => {
+  //               setData(result.data);
+  //             })
+  //             .catch((error) => console.log("error", error));
+  //         }
+  //       })
+  //       .catch((error) => console.log("error", error));
+  //   }
+  //   if (dates && value) {
+  //     fetch(
+  //       `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}&value=${value}`
+  //     )
+  //       .then((response) => response.json())
+  //       .then((result) => {
+  //         setData(result.data);
+  //       })
+  //       .catch((error) => console.log("error", error));
+  //   } else if (dates) {
+  //     fetch(
+  //       `${process.env.REACT_APP_BASE_URL}/resnum?date1=${dates[0]}&date2=${dates[1]}`
+  //     )
+  //       .then((response) => response.json())
+  //       .then((result) => {
+  //         setData(result.data);
+  //       })
+  //       .catch((error) => console.log("error", error));
+  //   }
+
+  //   // if (choiceTwo === "RESNUM") {
+  //   //   result = allData.filter((subject) =>
+  //   //     subject.RESNUM.toString().toLowerCase().includes(value)
+  //   //   );
+  //   //   if (result.length > 0) {
+  //   //     setData(result);
+  //   //   } else {
+  //   //     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+  //   //       .then((response) => response.json())
+  //   //       .then((result) => {
+  //   //         setData(result.data);
+  //   //       })
+  //   //       .catch((error) => console.log("error", error));
+  //   //   }
+  //   // } else if (choiceTwo === "PID" || choiceTwo === "EMAIL") {
+  //   //   fetch(
+  //   //     `${process.env.REACT_APP_BASE_URL}/resnum?choiceTwo=${choiceTwo}&value=${value}`
+  //   //   )
+  //   //     .then((response) => response.json())
+  //   //     .then((result) => {
+  //   //       setData(result.data);
+  //   //     })
+  //   //     .catch((error) => console.log("error", error));
+  //   // }
+  // };
 
   /****  Pagination  ****/
   function handleChange(page) {

@@ -42,56 +42,67 @@ function ResnumFilter() {
 
   /****  Search  filter ****/
   const onSearch = (value) => {
-    if (choiceOne && choiceTwo && dates && value) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}&dateOne=${dates[0]}&dateTwo=${dates[1]}&value=${value}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    }
-    if (choiceOne && choiceTwo && value) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}&value=${value}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    } else if (choiceOne && value) {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&value=${value}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    } else if (choiceOne || value) {
-      fetch(`${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}`)
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
-    }
-    if (choiceTwo && value) {
-      const result = allData.filter((subject) =>
-        subject.RESNUM.toString().toLowerCase().includes(value)
-      );
-      if (result.length > 0) {
-        setSearch(result);
-      } else {
-        fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+    if (value) {
+      if (choiceOne && choiceTwo && dates && value) {
+        fetch(
+          `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}&dateOne=${dates[0]}&dateTwo=${dates[1]}&value=${value}`
+        )
           .then((response) => response.json())
           .then((result) => {
-            setSearch(result.data);
+            setData(result.data);
           })
           .catch((error) => console.log("error", error));
       }
+      if (choiceOne && choiceTwo && value) {
+        fetch(
+          `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&choiceTwo=${choiceTwo}&value=${value}`
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            setData(result.data);
+          })
+          .catch((error) => console.log("error", error));
+      } else if (choiceOne && value) {
+        fetch(
+          `${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}&value=${value}`
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            setData(result.data);
+          })
+          .catch((error) => console.log("error", error));
+      } else if (choiceOne || value) {
+        fetch(`${process.env.REACT_APP_BASE_URL}/resnum?choiceOne=${choiceOne}`)
+          .then((response) => response.json())
+          .then((result) => {
+            setData(result.data);
+          })
+          .catch((error) => console.log("error", error));
+      }
+      if (choiceTwo && value) {
+        const result = allData.filter((subject) =>
+          subject.RESNUM.toString().toLowerCase().includes(value)
+        );
+        if (result.length > 0) {
+          setSearch(result);
+        } else {
+          fetch(`${process.env.REACT_APP_BASE_URL}/resnum?number=${value}`)
+            .then((response) => response.json())
+            .then((result) => {
+              setSearch(result.data);
+            })
+            .catch((error) => console.log("error", error));
+        }
+      }
+    } else {
+      fetch(
+        `${process.env.REACT_APP_BASE_URL}/resnum?dateOne=${dates[0]}&dateTwo=${dates[1]}`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setData(result.data);
+        })
+        .catch((error) => console.log("error", error));
     }
   };
 

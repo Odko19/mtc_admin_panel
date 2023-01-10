@@ -51,227 +51,252 @@ async function getAllResNum(req) {
       data,
     };
   }
-  if (choiceOne && choiceTwo && dateOne && dateTwo && value) {
-    if (choiceOne === "ALL" && choiceTwo === "RESNUM") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND RESNUM = '" +
-          value +
-          "' "
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "ALL" && choiceTwo === "PID") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND PID = '" +
-          value +
-          "' "
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "ALL" && choiceTwo === "EMAIL") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND EMAIL = '" +
-          value +
-          "' "
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "A" && choiceTwo === "RESNUM") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND RESNUM = '" +
-          value +
-          "' AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "A" && choiceTwo === "PID") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND PID = '" +
-          value +
-          "' AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "A" && choiceTwo === "EMAIL") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND EMAIL = '" +
-          value +
-          "' AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "R" && choiceTwo === "RESNUM") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND RESNUM = '" +
-          value +
-          "' AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "R" && choiceTwo === "PID") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND PID = '" +
-          value +
-          "' AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "R" && choiceTwo === "EMAIL") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
-          dateOne +
-          "' AND '" +
-          dateTwo +
-          "') AND EMAIL = '" +
-          value +
-          "' AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
+
+  if (value) {
+    if (choiceOne && choiceTwo && dateOne && dateTwo && value) {
+      if (choiceOne === "ALL" && choiceTwo === "RESNUM") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND RESNUM = '" +
+            value +
+            "' "
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "ALL" && choiceTwo === "PID") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND PID = '" +
+            value +
+            "' "
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "ALL" && choiceTwo === "EMAIL") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND EMAIL = '" +
+            value +
+            "' "
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "A" && choiceTwo === "RESNUM") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND RESNUM = '" +
+            value +
+            "' AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "A" && choiceTwo === "PID") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND PID = '" +
+            value +
+            "' AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "A" && choiceTwo === "EMAIL") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND EMAIL = '" +
+            value +
+            "' AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "R" && choiceTwo === "RESNUM") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND RESNUM = '" +
+            value +
+            "' AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "R" && choiceTwo === "PID") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND PID = '" +
+            value +
+            "' AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "R" && choiceTwo === "EMAIL") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+            dateOne +
+            "' AND '" +
+            dateTwo +
+            "') AND EMAIL = '" +
+            value +
+            "' AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      }
     }
-  }
-  if (choiceOne && choiceTwo && value) {
-    if (choiceOne === "ALL" && choiceTwo === "RESNUM") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE RESNUM = '" + value + "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "ALL" && choiceTwo === "PID") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE PID = '" + value + "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "ALL" && choiceTwo === "EMAIL") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE EMAIL = '" + value + "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "A" && choiceTwo === "RESNUM") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE RESNUM = '" +
-          value +
-          "'AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "A" && choiceTwo === "PID") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE PID = '" +
-          value +
-          "'AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "A" && choiceTwo === "EMAIL") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE EMAIL = '" +
-          value +
-          "'AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "R" && choiceTwo === "RESNUM") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE RESNUM = '" +
-          value +
-          "'AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "R" && choiceTwo === "PID") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE PID = '" +
-          value +
-          "'AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
-    } else if (choiceOne === "R" && choiceTwo === "EMAIL") {
-      const data = await oracle_db.query(
-        "select * from RESNUM_USER_PID WHERE EMAIL = '" +
-          value +
-          "'AND STATUS  = '" +
-          choiceOne +
-          "'"
-      );
-      return {
-        data,
-      };
+    if (choiceOne && choiceTwo && value) {
+      if (choiceOne === "ALL" && choiceTwo === "RESNUM") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE RESNUM = '" + value + "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "ALL" && choiceTwo === "PID") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE PID = '" + value + "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "ALL" && choiceTwo === "EMAIL") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE EMAIL = '" + value + "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "A" && choiceTwo === "RESNUM") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE RESNUM = '" +
+            value +
+            "'AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "A" && choiceTwo === "PID") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE PID = '" +
+            value +
+            "'AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "A" && choiceTwo === "EMAIL") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE EMAIL = '" +
+            value +
+            "'AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "R" && choiceTwo === "RESNUM") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE RESNUM = '" +
+            value +
+            "'AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "R" && choiceTwo === "PID") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE PID = '" +
+            value +
+            "'AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      } else if (choiceOne === "R" && choiceTwo === "EMAIL") {
+        const data = await oracle_db.query(
+          "select * from RESNUM_USER_PID WHERE EMAIL = '" +
+            value +
+            "'AND STATUS  = '" +
+            choiceOne +
+            "'"
+        );
+        return {
+          data,
+        };
+      }
     }
+  } else {
+    const startId = (1 - 1) * 10;
+    const mtcs_count = await oracle_db.query(
+      "select count(*) as count from RESNUM_USER_PID "
+    );
+    const totalPage = mtcs_count[0].COUNT / 10;
+    const data = await oracle_db.query(
+      "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
+        dateOne +
+        "' AND '" +
+        dateTwo +
+        "')  order by CREATED_AT OFFSET '" +
+        startId +
+        "' ROWS FETCH NEXT 10 ROWS ONLY"
+    );
+    return {
+      totalPages: Math.ceil(totalPage),
+      totalDatas: mtcs_count[0].count,
+      currentPage: JSON.parse(1),
+      currentPageSize: JSON.parse(10),
+      data,
+    };
   }
 
   if (choiceOne) {
@@ -291,6 +316,7 @@ async function getAllResNum(req) {
           startId +
           "' ROWS FETCH NEXT 10 ROWS ONLY  "
       );
+
       data = result.map((e) => {
         return {
           CREATED_AT: e.CREATED_AT,

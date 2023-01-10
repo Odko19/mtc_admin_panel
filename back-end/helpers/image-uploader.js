@@ -22,7 +22,9 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "application/msword" ||
     file.mimetype === "application/vnd.ms-powerpoint" ||
     file.mimetype === "application/vnd.ms-excel" ||
-    file.mimetype === "text/plain"
+    file.mimetype === "text/plain" ||
+    file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ) {
     cb(null, true);
   } else {

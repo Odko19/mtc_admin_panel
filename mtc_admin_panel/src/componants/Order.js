@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Pagination, DatePicker, Space, Checkbox, Modal } from "antd";
-import moment from "moment";
+import { Input, Pagination, Checkbox, Modal } from "antd";
 import "../styles/resnum.css";
 
 function Order() {
@@ -11,36 +10,6 @@ function Order() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataModal, setDataModal] = useState();
 
-  const handleOk = (e) => {
-    if (e.RESULT === null) {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      var raw = JSON.stringify({
-        ID: e.ID,
-        OPERATOR_ID: 1,
-        OPERATOR_STATUS: 1,
-        RESULT: true,
-      });
-      var requestOptions = {
-        method: "PUT",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-      fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
-    }
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  function handleBtnEdit(e) {
-    setDataModal(e);
-    setIsModalOpen(true);
-  }
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/order?page=1&limit=6`)
@@ -78,37 +47,45 @@ function Order() {
       })
       .catch((error) => console.log("error", error));
   }
-
-  // const onClickId = (id) => {
-  //   const status = (document.querySelector("input").checked = true);
-  //   if (status) {
-  //     var myHeaders = new Headers();
-  //     myHeaders.append("Content-Type", "application/json");
-  //     var raw = JSON.stringify({
-  //       ID: id,
-  //       OPERATOR_ID: 1,
-  //       OPERATOR_STATUS: 1,
-  //       RESULT: true,
-  //     });
-  //     var requestOptions = {
-  //       method: "PUT",
-  //       headers: myHeaders,
-  //       body: raw,
-  //       redirect: "follow",
-  //     };
-  //     fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
-  //       .then((response) => response.text())
-  //       .then((result) => console.log(result))
-  //       .catch((error) => console.log("error", error));
-  //   }
-  // };
-
+  const [checkValue, setCheckValue] = useState();
   const [checkState, setCheckState] = useState();
 
   const onChange = (e) => {
-    // setCheckState(e.target.checked);
-    setCheckState(e.target.value);
+    setCheckValue(e.target.value);
+    setCheckState(e.target.checked);
   };
+
+  const handleOk = (e) => {
+    if (e.RESULT === null) {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify({
+        ID: e.ID,
+        OPERATOR_ID: 1,
+        OPERATOR_STATUS: 1,
+        RESULT: true,
+      });
+      var requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      fetch(`${process.env.REACT_APP_BASE_URL}/order`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    }
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  function handleBtnEdit(e) {
+    setDataModal(e);
+    setIsModalOpen(true);
+  }
+
   return (
     <div>
       <div style={{ display: "flex", marginBottom: "20px" }}>
@@ -120,6 +97,7 @@ function Order() {
             <th style={{ paddingLeft: " 16px" }}>
               LAST_NAME <br /> FIRST_NAME
             </th>
+
             <th>
               <span className="b1">MOBILE</span>
             </th>
@@ -196,14 +174,17 @@ function Order() {
           <p>CUST_TYPE : {dataModal.CUST_TYPE}</p>
           <p>SERVICE : {dataModal.SERVICE}</p>
           <p>RESULT : {dataModal.RESULT}</p>
+
           <>
             {dataModal.RESULT === null ? (
               <Checkbox
                 onChange={onChange}
-                checked={checkState === dataModal.ID ? true : false}
+                checked={checkValue === dataModal.ID ? checkState : false}
                 value={dataModal.ID}
               >
-                захиалага биелээгүй
+                {checkState === true && checkValue === dataModal.ID
+                  ? "захиалага биелэсэн"
+                  : "захиалага биелээгүй"}
               </Checkbox>
             ) : (
               <Checkbox checked={true}>захиалага биелэсэн</Checkbox>
