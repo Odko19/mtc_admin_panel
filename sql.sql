@@ -58,6 +58,19 @@ CREATE TABLE product(
  foreign key (created_by) references users(id)
 );
 
+CREATE TABLE workplace(
+ workplace_id INT not null primary key auto_increment,
+ workplace_name varchar(255),
+ workplace_role longtext,
+ workplace_requirements json,
+ workplace_other longtext,
+ workplace_type varchar(255),
+ created_by INT,
+ created_at timestamp,
+ updated_at timestamp,
+ foreign key (created_by) references users(id)
+);
+
 CREATE TABLE users(
  id INT not null primary key auto_increment,
  firstName varchar(255),
@@ -68,10 +81,7 @@ CREATE TABLE users(
 ALTER TABLE users
 MODIFY COLUMN password varchar(255);
 
-
-
-
-
-
 SELECT GREATEST(1, 4, 5, 6) AS NUM;
 SELECT least(1, 4, 5, 6) AS NUM;
+
+select IF (1<1, 3, 2);

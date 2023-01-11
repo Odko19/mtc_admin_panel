@@ -10,7 +10,7 @@ function ResnumFilter() {
   const [page, setPage] = useState();
   const { Search } = Input;
   const { RangePicker } = DatePicker;
-
+  console.log(data);
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/resnum?page=1&limit=10`)
@@ -79,7 +79,7 @@ function ResnumFilter() {
           })
           .catch((error) => console.log("error", error));
       }
-      if (choiceTwo && value) {
+      if (choiceTwo) {
         const result = allData.filter((subject) =>
           subject.RESNUM.toString().toLowerCase().includes(value)
         );
@@ -95,14 +95,16 @@ function ResnumFilter() {
         }
       }
     } else {
-      fetch(
-        `${process.env.REACT_APP_BASE_URL}/resnum?dateOne=${dates[0]}&dateTwo=${dates[1]}`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          setData(result.data);
-        })
-        .catch((error) => console.log("error", error));
+      if (dates) {
+        fetch(
+          `${process.env.REACT_APP_BASE_URL}/resnum?dateOne=${dates[0]}&dateTwo=${dates[1]}`
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            setData(result.data);
+          })
+          .catch((error) => console.log("error", error));
+      }
     }
   };
 

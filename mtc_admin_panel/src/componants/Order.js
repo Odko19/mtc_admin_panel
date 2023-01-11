@@ -9,7 +9,7 @@ function Order() {
   const { Search } = Input;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataModal, setDataModal] = useState();
-
+  console.log(data);
   /****  Default all data  ****/
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BASE_URL}/order?page=1&limit=6`)
@@ -63,7 +63,6 @@ function Order() {
         ID: e.ID,
         OPERATOR_ID: 1,
         OPERATOR_STATUS: 1,
-        RESULT: true,
       });
       var requestOptions = {
         method: "PUT",
@@ -115,7 +114,7 @@ function Order() {
             </th>
 
             <th>
-              <span className="b1">RESULT</span>
+              <span className="b1">OPERATOR_STATUS</span>
             </th>
             <th>
               <span className="b1">EDIT</span>
@@ -136,7 +135,7 @@ function Order() {
                   {e.CITY} {e.DISTRICT} {e.KHOROO} {e.ENTRACE} {e.APARTMENT}
                   {e.DOOR}
                 </td>
-                <td style={{ width: "100px" }}>{e.RESULT}</td>
+                <td style={{ width: "100px" }}>{e.OPERATOR_STATUS}</td>
                 <td style={{ width: "100px" }}>
                   <button onClick={() => handleBtnEdit(e)}>edit</button>
                 </td>

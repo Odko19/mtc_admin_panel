@@ -13,6 +13,15 @@ async function getAllNews(req) {
           left JOIN users ON created_by = users.id ORDER BY created_at desc limit ?, ?`,
       [JSON.stringify(startId), limit]
     );
+
+    await data.map((a) => {
+      if (a.duration < 0) {
+        return (a.duration = "Дууссан");
+      } else {
+        return (a.duration = `${a.duration} хоног`);
+      }
+    });
+
     return {
       totalPages: Math.ceil(totalPage),
       totalDatas: data_count[0].count,
@@ -30,6 +39,13 @@ async function getAllNews(req) {
       `,
       [id]
     );
+    await data.map((a) => {
+      if (a.duration < 0) {
+        return (a.duration = "Дууссан");
+      } else {
+        return (a.duration = `${a.duration} хоног`);
+      }
+    });
     return {
       ...data[0],
     };
@@ -52,6 +68,13 @@ async function getAllNews(req) {
       [type, customer, JSON.stringify(startId)]
     );
 
+    await data.map((a) => {
+      if (a.duration < 0) {
+        return (a.duration = "Дууссан");
+      } else {
+        return (a.duration = `${a.duration} хоног`);
+      }
+    });
     return {
       totalPages: Math.ceil(totalPage),
       totalDatas: data_count[0].count,

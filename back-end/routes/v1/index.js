@@ -9,6 +9,7 @@ const transparentAccountRoute = require("./transparent_account.route");
 const productRoute = require("./product.route");
 const resnum = require("./resnum.route");
 const selfOrder = require("./self_order.route");
+const workplace = require("./workplace.route");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);
@@ -19,5 +20,6 @@ router.use("/account", transparentAccountRoute);
 router.use("/product", productRoute);
 router.use("/resnum", resnum);
 router.use("/order", selfOrder);
+router.use("/workplace", workplace);
 
 module.exports = router;
