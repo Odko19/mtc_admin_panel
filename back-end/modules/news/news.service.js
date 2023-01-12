@@ -15,7 +15,7 @@ async function getAllNews(req) {
     );
 
     await data.map((a) => {
-      if (a.duration < 0) {
+      if (a.duration <= 0) {
         return (a.duration = "Дууссан");
       } else {
         return (a.duration = `${a.duration} хоног`);
@@ -40,7 +40,7 @@ async function getAllNews(req) {
       [id]
     );
     await data.map((a) => {
-      if (a.duration < 0) {
+      if (a.duration <= 0) {
         return (a.duration = "Дууссан");
       } else {
         return (a.duration = `${a.duration} хоног`);
@@ -67,9 +67,8 @@ async function getAllNews(req) {
       `,
       [type, customer, JSON.stringify(startId)]
     );
-
     await data.map((a) => {
-      if (a.duration < 0) {
+      if (a.duration <= 0) {
         return (a.duration = "Дууссан");
       } else {
         return (a.duration = `${a.duration} хоног`);

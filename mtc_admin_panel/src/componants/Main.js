@@ -11,6 +11,8 @@ import News from "./News";
 import User from "./User";
 import ResnumFilter from "./ResnumFilter";
 import Order from "./Order";
+import Chat from "./Test/App";
+
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -100,6 +102,11 @@ function Main() {
               icon: <UserAddOutlined />,
               label: "Админ нэмэх",
             },
+            {
+              key: "/chat",
+              icon: <UserAddOutlined />,
+              label: "chat",
+            },
           ]}
         />
       </Sider>
@@ -144,6 +151,7 @@ function Main() {
             <Route path="/user/create" element={<EditorUser />} />
             <Route path="/order" element={<Order />} />
             <Route path="/resnum" element={<ResnumFilter />} />
+            <Route path="/chat" element={<Chat />} />
           </Routes>
         </Content>
       </Layout>

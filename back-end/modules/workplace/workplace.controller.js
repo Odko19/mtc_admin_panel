@@ -14,7 +14,7 @@ const getAllWorkplace = async (req, res) => {
 const getCreateWorkplace = async (req, res) => {
   try {
     const Workplace = await workplaceServices.getCreateWorkplace(req);
-    res.json(workplace);
+    res.json(Workplace);
   } catch (error) {
     res.json({
       error: error,
