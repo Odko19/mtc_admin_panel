@@ -106,3 +106,13 @@ SELECT least(1, 4, 5, 6) AS NUM;
 select IF (1<1, 3, 2);
 
 
+CREATE TABLE msg(
+ msg_id INT not null primary key auto_increment,
+ msg_to INT,
+ msg_from INT,
+ msg_send varchar(255)
+);
+
+
+
+

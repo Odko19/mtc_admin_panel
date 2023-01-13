@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
+import axios from "axios";
 
-function Chat({ socket, username, room }) {
+function Chat({ socket, username, room, mail }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
-
+  console.log(socket);
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
-        author: username,
-        message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
+        to: 1,
+        from: 2,
+        msg: currentMessage,
+        // time:
+        //   new Date(Date.now()).getHours() +
+        //   ":" +
+        //   new Date(Date.now()).getMinutes(),
       };
-      console.log(messageData);
-      await socket.emit("send_message", messageData);
+      await socket.emit("send-msg", messageData);
+      await axios.post("http://localhost:3006/v1/addmsg", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }

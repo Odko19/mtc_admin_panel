@@ -12,6 +12,7 @@ import User from "./User";
 import ResnumFilter from "./ResnumFilter";
 import Order from "./Order";
 import Chat from "./Test/App";
+import Msg from "./Messager/App";
 
 import {
   MenuFoldOutlined,
@@ -107,6 +108,11 @@ function Main() {
               icon: <UserAddOutlined />,
               label: "chat",
             },
+            {
+              key: "/msg",
+              icon: <UserAddOutlined />,
+              label: "msg",
+            },
           ]}
         />
       </Sider>
@@ -152,6 +158,7 @@ function Main() {
             <Route path="/order" element={<Order />} />
             <Route path="/resnum" element={<ResnumFilter />} />
             <Route path="/chat" element={<Chat />} />
+            {/* <Route path="/msg" element={<Msg />} /> */}
           </Routes>
         </Content>
       </Layout>

@@ -8,14 +8,14 @@ const socket = io.connect("http://localhost:3006");
 function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
+  const [mail, setMail] = useState("");
   const [showChat, setShowChat] = useState(false);
 
   const joinRoom = () => {
     if (username !== "" && room !== "") {
-      socket.emit("join_room", room);
+      socket.emit("add-user", 1);
+      // socket.emit("join_room", room);
       setShowChat(true);
-
-      console.log(socket.emit);
     }
   };
 
@@ -31,6 +31,13 @@ function App() {
             }}
           />
           <input
+            type="gmail"
+            placeholder="gmail"
+            onChange={(event) => {
+              setMail(event.target.value);
+            }}
+          />
+          <input
             type="text"
             placeholder="Room ID..."
             onChange={(event) => {
@@ -40,7 +47,7 @@ function App() {
           <button onClick={joinRoom}>Join A Room</button>
         </div>
       ) : (
-        <Chat socket={socket} username={username} room={room} />
+        <Chat socket={socket} username={username} room={room} mail={mail} />
       )}
     </div>
   );
