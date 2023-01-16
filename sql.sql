@@ -6,9 +6,11 @@ SELECT * FROM news limit 1, 6;
 select * from shareholders;
 select * from workplace;
 select * from entity;
+select * from msg;
 select * from account;
 select * from product limit 1;
-truncate workplace;
+select * from test_user;
+truncate test_user;
 
 select * from news where type="news" limit 1, 6;
 select  DATE_ADD(news.created_at, INTERVAL 2 DAY) as created_at from news;
@@ -112,6 +114,15 @@ CREATE TABLE msg(
  msg_from INT,
  msg_send varchar(255)
 );
+
+CREATE TABLE test_user(
+ id INT not null primary key auto_increment,
+ username varchar(255),
+ password int
+);
+
+
+
 
 
 
