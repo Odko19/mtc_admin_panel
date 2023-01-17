@@ -21,7 +21,6 @@ function App() {
         }}
       >
         <input type="text" name="username" placeholder="Name" />
-
         <input type="email" name="email" placeholder="Gmail" />
         <button type="submit">login</button>
       </form>
