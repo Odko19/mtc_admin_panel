@@ -2,29 +2,33 @@ const db = require("../../db/db");
 
 async function getAllShare(req) {
   const { id, page, limit } = req.query;
-  if (id) {
-    const data = await db.query("SELECT * FROM shareholders WHERE id=?;", [id]);
-    return {
-      ...data[0],
-    };
-  }
-  if (page && limit) {
-    const startId = (page - 1) * limit;
-    const data_count = await db.query(
-      "select count(*) as count from shareholders"
-    );
-    const totalPage = data_count && data_count[0].count / limit;
-    const data = await db.query(
-      "select * from shareholders ORDER BY created_at desc limit ?, ?",
-      [JSON.stringify(startId), limit]
-    );
-    return {
-      totalPages: Math.ceil(totalPage),
-      totalDatas: data_count[0].count,
-      currentPage: JSON.parse(page),
-      currentPageSize: JSON.parse(limit),
-      data,
-    };
+  if (req.query) {
+    if (id) {
+      const data = await db.query("SELECT * FROM shareholders WHERE id=?;", [
+        id,
+      ]);
+      return {
+        ...data[0],
+      };
+    }
+    if (page && limit) {
+      const startId = (page - 1) * limit;
+      const data_count = await db.query(
+        "select count(*) as count from shareholders"
+      );
+      const totalPage = data_count && data_count[0].count / limit;
+      const data = await db.query(
+        "select * from shareholders ORDER BY created_at desc limit ?, ?",
+        [JSON.stringify(startId), limit]
+      );
+      return {
+        totalPages: Math.ceil(totalPage),
+        totalDatas: data_count[0].count,
+        currentPage: JSON.parse(page),
+        currentPageSize: JSON.parse(limit),
+        data,
+      };
+    }
   }
 }
 

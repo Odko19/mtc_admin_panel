@@ -2,19 +2,21 @@ const db = require("../../db/db");
 
 async function getAllAccount(req) {
   const { id } = req.query;
-  if (id) {
-    const data = await db.query("SELECT * FROM account WHERE id=?; ", [id]);
-    return {
-      ...data[0],
-    };
-  } else {
-    const data = await db.query(
-      "select * from account ORDER BY created_at desc "
-    );
-    return {
-      success: true,
-      data,
-    };
+  if (req.query) {
+    if (id) {
+      const data = await db.query("SELECT * FROM account WHERE id=?; ", [id]);
+      return {
+        ...data[0],
+      };
+    } else {
+      const data = await db.query(
+        "select * from account ORDER BY created_at desc "
+      );
+      return {
+        success: true,
+        data,
+      };
+    }
   }
 }
 

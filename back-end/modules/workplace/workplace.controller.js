@@ -44,9 +44,21 @@ const getDeleteWorkplace = async (req, res) => {
   }
 };
 
+const getWorkplaceCv = async (req, res) => {
+  try {
+    const Workplace = await workplaceServices.getWorkplaceCv(req);
+    res.json(Workplace);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   getAllWorkplace,
   getCreateWorkplace,
   getUpdateWorkplace,
   getDeleteWorkplace,
+  getWorkplaceCv,
 };

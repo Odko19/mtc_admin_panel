@@ -2,52 +2,57 @@ const db = require("../../db/db");
 
 async function getAllProduct(req) {
   const { id, page, limit, type } = req.query;
-  if (id) {
-    const data = await db.query("SELECT * FROM product where product_id = ?", [
-      id,
-    ]);
-    return {
-      ...data[0],
-    };
-  }
-  if (page && limit) {
-    const startId = (page - 1) * limit;
-    const data_count = await db.query("select count(*) as count from product");
-    const totalPage = data_count && data_count[0].count / limit;
-    const data = await db.query(
-      `select * from product ORDER BY created_at desc limit ?, ?`,
-      [JSON.stringify(startId), limit]
-    );
+  if (req.query) {
+    if (id) {
+      const data = await db.query(
+        "SELECT * FROM product where product_id = ?",
+        [id]
+      );
+      return {
+        ...data[0],
+      };
+    }
+    if (page && limit) {
+      const startId = (page - 1) * limit;
+      const data_count = await db.query(
+        "select count(*) as count from product"
+      );
+      const totalPage = data_count && data_count[0].count / limit;
+      const data = await db.query(
+        `select * from product ORDER BY created_at desc limit ?, ?`,
+        [JSON.stringify(startId), limit]
+      );
 
-    return {
-      totalPages: Math.ceil(totalPage),
-      totalDatas: data_count[0].count,
-      currentPage: JSON.parse(page),
-      currentPageSize: JSON.parse(limit),
-      data,
-    };
-  }
-  if (page && type) {
-    const { page, type } = req.query;
-    const startId = (page - 1) * 6;
-    const data_count = await db.query(
-      "select count(*) as count  from product where product_type=?",
-      [type]
-    );
+      return {
+        totalPages: Math.ceil(totalPage),
+        totalDatas: data_count[0].count,
+        currentPage: JSON.parse(page),
+        currentPageSize: JSON.parse(limit),
+        data,
+      };
+    }
+    if (page && type) {
+      const { page, type } = req.query;
+      const startId = (page - 1) * 6;
+      const data_count = await db.query(
+        "select count(*) as count  from product where product_type=?",
+        [type]
+      );
 
-    const totalPage = data_count && data_count[0].count / 6;
-    const data = await db.query(
-      `select * from product where product_type=? ORDER BY created_at desc limit ?, 6 `,
-      [type, JSON.stringify(startId)]
-    );
+      const totalPage = data_count && data_count[0].count / 6;
+      const data = await db.query(
+        `select * from product where product_type=? ORDER BY created_at desc limit ?, 6 `,
+        [type, JSON.stringify(startId)]
+      );
 
-    return {
-      totalPages: Math.ceil(totalPage),
-      totalDatas: data_count[0].count,
-      currentPage: JSON.parse(page),
-      currentPageSize: 6,
-      data,
-    };
+      return {
+        totalPages: Math.ceil(totalPage),
+        totalDatas: data_count[0].count,
+        currentPage: JSON.parse(page),
+        currentPageSize: 6,
+        data,
+      };
+    }
   }
 }
 
