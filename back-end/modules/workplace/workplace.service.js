@@ -1,7 +1,7 @@
 const db = require("../../db/db");
 
 async function getAllWorkplace(req) {
-  const { id, page, limit, type, cv_id } = req.query;
+  const { id, page, limit, type, workplace_id } = req.query;
   if (req.query) {
     if (id) {
       const data = await db.query(
@@ -50,13 +50,13 @@ async function getAllWorkplace(req) {
         data,
       };
     }
-    if (cv_id) {
+    if (workplace_id) {
       const data = await db.query(
         "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
-        [cv_id]
+        [workplace_id]
       );
       return {
-        data,
+        ...data[0],
       };
     }
   } else {
@@ -135,10 +135,29 @@ async function getDeleteWorkplace(req) {
 
 async function getWorkplaceCv(req) {
   const { id } = req.body;
-  const data = await db.query(
-    "INSERT INTO  workplace_cv(cv_name,cv_workplace_id) VALUES (?, ?)",
-    [req.files[0].filename, id]
+  let data;
+  const data1 = await db.query(
+    `SELECT * FROM workplace_cv WHERE cv_workplace_id=?`,
+    [id]
   );
+  if (data1.length === 0) {
+    let arr = [];
+    arr.push(req.files[0].filename);
+    data = await db.query(
+      `INSERT INTO workplace_cv(cv_name, cv_workplace_id) VALUES(?,?)`,
+      [arr, id]
+    );
+  } else {
+    let temp = data1[0].cv_name;
+    temp.push(req.files[0].filename);
+    data = await db.query(
+      `UPDATE workplace_cv
+       SET cv_name=?
+       WHERE cv_workplace_id=?`,
+      [temp, id]
+    );
+  }
+
   return {
     success: true,
     data,

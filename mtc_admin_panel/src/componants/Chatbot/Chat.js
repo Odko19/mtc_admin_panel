@@ -9,9 +9,9 @@ function Chat() {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3001/v1/workplace?cv_id=1", requestOptions)
+    fetch("http://localhost:3001/v1/workplace?workplace_id=1", requestOptions)
       .then((response) => response.json())
-      .then((result) => setData(result.data))
+      .then((result) => setData(result))
       .catch((error) => console.log("error", error));
   }, []);
 
@@ -19,7 +19,7 @@ function Chat() {
     e.preventDefault();
     var formdata = new FormData();
     formdata.append("file", e.target.file.files[0]);
-    formdata.append("id", 1);
+    formdata.append("id", 17);
 
     var requestOptions = {
       method: "POST",
@@ -32,9 +32,6 @@ function Chat() {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
   }
-  data?.map((e) => {
-    console.log(e.cv_name);
-  });
 
   return (
     <div>
@@ -43,7 +40,7 @@ function Chat() {
         <button type="submit">send</button>
       </form>
       <div>
-        {data?.map((e) => {
+        {/* {data?.map((e) => {
           return (
             <a
               href={`http://localhost:3001/v1/uploads/${e.cv_name}`}
@@ -52,7 +49,7 @@ function Chat() {
               <p>{e.cv_name}</p>
             </a>
           );
-        })}
+        })} */}
       </div>
     </div>
   );

@@ -5,14 +5,18 @@ select * from news where created_by = 1;
 SELECT * FROM news limit 1, 6;
 select * from shareholders;
 select * from workplace;
+select * from workplace_cv;
 select * from entity;
 select * from account;
 select * from product limit 1;
 select * from test_user;
 select * from msg;
-select * from workplace_cv;
+
+
 truncate msg;
+truncate workplace;
 truncate test_user;
+truncate workplace_cv;
 
 select * from news where type="news" limit 1, 6;
 select  DATE_ADD(news.created_at, INTERVAL 2 DAY) as created_at from news;
@@ -79,7 +83,8 @@ CREATE TABLE workplace(
  foreign key (workplace_type) references entity(entity_id)
 );
 
-
+ALTER TABLE workplace
+ADD workplace_cv json;
 ALTER TABLE workplace
 MODIFY COLUMN workplace_other json;
 
@@ -113,17 +118,17 @@ select IF (1<1, 3, 2);
 
 CREATE TABLE workplace_cv(
  cv_id INT not null primary key auto_increment,
- cv_name varchar(255),
+ cv_name json DEFAULT (JSON_ARRAY()) ,
  cv_workplace_id int,
  foreign key (cv_workplace_id) references workplace(workplace_id)
 );
+
 
 CREATE TABLE msg(
  id INT not null primary key auto_increment,
  to_msg INT,
  from_msg INT,
  message varchar(255)
- 
 );
 
 CREATE TABLE test_user(
@@ -133,9 +138,12 @@ CREATE TABLE test_user(
  password int
 );
 
-SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv 
-JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = 1
 
+
+
+SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv 
+JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id
+ where cv_workplace_id = 1;
 
 
 
