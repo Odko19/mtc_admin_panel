@@ -9,7 +9,7 @@ function Chat() {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3001/v1/workplace?workplace_id=1", requestOptions)
+    fetch("http://localhost:3001/v1/workplace?workplace_id=20", requestOptions)
       .then((response) => response.json())
       .then((result) => setData(result))
       .catch((error) => console.log("error", error));
@@ -19,7 +19,8 @@ function Chat() {
     e.preventDefault();
     var formdata = new FormData();
     formdata.append("file", e.target.file.files[0]);
-    formdata.append("id", 17);
+    formdata.append("id", 2);
+    formdata.append("firstname", "odko");
 
     var requestOptions = {
       method: "POST",

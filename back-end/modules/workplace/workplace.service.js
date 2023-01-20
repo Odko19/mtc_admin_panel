@@ -5,7 +5,7 @@ async function getAllWorkplace(req) {
   if (req.query) {
     if (id) {
       const data = await db.query(
-        "SELECT workplace_id,workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by,expires_at, created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id where workplace_id = ?",
+        "SELECT workplace_id,entity.entity_name as workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by,expires_at, created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id where workplace_id = ?",
         [id]
       );
       return {
@@ -30,23 +30,13 @@ async function getAllWorkplace(req) {
         data,
       };
     }
-    if (page && type) {
-      const { page, type } = req.query;
-      const startId = (page - 1) * 6;
-      const data_count = await db.query(
-        "select count(*) as count  from workplace where workplace_type=?",
+    if (type) {
+      const { type } = req.query;
+      const data = await db.query(
+        `SELECT workplace_id, entity.entity_name as  workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id where workplace_type=? `,
         [type]
       );
-      const totalPage = data_count && data_count[0].count / 6;
-      const data = await db.query(
-        `SELECT workplace_id,workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id where workplace_type=? ORDER BY created_at desc limit ?, 6 `,
-        [type, JSON.stringify(startId)]
-      );
       return {
-        totalPages: Math.ceil(totalPage),
-        totalDatas: data_count[0].count,
-        currentPage: JSON.parse(page),
-        currentPageSize: 6,
         data,
       };
     }
@@ -123,10 +113,11 @@ async function getUpdateWorkplace(req) {
 
 async function getDeleteWorkplace(req) {
   const { id } = req.query;
-  const data = await db.query("DELETE FROM workplace where workplace_id = ?", [
+  let data;
+  data = await db.query("DELETE FROM workplace_cv where cv_workplace_id = ?", [
     id,
   ]);
-
+  data = await db.query("DELETE FROM workplace where workplace_id = ?", [id]);
   return {
     success: true,
     data,
@@ -134,7 +125,7 @@ async function getDeleteWorkplace(req) {
 }
 
 async function getWorkplaceCv(req) {
-  const { id } = req.body;
+  const { id, firstname } = req.body;
   let data;
   const data1 = await db.query(
     `SELECT * FROM workplace_cv WHERE cv_workplace_id=?`,
@@ -142,14 +133,15 @@ async function getWorkplaceCv(req) {
   );
   if (data1.length === 0) {
     let arr = [];
-    arr.push(req.files[0].filename);
+    arr.push({ firstName: firstname, cv: req.files[0].filename });
+    console.log(arr);
     data = await db.query(
       `INSERT INTO workplace_cv(cv_name, cv_workplace_id) VALUES(?,?)`,
       [arr, id]
     );
   } else {
     let temp = data1[0].cv_name;
-    temp.push(req.files[0].filename);
+    temp.push({ firstName: firstname, cv: req.files[0].filename });
     data = await db.query(
       `UPDATE workplace_cv
        SET cv_name=?
