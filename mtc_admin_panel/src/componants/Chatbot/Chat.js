@@ -19,7 +19,7 @@ function Chat() {
     e.preventDefault();
     var formdata = new FormData();
     formdata.append("file", e.target.file.files[0]);
-    formdata.append("id", 2);
+    formdata.append("id", 26);
     formdata.append("firstname", "odko");
 
     var requestOptions = {

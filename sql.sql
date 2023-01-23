@@ -18,6 +18,9 @@ truncate workplace;
 truncate test_user;
 truncate workplace_cv;
 
+
+select cv_name from workplace_cv;
+
 select * from news where type="news" limit 1, 6;
 select  DATE_ADD(news.created_at, INTERVAL 2 DAY) as created_at from news;
 CREATE TABLE news(
@@ -82,7 +85,8 @@ CREATE TABLE workplace(
  foreign key (created_by) references users(id),
  foreign key (workplace_type) references entity(entity_id)
 );
-
+ALTER TABLE workplace
+DROP COLUMN workplace_cv;
 ALTER TABLE workplace
 ADD workplace_cv json;
 ALTER TABLE workplace
@@ -118,7 +122,7 @@ select IF (1<1, 3, 2);
 
 CREATE TABLE workplace_cv(
  cv_id INT not null primary key auto_increment,
- cv_name json DEFAULT (JSON_ARRAY()) ,
+ cv_name json ,
  cv_workplace_id int,
  foreign key (cv_workplace_id) references workplace(workplace_id)
 );
@@ -141,9 +145,7 @@ CREATE TABLE test_user(
 
 
 
-SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv 
-JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id
- where cv_workplace_id = 1;
+
 
 
 

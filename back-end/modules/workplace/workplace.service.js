@@ -134,7 +134,6 @@ async function getWorkplaceCv(req) {
   if (data1.length === 0) {
     let arr = [];
     arr.push({ firstName: firstname, cv: req.files[0].filename });
-    console.log(arr);
     data = await db.query(
       `INSERT INTO workplace_cv(cv_name, cv_workplace_id) VALUES(?,?)`,
       [arr, id]
