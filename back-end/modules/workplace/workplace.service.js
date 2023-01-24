@@ -1,7 +1,7 @@
 const db = require("../../db/db");
 
 async function getAllWorkplace(req) {
-  const { id, page, limit, type, workplace_id } = req.query;
+  const { id, page, limit, workplace_id } = req.query;
   if (req.query) {
     if (id) {
       const data = await db.query(
@@ -19,7 +19,11 @@ async function getAllWorkplace(req) {
       );
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db.query(
-        `select workplace_id,workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id ORDER BY workplace_id desc limit ?, ?`,
+        `select workplace_id, workplace_name, workplace_role, workplace_requirements, entity_name as 
+        workplace_type, firstName as created_by, expires_at,created_at, workplace_cv.cv_name as cv,  updated_at FROM workplace JOIN entity 
+        ON workplace_type = entity.entity_id JOIN users ON created_by = users.id 
+        JOIN workplace_cv ON workplace.workplace_id = workplace_cv.cv_workplace_id  
+         ORDER BY workplace_id desc limit ?, ?`,
         [JSON.stringify(startId), limit]
       );
       return {
@@ -30,27 +34,23 @@ async function getAllWorkplace(req) {
         data,
       };
     }
-    if (type) {
-      const { type } = req.query;
-      const data = await db.query(
-        `SELECT workplace_id, entity.entity_name as  workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id where workplace_type=? `,
-        [type]
-      );
-      return {
-        data,
-      };
-    }
-    if (workplace_id) {
-      const data = await db.query(
-        "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
-        [workplace_id]
-      );
-      return {
-        ...data[0],
-      };
-    }
+    // if (workplace_id) {
+    //   const data = await db.query(
+    //     "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
+    //     [workplace_id]
+    //   );
+    //   return {
+    //     ...data[0],
+    //   };
+    // }
+    const data = await db.query(
+      `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
+    );
+    return {
+      data,
+    };
   } else {
-    console.log("alda");
+    console.log("error");
   }
 }
 
@@ -127,11 +127,11 @@ async function getDeleteWorkplace(req) {
 async function getWorkplaceCv(req) {
   const { id, firstname } = req.body;
   let data;
-  const data1 = await db.query(
+  const data_ = await db.query(
     `SELECT * FROM workplace_cv WHERE cv_workplace_id=?`,
     [id]
   );
-  if (data1.length === 0) {
+  if (data_.length === 0) {
     let arr = [];
     arr.push({ firstName: firstname, cv: req.files[0].filename });
     data = await db.query(
@@ -139,7 +139,7 @@ async function getWorkplaceCv(req) {
       [arr, id]
     );
   } else {
-    let temp = data1[0].cv_name;
+    let temp = data_[0].cv_name;
     temp.push({ firstName: firstname, cv: req.files[0].filename });
     data = await db.query(
       `UPDATE workplace_cv

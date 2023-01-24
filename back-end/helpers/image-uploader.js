@@ -24,7 +24,9 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "application/vnd.ms-excel" ||
     file.mimetype === "text/plain" ||
     file.mimetype ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+    file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {
     cb(null, true);
   } else {
