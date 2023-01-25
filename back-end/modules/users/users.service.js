@@ -3,17 +3,19 @@ const bcrypt = require("bcryptjs");
 
 async function getAllUsers(req) {
   const { id } = req.query;
-  if (id) {
-    const data = await db.query("SELECT * FROM users WHERE id=?", [id]);
-    return {
-      ...data[0],
-    };
-  } else {
-    const data = await db.query("select * from users");
-    return {
-      success: true,
-      data,
-    };
+  if (req.query) {
+    if (id) {
+      const data = await db.query("SELECT * FROM users WHERE id=?", [id]);
+      return {
+        ...data[0],
+      };
+    } else {
+      const data = await db.query("select * from users");
+      return {
+        success: true,
+        data,
+      };
+    }
   }
 }
 

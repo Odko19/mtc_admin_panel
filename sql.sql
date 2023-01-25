@@ -6,6 +6,7 @@ SELECT * FROM news limit 1, 6;
 select * from shareholders;
 select * from workplace;
 select * from workplace_cv;
+select * from workplace, workplace_cv;
 select * from entity;
 select * from account;
 select * from product limit 1;
@@ -87,8 +88,10 @@ CREATE TABLE workplace(
 );
 ALTER TABLE workplace
 DROP COLUMN workplace_cv;
+
 ALTER TABLE workplace
-ADD workplace_cv json;
+ADD cv int;
+
 ALTER TABLE workplace
 MODIFY COLUMN workplace_other json;
 
@@ -102,7 +105,7 @@ INSERT INTO  entity(entity_name) VALUES("Маркетинг борлуулалт
 INSERT INTO  entity(entity_name) VALUES("Техник технологийн ашиглалтын газар");
 INSERT INTO  entity(entity_name) VALUES("Санхүү бүртгэл, аж ахуйн газар");
 INSERT INTO  entity(entity_name) VALUES("Удирлага, хүний нөөцийн газар");
-INSERT INTO  entity(entity_name) VALUES("Мэдээлэл технологийн төв");
+
 
 
 CREATE TABLE users(
@@ -145,13 +148,8 @@ CREATE TABLE test_user(
 
 
 
-select workplace_id, workplace_name, workplace_role, workplace_requirements, entity_name as 
-workplace_type, firstName as created_by, expires_at,created_at, workplace_cv.cv_name as cv,  updated_at FROM workplace JOIN entity 
-ON workplace_type = entity.entity_id JOIN users ON created_by = users.id 
-JOIN workplace_cv ON workplace.workplace_id = workplace_cv.cv_workplace_id  
- ORDER BY workplace_id desc limit 1, 6;
 
-
+      
 
 
 

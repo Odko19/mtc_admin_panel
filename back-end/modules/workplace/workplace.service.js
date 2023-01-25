@@ -19,13 +19,20 @@ async function getAllWorkplace(req) {
       );
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db.query(
-        `select workplace_id, workplace_name, workplace_role, workplace_requirements, entity_name as 
-        workplace_type, firstName as created_by, expires_at,created_at, workplace_cv.cv_name as cv,  updated_at FROM workplace JOIN entity 
+        `select workplace_id, workplace_name, workplace_role, workplace_requirements, cv,  entity_name as 
+        workplace_type, firstName as created_by, expires_at,created_at,  updated_at FROM workplace JOIN entity 
         ON workplace_type = entity.entity_id JOIN users ON created_by = users.id 
-        JOIN workplace_cv ON workplace.workplace_id = workplace_cv.cv_workplace_id  
          ORDER BY workplace_id desc limit ?, ?`,
         [JSON.stringify(startId), limit]
       );
+      const cv = await db.query(`select * from workplace, workplace_cv;`);
+      await cv.map((e) => {
+        data.map((e1) => {
+          if (e1.workplace_id === e.cv_workplace_id) {
+            e1.cv = e.cv_name.length;
+          }
+        });
+      });
       return {
         totalPages: Math.ceil(totalPage),
         totalDatas: data_count[0].count,
@@ -34,15 +41,16 @@ async function getAllWorkplace(req) {
         data,
       };
     }
-    // if (workplace_id) {
-    //   const data = await db.query(
-    //     "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
-    //     [workplace_id]
-    //   );
-    //   return {
-    //     ...data[0],
-    //   };
-    // }
+    if (workplace_id) {
+      console.log(workplace_id);
+      const data = await db.query(
+        "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
+        [workplace_id]
+      );
+      return {
+        ...data[0],
+      };
+    }
     const data = await db.query(
       `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
     );
