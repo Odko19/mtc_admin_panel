@@ -2,14 +2,11 @@ const db = require("../../db/db");
 
 async function getLoginUser(req) {
   const { firstName, password } = req.body;
-  if (req.body) {
-    const data = await db.query(
-      `select *
+  const data = await db.query(
+    `select *
     from users where firstName=?`,
-      [firstName]
-    );
-  }
-
+    [firstName]
+  );
   return {
     data,
   };

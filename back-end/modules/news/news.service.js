@@ -2,87 +2,85 @@ const db = require("../../db/db");
 
 async function getAllNews(req) {
   const { page, limit, id, type, customer } = req.query;
-  if (req.query) {
-    if (page && limit) {
-      const startId = (page - 1) * limit;
-      const data_count = await db.query("select count(*) as count from news");
-      const totalPage = data_count && data_count[0].count / limit;
-      const data = await db.query(
-        ` SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
+  if (page && limit) {
+    const startId = (page - 1) * limit;
+    const data_count = await db.query("select count(*) as count from news");
+    const totalPage = data_count && data_count[0].count / limit;
+    const data = await db.query(
+      ` SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at,
           news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
           datediff(news.expires_at, now()) as duration FROM news
           left JOIN users ON created_by = users.id ORDER BY created_at desc limit ?, ?`,
-        [JSON.stringify(startId), limit]
-      );
+      [JSON.stringify(startId), limit]
+    );
 
-      await data.map((a) => {
-        if (a.duration <= 0) {
-          return (a.duration = "Дууссан");
-        } else {
-          return (a.duration = `${a.duration} хоног`);
-        }
-      });
+    await data.map((a) => {
+      if (a.duration <= 0) {
+        return (a.duration = "Дууссан");
+      } else {
+        return (a.duration = `${a.duration} хоног`);
+      }
+    });
 
-      return {
-        totalPages: Math.ceil(totalPage),
-        totalDatas: data_count[0].count,
-        currentPage: JSON.parse(page),
-        currentPageSize: JSON.parse(limit),
-        data,
-      };
-    }
-    if (id) {
-      const data = await db.query(
-        `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
+    return {
+      totalPages: Math.ceil(totalPage),
+      totalDatas: data_count[0].count,
+      currentPage: JSON.parse(page),
+      currentPageSize: JSON.parse(limit),
+      data,
+    };
+  }
+  if (id) {
+    const data = await db.query(
+      `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at,
        news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
        datediff(news.expires_at, now()) as duration FROM news
        left JOIN users ON created_by = users.id where news.id=?
       `,
-        [id]
-      );
-      await data.map((a) => {
-        if (a.duration <= 0) {
-          return (a.duration = "Дууссан");
-        } else {
-          return (a.duration = `${a.duration} хоног`);
-        }
-      });
-      return {
-        ...data[0],
-      };
-    }
-    if (page && type && customer) {
-      const { page, type } = req.query;
-      const startId = (page - 1) * 6;
-      const data_count = await db.query(
-        "select count(*) as count  from news where type=? and customer_type =?",
-        [type, customer]
-      );
+      [id]
+    );
+    await data.map((a) => {
+      if (a.duration <= 0) {
+        return (a.duration = "Дууссан");
+      } else {
+        return (a.duration = `${a.duration} хоног`);
+      }
+    });
+    return {
+      ...data[0],
+    };
+  }
+  if (page && type && customer) {
+    const { page, type } = req.query;
+    const startId = (page - 1) * 6;
+    const data_count = await db.query(
+      "select count(*) as count  from news where type=? and customer_type =?",
+      [type, customer]
+    );
 
-      const totalPage = data_count && data_count[0].count / 6;
-      const data = await db.query(
-        `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at, 
+    const totalPage = data_count && data_count[0].count / 6;
+    const data = await db.query(
+      `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at,
         news.updated_at, news.expires_at,  news.customer_type, users.firstName as created_by,
         datediff(news.expires_at, now()) as duration  FROM news
-        left JOIN users ON created_by = users.id where type=? && customer_type=? ORDER BY created_at desc limit ?, 6  
+        left JOIN users ON created_by = users.id where type=? && customer_type=? ORDER BY created_at desc limit ?, 6
       `,
-        [type, customer, JSON.stringify(startId)]
-      );
-      await data.map((a) => {
-        if (a.duration <= 0) {
-          return (a.duration = "Дууссан");
-        } else {
-          return (a.duration = `${a.duration} хоног`);
-        }
-      });
-      return {
-        totalPages: Math.ceil(totalPage),
-        totalDatas: data_count[0].count,
-        currentPage: JSON.parse(page),
-        currentPageSize: 6,
-        data,
-      };
-    }
+      [type, customer, JSON.stringify(startId)]
+    );
+    await data.map((a) => {
+      if (a.duration <= 0) {
+        return (a.duration = "Дууссан");
+      } else {
+        return (a.duration = `${a.duration} хоног`);
+      }
+    });
+    return {
+      totalPages: Math.ceil(totalPage),
+      totalDatas: data_count[0].count,
+      currentPage: JSON.parse(page),
+      currentPageSize: 6,
+      data,
+    };
   }
 }
 

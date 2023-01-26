@@ -19,38 +19,32 @@ async function getAllWorkplace(req) {
       );
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db.query(
-        `select workplace_id, workplace_name, workplace_role, workplace_requirements, cv,  entity_name as 
+        `select workplace_id, workplace_name, workplace_role, workplace_requirements, entity_name as 
         workplace_type, firstName as created_by, expires_at,created_at,  updated_at FROM workplace JOIN entity 
         ON workplace_type = entity.entity_id JOIN users ON created_by = users.id 
          ORDER BY workplace_id desc limit ?, ?`,
         [JSON.stringify(startId), limit]
       );
-      const cv = await db.query(`select * from workplace, workplace_cv;`);
-      await cv.map((e) => {
-        data.map((e1) => {
-          if (e1.workplace_id === e.cv_workplace_id) {
-            e1.cv = e.cv_name.length;
-          }
-        });
-      });
+      const cv = await db.query(`select * from workplace_cv;`);
       return {
         totalPages: Math.ceil(totalPage),
         totalDatas: data_count[0].count,
         currentPage: JSON.parse(page),
         currentPageSize: JSON.parse(limit),
         data,
+        cv,
       };
     }
-    if (workplace_id) {
-      console.log(workplace_id);
-      const data = await db.query(
-        "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
-        [workplace_id]
-      );
-      return {
-        ...data[0],
-      };
-    }
+    // if (workplace_id) {
+    //   console.log(workplace_id);
+    //   const data = await db.query(
+    //     "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
+    //     [workplace_id]
+    //   );
+    //   return {
+    //     ...data[0],
+    //   };
+    // }
     const data = await db.query(
       `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
     );
@@ -112,7 +106,6 @@ async function getUpdateWorkplace(req) {
       workplace_id,
     ]
   );
-
   return {
     success: true,
     data,
