@@ -19,11 +19,6 @@ truncate workplace;
 truncate test_user;
 truncate workplace_cv;
 
-
-select cv_name from workplace_cv;
-
-select * from news where type="news" limit 1, 6;
-select  DATE_ADD(news.created_at, INTERVAL 2 DAY) as created_at from news;
 CREATE TABLE news(
  id INT not null primary key auto_increment,
  title varchar(255),
@@ -86,14 +81,7 @@ CREATE TABLE workplace(
  foreign key (created_by) references users(id),
  foreign key (workplace_type) references entity(entity_id)
 );
-ALTER TABLE workplace
-DROP COLUMN workplace_cv;
 
-ALTER TABLE workplace
-ADD cv int;
-
-ALTER TABLE workplace
-MODIFY COLUMN workplace_other json;
 
 CREATE TABLE entity(
  entity_id INT not null primary key auto_increment,
@@ -106,7 +94,12 @@ INSERT INTO  entity(entity_name) VALUES("Техник технологийн а�
 INSERT INTO  entity(entity_name) VALUES("Санхүү бүртгэл, аж ахуйн газар");
 INSERT INTO  entity(entity_name) VALUES("Удирлага, хүний нөөцийн газар");
 
-
+CREATE TABLE workplace_cv(
+ cv_id INT not null primary key auto_increment,
+ cv_name json ,
+ cv_workplace_id int,
+ foreign key (cv_workplace_id) references workplace(workplace_id)
+);
 
 CREATE TABLE users(
  id INT not null primary key auto_increment,
@@ -115,6 +108,12 @@ CREATE TABLE users(
  permission json
 );
 
+ALTER TABLE workplace
+DROP COLUMN cv;
+ALTER TABLE workplace
+ADD cv int;
+ALTER TABLE workplace
+MODIFY COLUMN workplace_other json;
 ALTER TABLE users
 MODIFY COLUMN password varchar(255);
 
@@ -123,27 +122,7 @@ SELECT GREATEST(1, 4, 5, 6) AS NUM;
 SELECT least(1, 4, 5, 6) AS NUM;
 select IF (1<1, 3, 2);
 
-CREATE TABLE workplace_cv(
- cv_id INT not null primary key auto_increment,
- cv_name json ,
- cv_workplace_id int,
- foreign key (cv_workplace_id) references workplace(workplace_id)
-);
 
-
-CREATE TABLE msg(
- id INT not null primary key auto_increment,
- to_msg INT,
- from_msg INT,
- message varchar(255)
-);
-
-CREATE TABLE test_user(
- id INT not null primary key auto_increment,
- username varchar(255),
- email varchar(255),
- password int
-);
 
 
 

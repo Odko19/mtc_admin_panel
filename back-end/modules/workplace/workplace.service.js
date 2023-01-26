@@ -35,16 +35,6 @@ async function getAllWorkplace(req) {
         cv,
       };
     }
-    // if (workplace_id) {
-    //   console.log(workplace_id);
-    //   const data = await db.query(
-    //     "SELECT workplace_cv.cv_id as cv_id, cv_name, workplace_name from workplace_cv JOIN workplace ON workplace_cv.cv_workplace_id = workplace.workplace_id where cv_workplace_id = ?",
-    //     [workplace_id]
-    //   );
-    //   return {
-    //     ...data[0],
-    //   };
-    // }
     const data = await db.query(
       `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
     );
