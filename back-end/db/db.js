@@ -5,7 +5,6 @@ const connection = mysql.createConnection(config.db);
 
 async function query(sql, params, ...args) {
   for (var i = 0; i < args.length; ++i) {
-    console.log(args[i]);
     if (args[i] === undefined) args[i] = null;
   }
   const [rows, fields] = await pool.execute(sql, params, args);
