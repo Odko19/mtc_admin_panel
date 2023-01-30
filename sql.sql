@@ -10,8 +10,6 @@ select * from workplace, workplace_cv;
 select * from entity;
 select * from account;
 select * from product limit 1;
-select * from test_user;
-select * from msg;
 
 
 truncate msg;
@@ -93,6 +91,7 @@ INSERT INTO  entity(entity_name) VALUES("Маркетинг борлуулалт
 INSERT INTO  entity(entity_name) VALUES("Техник технологийн ашиглалтын газар");
 INSERT INTO  entity(entity_name) VALUES("Санхүү бүртгэл, аж ахуйн газар");
 INSERT INTO  entity(entity_name) VALUES("Удирлага, хүний нөөцийн газар");
+INSERT INTO  entity(entity_name) VALUES("Мэдээлэл технологийн төв");
 
 CREATE TABLE workplace_cv(
  cv_id INT not null primary key auto_increment,
