@@ -1,4 +1,3 @@
-// const resnumServices = require("./resnum.service");
 const resnumServices = require("./resnum.service");
 
 const getAllResNum = async (req, res) => {

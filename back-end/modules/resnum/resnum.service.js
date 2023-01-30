@@ -279,11 +279,11 @@ async function getAllResNum(req) {
       }
     } else {
       if (dateOne && dateTwo) {
-        const startId = (1 - 1) * 10;
+        const startId = (1 - 1) * 8;
         const mtcs_count = await oracle_db.query(
           "select count(*) as count from RESNUM_USER_PID "
         );
-        const totalPage = mtcs_count[0].COUNT / 10;
+        const totalPage = mtcs_count[0].COUNT / 8;
         const data = await oracle_db.query(
           "select * from RESNUM_USER_PID WHERE (CREATED_AT BETWEEN '" +
             dateOne +
@@ -297,19 +297,19 @@ async function getAllResNum(req) {
           totalPages: Math.ceil(totalPage),
           totalDatas: mtcs_count[0].count,
           currentPage: JSON.parse(1),
-          currentPageSize: JSON.parse(10),
+          currentPageSize: JSON.parse(8),
           data,
         };
       }
       if (choiceOne) {
         let data;
-        const startId = (1 - 1) * 10;
+        const startId = (1 - 1) * 8;
         const mtcs_count = await oracle_db.query(
           "select count(*) as count from RESNUM_USER_PID WHERE STATUS='" +
             choiceOne +
             "'"
         );
-        const totalPage = mtcs_count[0].COUNT / 10;
+        const totalPage = mtcs_count[0].COUNT / 8;
 
         if (choiceOne === "ALL") {
           data = await oracle_db.query(
@@ -323,7 +323,7 @@ async function getAllResNum(req) {
               choiceOne +
               "' order by CREATED_AT OFFSET '" +
               startId +
-              "' ROWS FETCH NEXT 10 ROWS ONLY  "
+              "' ROWS FETCH NEXT 8 ROWS ONLY  "
           );
 
           data = result.map((e) => {
@@ -356,14 +356,14 @@ async function getAllResNum(req) {
               choiceOne +
               "' order by CREATED_AT OFFSET '" +
               startId +
-              "' ROWS FETCH NEXT 10 ROWS ONLY  "
+              "' ROWS FETCH NEXT 8 ROWS ONLY  "
           );
         }
         return {
           totalPages: Math.ceil(totalPage),
           totalDatas: mtcs_count[0].count,
           currentPage: 1,
-          currentPageSize: 10,
+          currentPageSize: 8,
           data,
         };
       }
