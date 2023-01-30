@@ -132,3 +132,16 @@ select IF (1<1, 3, 2);
 
 
 
+-- PORT=3001
+-- HOST_NAME=localhost
+-- USER_NAME=root
+-- PASSWORD=P&EsbM700Hp0Wh
+-- DATABASE=mtc_admin_panel
+-- TOKEN_KEY=PASSWORD
+
+
+
+
+-- HOST_NAME_ORACLE=10.0.125.9/MTCCBS
+-- USER_NAME_ORACLE=cbsadm
+-- PASSWORD_ORACLE=uangel123
