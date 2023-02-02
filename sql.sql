@@ -11,6 +11,7 @@ select * from entity;
 select * from account;
 select * from product limit 1;
 
+truncate users;
 
 truncate msg;
 truncate workplace;
@@ -66,20 +67,21 @@ CREATE TABLE product(
  foreign key (created_by) references users(id)
 );
 
-CREATE TABLE workplace(
+ CREATE TABLE workplace(
  workplace_id INT not null primary key auto_increment,
  workplace_name varchar(255),
  workplace_role longtext,
  workplace_requirements json,
- workplace_type INT,
+ workplace_type varchar(255),
  created_by INT,
  expires_at timestamp,
  created_at timestamp,
- updated_at timestamp,
- foreign key (created_by) references users(id),
- foreign key (workplace_type) references entity(entity_id)
+ updated_aworkplacet timestamp,
+ foreign key (created_by) references users(id)
 );
 
+ALTER TABLE workplace
+MODIFY COLUMN workplace_type varchar(255);
 
 CREATE TABLE entity(
  entity_id INT not null primary key auto_increment,
@@ -128,7 +130,6 @@ select IF (1<1, 3, 2);
 
 
       
-
 
 
 

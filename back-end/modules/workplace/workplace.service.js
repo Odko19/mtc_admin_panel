@@ -20,7 +20,7 @@ async function getAllWorkplace(req) {
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db.query(
         `select workplace_id, workplace_name, workplace_role, workplace_requirements, entity_name as 
-        workplace_type, firstName as created_by, expires_at,created_at,  updated_at FROM workplace JOIN entity 
+        workplace_type, entity_id as  workplace_type_value, firstName as created_by, expires_at,created_at,  updated_at FROM workplace JOIN entity 
         ON workplace_type = entity.entity_id JOIN users ON created_by = users.id 
          ORDER BY workplace_id desc limit ?, ?`,
         [JSON.stringify(startId), limit]
@@ -36,7 +36,9 @@ async function getAllWorkplace(req) {
       };
     }
     const data = await db.query(
-      `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by, expires_at,created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
+      `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, 
+      entity_name as workplace_type, entity_id as  workplace_type_value, firstName as created_by, expires_at,created_at , updated_at 
+      FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
     );
     return {
       data,
@@ -47,6 +49,7 @@ async function getAllWorkplace(req) {
 }
 
 async function getCreateWorkplace(req) {
+  console.log(req.body);
   const {
     workplace_name,
     workplace_role,
@@ -73,6 +76,7 @@ async function getCreateWorkplace(req) {
 }
 
 async function getUpdateWorkplace(req) {
+  console.log(req.body);
   const {
     workplace_id,
     workplace_name,
@@ -117,11 +121,13 @@ async function getDeleteWorkplace(req) {
 
 async function getWorkplaceCv(req) {
   const { id, firstname } = req.body;
+  console.log(req.body);
   let data;
   const data_ = await db.query(
     `SELECT * FROM workplace_cv WHERE cv_workplace_id=?`,
     [id]
   );
+
   if (data_.length === 0) {
     let arr = [];
     arr.push({ firstName: firstname, cv: req.files[0].filename });
