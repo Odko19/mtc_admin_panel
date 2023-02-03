@@ -1,11 +1,11 @@
 const db = require("../../db/db");
 
 async function getAllWorkplace(req) {
-  const { id, page, limit, workplace_id } = req.query;
+  const { id, page, limit } = req.query;
   if (req.query) {
     if (id) {
       const data = await db.query(
-        "SELECT workplace_id,entity.entity_name as workplace_name,workplace_role,workplace_requirements, entity_name as workplace_type, firstName as created_by,expires_at, created_at , updated_at FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id where workplace_id = ?",
+        "SELECT * from workplace where workplace_id = ?",
         [id]
       );
       return {
@@ -19,9 +19,7 @@ async function getAllWorkplace(req) {
       );
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db.query(
-        `select workplace_id, workplace_name, workplace_role, workplace_requirements, entity_name as 
-        workplace_type, entity_id as  workplace_type_value, firstName as created_by, expires_at,created_at,  updated_at FROM workplace JOIN entity 
-        ON workplace_type = entity.entity_id JOIN users ON created_by = users.id 
+        `select * from workplace
          ORDER BY workplace_id desc limit ?, ?`,
         [JSON.stringify(startId), limit]
       );
@@ -35,11 +33,7 @@ async function getAllWorkplace(req) {
         cv,
       };
     }
-    const data = await db.query(
-      `SELECT workplace_id, workplace_name,workplace_role,workplace_requirements, 
-      entity_name as workplace_type, entity_id as  workplace_type_value, firstName as created_by, expires_at,created_at , updated_at 
-      FROM workplace JOIN entity ON workplace_type = entity.entity_id JOIN users ON created_by = users.id `
-    );
+    const data = await db.query(`SELECT * from workplace`);
     return {
       data,
     };
@@ -49,7 +43,6 @@ async function getAllWorkplace(req) {
 }
 
 async function getCreateWorkplace(req) {
-  console.log(req.body);
   const {
     workplace_name,
     workplace_role,
@@ -76,7 +69,6 @@ async function getCreateWorkplace(req) {
 }
 
 async function getUpdateWorkplace(req) {
-  console.log(req.body);
   const {
     workplace_id,
     workplace_name,
