@@ -6,6 +6,7 @@ const TOKEN_KEY = process.env.TOKEN_KEY;
 const getLoginUser = async (req, res) => {
   try {
     const { firstName, password } = req.body;
+
     if (Object.values(firstName).length === 0) {
       res.status(400).json({
         success: false,
@@ -23,6 +24,8 @@ const getLoginUser = async (req, res) => {
         const validPassword = foundUser.data[0].password;
         const validName = foundUser.data[0].firstName;
         const validPermission = foundUser.data[0].permission;
+
+        console.log(validId);
         if (await bcrypt.compare(password, validPassword)) {
           const token = jwt.sign(
             {
