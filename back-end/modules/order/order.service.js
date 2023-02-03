@@ -3,8 +3,6 @@ const oracle_db = require("../../db/oracle_db/oracle");
 async function getAllOrder(req) {
   const { page, limit, all } = req.query;
   if (req.query) {
-    console.log(page);
-    console.log(limit);
     if (page && limit) {
       const startId = (page - 1) * limit;
       const data_count = await oracle_db.query(
@@ -18,6 +16,7 @@ async function getAllOrder(req) {
           limit +
           "' ROWS ONLY "
       );
+      console.log(data);
       return {
         totalPages: Math.ceil(totalPage),
         totalDatas: data_count[0].count,
