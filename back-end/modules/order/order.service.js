@@ -16,7 +16,6 @@ async function getAllOrder(req) {
           limit +
           "' ROWS ONLY "
       );
-      console.log(data);
       return {
         totalPages: Math.ceil(totalPage),
         totalDatas: data_count[0].count,
