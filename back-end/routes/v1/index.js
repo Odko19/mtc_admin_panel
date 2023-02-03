@@ -10,6 +10,7 @@ const productRoute = require("./product.route");
 const resnum = require("./resnum.route");
 const selfOrder = require("./self_order.route");
 const workplace = require("./workplace.route");
+const feedback = require("./feedback.route");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);
@@ -21,5 +22,6 @@ router.use("/product", productRoute);
 router.use("/resnum", resnum);
 router.use("/order", selfOrder);
 router.use("/workplace", workplace);
+router.use("/feedback", feedback);
 
 module.exports = router;
