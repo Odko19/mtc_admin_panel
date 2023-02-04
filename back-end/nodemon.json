@@ -1,0 +1,7 @@
+{
+    "events": {
+      "restart": "kill-port 8083",
+      "crash": "kill-port 8083"
+    },
+    "delay": "1500"
+  }
