@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "events": {
-    "restart": "kill-port 8083",
-    "crash": "kill-port 8083"
-  },
-  "delay": "1500",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon index.js"
