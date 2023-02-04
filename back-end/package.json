@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "events": {
+    "restart": "kill-port 8083",
+    "crash": "kill-port 8083"
+  },
+  "delay": "1500",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon index.js",
-    "restart": "pkill -9 node && server",
-    "kill": "pkill -9 node"
+    "server": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +28,8 @@
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.20",
     "oracledb": "^5.5.0"
+  },
+  "devDependencies": {
+    "kill-port": "^2.0.1"
   }
 }
