@@ -1,14 +1,16 @@
 const db = require("../../db/db");
+
 var axios = require("axios");
 
 async function getLoginUser(req) {
   const { firstName, password } = req.body;
-
+  let data;
   // var data1 = JSON.stringify({
+  //   // user: "MTUB007045",
+  //   // password: "111111",
   //   user: firstName,
   //   password: password,
   // });
-
   // var config = {
   //   method: "post",
   //   maxBodyLength: Infinity,
@@ -20,17 +22,26 @@ async function getLoginUser(req) {
   //   data: data1,
   // };
 
-  // axios(config)
+  //  axios(config)
   //   .then(function (response) {
-  //     console.log("data", response.data);
+  //     if (response.status === 200) {
+  //       // data = db.query(
+  //       //   `INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)`,
+  //       //   [firstName, password, ["test"]]
+  //       // );
+  //       return (data = db.query(
+  //         `select *
+  //         from users where firstName=?`,
+  //         [firstName]
+  //       ));
+  //     }
   //   })
   //   .catch(function (error) {
-  //     console.log(error);
+  //     console.log(error.response.status);
   //   });
-
-  const data = await db.query(
+  data = await db.query(
     `select *
-    from users where firstName=?`,
+      from users where firstName=?`,
     [firstName]
   );
   return {
