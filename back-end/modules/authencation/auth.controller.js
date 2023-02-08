@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authServices = require("./auth.service");
 const TOKEN_KEY = process.env.TOKEN_KEY;
+var axios = require("axios");
 
 const getLoginUser = async (req, res) => {
   try {
@@ -13,35 +14,62 @@ const getLoginUser = async (req, res) => {
       });
     } else {
       const foundUser = await authServices.getLoginUser(req);
-      console.log(foundUser[0].id);
-      const validId = foundUser[0].id;
-      const validPassword = foundUser[0].password;
-      const validName = foundUser[0].firstName;
-      const validPermission = foundUser[0].permission;
-      if (await bcrypt.compare(password, validPassword)) {
-        const token = jwt.sign(
-          {
-            user_name: validName,
-          },
-          TOKEN_KEY,
-          {
-            expiresIn: "2h",
-          }
-        );
-        res.status(200).json({
-          success: true,
-          data: {
-            id: validId,
-            firstName: validName,
-            permission: validPermission,
-          },
-          token: token,
+      if (foundUser.data.length <= 0) {
+        res.status(404).json({
+          success: false,
+          message: "Бүртгэлгүй хэрэглэгч байна",
         });
       } else {
-        res.status(401).json({
-          success: false,
-          data: "Нэр, Нууц үг таарахгүй байна",
+        const foundUser = await authServices.getLoginUser(req);
+        const validId = foundUser.data[0].id;
+        const validPassword = foundUser.data[0].password;
+        const validName = foundUser.data[0].firstName;
+        const validPermission = foundUser.data[0].permission;
+        var data1 = JSON.stringify({
+          user: firstName,
+          password: password,
         });
+        var config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: "http://10.0.125.17:88/api/v1/auth/login",
+          headers: {
+            Authorization: "Basic TVRVQjAwNzA0NToxMTExMTE=",
+            "Content-Type": "application/json",
+          },
+          data: data1,
+        };
+        axios(config)
+          .then((response) => {
+            if (response.status === 200) {
+              const token = jwt.sign(
+                {
+                  user_name: validName,
+                },
+                TOKEN_KEY,
+                {
+                  expiresIn: "2h",
+                }
+              );
+              res.status(200).json({
+                success: true,
+                data: {
+                  id: validId,
+                  firstName: validName,
+                  permission: validPermission,
+                },
+                token: token,
+              });
+            }
+          })
+          .catch((err) => {
+            if (err.response.status === 401) {
+              res.status(401).json({
+                success: false,
+                data: "Нэр, Нууц үг таарахгүй байна",
+              });
+            }
+          });
       }
     }
   } catch (error) {

@@ -20,11 +20,11 @@ async function getAllUsers(req) {
 }
 
 async function getCreateUser(req) {
-  const { firstName, password, permission } = req.body;
-  const hashedPass = await bcrypt.hash(password, 10);
+  const { firstName, password, permission, location } = req.body;
+  console.log(req.body);
   const data = await db.query(
-    "INSERT INTO  users(firstName, password, permission) VALUES (?, ?, ?)",
-    [firstName, hashedPass, permission]
+    "INSERT INTO  users(firstName, password, permission, location) VALUES (?, ?, ?, ?)",
+    [firstName, password, permission, location]
   );
   return {
     success: true,
@@ -33,12 +33,11 @@ async function getCreateUser(req) {
 }
 
 async function getUpdateUser(req) {
-  const { id, firstName, password, permission } = req.body;
-  const hashedPass = await bcrypt.hash(password, 10);
+  const { id, firstName, password, permission, location } = req.body;
   const data = await db.query(
     `UPDATE users
-     SET firstName=?, password=?, permission=? WHERE id=?`,
-    [firstName, hashedPass, permission, id]
+     SET firstName=?, password=?, permission=?, location=? WHERE id=?`,
+    [firstName, password, permission, location, id]
   );
   return {
     success: true,
