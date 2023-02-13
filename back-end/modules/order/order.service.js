@@ -1,16 +1,19 @@
 const oracle_db = require("../../db/oracle_db/oracle");
 
 async function getAllOrder(req) {
-  const { page, limit, all } = req.query;
+  const { page, limit, all, location } = req.query;
   if (req.query) {
-    if (page && limit) {
+    if (page && limit && location) {
+      console.log(location);
       const startId = (page - 1) * limit;
       const data_count = await oracle_db.query(
         "select count(*) as count from MTC_SC_ORDER_FORM   "
       );
       const totalPage = data_count[0].COUNT / limit;
       const data = await oracle_db.query(
-        "select * from MTC_SC_ORDER_FORM    order by ID OFFSET '" +
+        "select * from MTC_SC_ORDER_FORM WHERE CITY LIKE '%" +
+          location.toUpperCase() +
+          "%'  order by ID OFFSET '" +
           startId +
           "' ROWS FETCH NEXT '" +
           limit +

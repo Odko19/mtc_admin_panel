@@ -25,6 +25,7 @@ const getLoginUser = async (req, res) => {
         const validPassword = foundUser.data[0].password;
         const validName = foundUser.data[0].firstName;
         const validPermission = foundUser.data[0].permission;
+        const validLocation = foundUser.data[0].location;
         var data1 = JSON.stringify({
           user: firstName,
           password: password,
@@ -57,6 +58,7 @@ const getLoginUser = async (req, res) => {
                   id: validId,
                   firstName: validName,
                   permission: validPermission,
+                  location: validLocation,
                 },
                 token: token,
               });
