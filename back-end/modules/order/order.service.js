@@ -4,10 +4,11 @@ async function getAllOrder(req) {
   const { page, limit, all, location } = req.query;
   if (req.query) {
     if (page && limit && location) {
-      console.log(location);
       const startId = (page - 1) * limit;
       const data_count = await oracle_db.query(
-        "select count(*) as count from MTC_SC_ORDER_FORM   "
+        "select count(*) as count from MTC_SC_ORDER_FORM  WHERE CITY LIKE '%" +
+          location.toUpperCase() +
+          "%'"
       );
       const totalPage = data_count[0].COUNT / limit;
       const data = await oracle_db.query(
@@ -19,6 +20,7 @@ async function getAllOrder(req) {
           limit +
           "' ROWS ONLY "
       );
+
       return {
         totalPages: Math.ceil(totalPage),
         totalDatas: data_count[0].count,
