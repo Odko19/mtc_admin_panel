@@ -21,7 +21,6 @@ async function getAllUsers(req) {
 
 async function getCreateUser(req) {
   const { firstName, password, permission, location } = req.body;
-  console.log(req.body);
   const data = await db.query(
     "INSERT INTO  users(firstName, password, permission, location) VALUES (?, ?, ?, ?)",
     [firstName, password, permission, location]
