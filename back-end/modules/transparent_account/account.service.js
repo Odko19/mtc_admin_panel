@@ -41,7 +41,6 @@ async function getCreateAccount(req) {
 
 async function getUpdateAccount(req) {
   const { id, title, body, created_by } = req.body;
-
   let data;
   console.log(req.files[0]);
   req.files[0]
