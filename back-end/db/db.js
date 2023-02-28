@@ -8,6 +8,7 @@ async function query(sql, params, ...args) {
     if (args[i] === undefined) args[i] = null;
   }
   const [rows, fields] = await pool.execute(sql, params, args);
+
   return rows;
 }
 async function beginTransation() {
@@ -24,4 +25,8 @@ async function commit() {
   return await connection.commit();
 }
 
-module.exports = { query, beginTransation, roleBack, commit };
+async function end() {
+  return await connection.end();
+}
+
+module.exports = { query, beginTransation, roleBack, commit, end };
