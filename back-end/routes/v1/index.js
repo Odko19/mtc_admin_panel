@@ -12,6 +12,7 @@ const selfOrder = require("./self_order.route");
 const workplace = require("./workplace.route");
 const feedback = require("./feedback.route");
 const payment = require("./payment.route");
+const coverImg = require("./coverImg.route");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);
@@ -25,5 +26,6 @@ router.use("/order", selfOrder);
 router.use("/workplace", workplace);
 router.use("/feedback", feedback);
 router.use("/payment", payment);
+router.use("/coverimg", coverImg);
 
 module.exports = router;
