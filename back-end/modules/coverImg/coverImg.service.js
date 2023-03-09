@@ -17,8 +17,6 @@ async function getAllCoverImg(req) {
 }
 async function getCreateCoverImg(req) {
   const { type, created_by } = req.body;
-  console.log(req.body);
-  console.log(req.files[0].filename);
   const data = await db.query(
     "INSERT INTO  coverImg(image, type, created_by, created_at, updated_at ) VALUES (?, ?, ?, NOW(), NOW())",
     [req.files[0].filename, type, created_by]
@@ -28,7 +26,6 @@ async function getCreateCoverImg(req) {
     data,
   };
 }
-
 async function getUpdateCoverImg(req) {
   const { type, created_by, id } = req.body;
   console.log(req.body);
