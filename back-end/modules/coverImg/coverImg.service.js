@@ -28,8 +28,6 @@ async function getCreateCoverImg(req) {
 }
 async function getUpdateCoverImg(req) {
   const { type, created_by, id } = req.body;
-  console.log(req.body);
-  console.log(req.files[0].filename);
   const data = await db.query(
     `UPDATE coverImg SET image=?,  type=?, created_by=?, updated_at=now() WHERE id=?`,
     [req.files[0].filename, type, created_by, id]
