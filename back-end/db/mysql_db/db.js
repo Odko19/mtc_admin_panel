@@ -1,13 +1,10 @@
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2");
 const config = require("./config");
-const pool = mysql.createPool(config.db);
+const pool = mysql.createPool(config.db).promise();
 const connection = mysql.createConnection(config.db);
 
-async function query(sql, params, ...args) {
-  for (var i = 0; i < args.length; ++i) {
-    if (args[i] === undefined) args[i] = null;
-  }
-  const [rows, fields] = await pool.execute(sql, params, args);
+async function query(sql, params) {
+  const [rows, fields] = await pool.execute(sql, params);
   return rows;
 }
 async function beginTransation() {

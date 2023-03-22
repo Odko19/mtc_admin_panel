@@ -1,7 +1,8 @@
+const moment = require("moment");
 const oracle_db = require("../../db/oracle_db/oracle");
 
 async function getAllOrder(req) {
-  const { page, limit, all, location } = req.query;
+  const { page, limit, all, location, begin, end } = req.query;
   if (req.query) {
     if (page && limit && location) {
       const startId = (page - 1) * limit;
@@ -14,7 +15,7 @@ async function getAllOrder(req) {
       const data = await oracle_db.query(
         "select * from MTC_SC_ORDER_FORM WHERE CITY LIKE '%" +
           location.toUpperCase() +
-          "%'  order by ID OFFSET '" +
+          "%'  order by ID DESC OFFSET '" +
           startId +
           "' ROWS FETCH NEXT '" +
           limit +
@@ -31,6 +32,14 @@ async function getAllOrder(req) {
     }
     if (all) {
       const data = await oracle_db.query("select * from MTC_SC_ORDER_FORM");
+      return {
+        data,
+      };
+    }
+    if (begin && end) {
+      const data = await oracle_db.query(
+        `select * from MTC_SC_ORDER_FORM WHERE CREATED_AT BETWEEN TO_DATE ('${begin}', 'YYYY-MM-DD"T"HH24:MI:SS') AND TO_DATE('${end}', 'YYYY-MM-DD"T"HH24:MI:SS')`
+      );
       return {
         data,
       };

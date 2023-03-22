@@ -13,6 +13,7 @@ async function getAllResNum(req) {
     dateTwo,
     all,
   } = req.query;
+
   if (req.query) {
     if (all) {
       const data = await oracle_db.query("select * from RESNUM_USER_PID");
