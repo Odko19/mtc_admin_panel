@@ -10,6 +10,7 @@ async function query(sql, params, ...args) {
   const [rows, fields] = await pool.execute(sql, params, args);
   return rows;
 }
+
 async function beginTransation() {
   pool.getConnection((err, connection) => {
     connection.beginTransation();

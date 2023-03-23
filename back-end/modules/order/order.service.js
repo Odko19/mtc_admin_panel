@@ -2,7 +2,7 @@ const moment = require("moment");
 const oracle_db = require("../../db/oracle_db/oracle");
 
 async function getAllOrder(req) {
-  const { page, limit, all, location } = req.query;
+  const { page, limit, all, location, begin, end, mobile } = req.query;
   if (req.query) {
     if (page && limit && location) {
       const startId = (page - 1) * limit;
@@ -36,14 +36,33 @@ async function getAllOrder(req) {
         data,
       };
     }
-    // if (begin && end) {
-    //   const data = await oracle_db.query(
-    //     `select * from MTC_SC_ORDER_FORM WHERE CREATED_AT BETWEEN TO_DATE ('${begin}', 'YYYY-MM-DD"T"HH24:MI:SS') AND TO_DATE('${end}', 'YYYY-MM-DD"T"HH24:MI:SS')`
-    //   );
-    //   return {
-    //     data,
-    //   };
-    // }
+    if (mobile) {
+      if (begin && end && mobile) {
+        const data = await oracle_db.query(
+          `select * from MTC_SC_ORDER_FORM WHERE CREATED_AT BETWEEN TO_DATE ('${begin}', 'YYYY-MM-DD"T"HH24:MI:SS') AND TO_DATE('${end}', 'YYYY-MM-DD"T"HH24:MI:SS') AND MOBILE = '${mobile}'`
+        );
+        return {
+          data,
+        };
+      }
+      if (mobile) {
+        const data = await oracle_db.query(
+          "select * from MTC_SC_ORDER_FORM WHERE MOBILE ='" +
+            mobile +
+            "'  ORDER BY ID DESC  OFFSET 1 ROWS FETCH NEXT 5 ROWS ONLY"
+        );
+        return {
+          data,
+        };
+      }
+    } else {
+      const data = await oracle_db.query(
+        `select * from MTC_SC_ORDER_FORM WHERE CREATED_AT BETWEEN TO_DATE ('${begin}', 'YYYY-MM-DD"T"HH24:MI:SS') AND TO_DATE('${end}', 'YYYY-MM-DD"T"HH24:MI:SS') ORDER BY ID DESC  OFFSET 1 ROWS FETCH NEXT 5 ROWS ONLY`
+      );
+      return {
+        data,
+      };
+    }
   }
 }
 
