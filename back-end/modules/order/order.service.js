@@ -47,9 +47,7 @@ async function getAllOrder(req) {
       }
       if (mobile) {
         const data = await oracle_db.query(
-          "select * from MTC_SC_ORDER_FORM WHERE MOBILE ='" +
-            mobile +
-            "'  ORDER BY ID DESC  OFFSET 1 ROWS FETCH NEXT 5 ROWS ONLY"
+          "select * from MTC_SC_ORDER_FORM WHERE MOBILE ='" + mobile + "'"
         );
         return {
           data,
