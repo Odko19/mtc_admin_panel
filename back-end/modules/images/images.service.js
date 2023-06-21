@@ -1,4 +1,4 @@
-const db = require("../../db/db");
+// const db_mtc = require("../../db/db_mtc_admin_panel");
 
 async function getCreateImage(req) {
   const images = req.files.map((image) => {

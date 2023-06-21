@@ -1,15 +1,17 @@
-const db = require("../../db/db");
+const db_mtc = require("../../db/db_mtc_admin_panel");
 
 async function getAllAccount(req) {
   const { id } = req.query;
   if (req.query) {
     if (id) {
-      const data = await db.query("SELECT * FROM account WHERE id=?; ", [id]);
+      const data = await db_mtc.query("SELECT * FROM account WHERE id=?; ", [
+        id,
+      ]);
       return {
         ...data[0],
       };
     } else {
-      const data = await db.query(
+      const data = await db_mtc.query(
         "select * from account ORDER BY created_at desc "
       );
       return {
@@ -25,11 +27,11 @@ async function getCreateAccount(req) {
 
   const { title, body, created_by } = req.body;
   req.files[0]
-    ? (data = await db.query(
+    ? (data = await db_mtc.query(
         "INSERT INTO  account(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
         [title, req.files[0].filename, body, created_by]
       ))
-    : (data = await db.query(
+    : (data = await db_mtc.query(
         "INSERT INTO  account(title, cover_img, body, created_by, created_at , updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())",
         [title, null, body, created_by]
       ));
@@ -44,13 +46,13 @@ async function getUpdateAccount(req) {
   let data;
   console.log(req.files[0]);
   req.files[0]
-    ? (data = await db.query(
+    ? (data = await db_mtc.query(
         `UPDATE account
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
      WHERE id=?`,
         [title, req.files[0].filename, body, created_by, id]
       ))
-    : (data = await db.query(
+    : (data = await db_mtc.query(
         `UPDATE account
      SET title=?, cover_img=?, body=?, created_by=?, updated_at=now()
      WHERE id=?`,
@@ -67,7 +69,7 @@ async function getDeleteAccount(req) {
   let data;
   const { id } = req.query;
   if (id !== undefined) {
-    data = await db.query("DELETE FROM account where id = ?", [id]);
+    data = await db_mtc.query("DELETE FROM account where id = ?", [id]);
   } else {
     data;
   }

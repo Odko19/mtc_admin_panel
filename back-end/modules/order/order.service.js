@@ -1,5 +1,5 @@
 const moment = require("moment");
-const oracle_db = require("../../db/oracle_db/oracle");
+const oracle_db = require("../../db/db_oracle");
 
 async function getAllOrder(req) {
   const { page, limit, all, location, begin, end, mobile } = req.query;

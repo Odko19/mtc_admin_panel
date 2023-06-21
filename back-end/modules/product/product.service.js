@@ -1,10 +1,10 @@
-const db = require("../../db/db");
+const db_mtc = require("../../db/db_mtc_admin_panel");
 
 async function getAllProduct(req) {
   const { id, page, limit, type } = req.query;
   if (req.query) {
     if (id) {
-      const data = await db.query(
+      const data = await db_mtc.query(
         "SELECT * FROM product where product_id = ?",
         [id]
       );
@@ -14,11 +14,11 @@ async function getAllProduct(req) {
     }
     if (page && limit) {
       const startId = (page - 1) * limit;
-      const data_count = await db.query(
+      const data_count = await db_mtc.query(
         "select count(*) as count from product"
       );
       const totalPage = data_count && data_count[0].count / limit;
-      const data = await db.query(
+      const data = await db_mtc.query(
         `select * from product ORDER BY created_at desc limit ?, ?`,
         [JSON.stringify(startId), limit]
       );
@@ -34,13 +34,13 @@ async function getAllProduct(req) {
     if (page && type) {
       const { page, type } = req.query;
       const startId = (page - 1) * 6;
-      const data_count = await db.query(
+      const data_count = await db_mtc.query(
         "select count(*) as count  from product where product_type=?",
         [type]
       );
 
       const totalPage = data_count && data_count[0].count / 6;
-      const data = await db.query(
+      const data = await db_mtc.query(
         `select * from product where product_type=? ORDER BY created_at desc limit ?, 6 `,
         [type, JSON.stringify(startId)]
       );
@@ -64,7 +64,7 @@ async function getCreateProduct(req) {
     product_type,
     created_by,
   } = req.body;
-  const data = await db.query(
+  const data = await db_mtc.query(
     "INSERT INTO  product(product_name, product_img, product_price, product_performance, product_type, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, now(),now())",
     [
       product_name,
@@ -90,7 +90,7 @@ async function getUpdateProduct(req) {
     product_id,
     product_type,
   } = req.body;
-  const data = await db.query(
+  const data = await db_mtc.query(
     `UPDATE product
      SET product_name=?, product_img=?, product_price=?, product_performance=?, product_type=?, created_by=?, updated_at=now() 
      WHERE product_id=?`,
@@ -114,7 +114,7 @@ async function getDeleteProduct(req) {
   const { id } = req.query;
   let data;
   if (id) {
-    data = await db.query("DELETE FROM product where product_id = ?", [id]);
+    data = await db_mtc.query("DELETE FROM product where product_id = ?", [id]);
   }
   return {
     success: true,
