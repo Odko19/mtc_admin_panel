@@ -1,4 +1,4 @@
-const oracle_db = require("../../db/oracle_db/oracle");
+const oracle_db = require("../../db/db_oracle");
 
 async function getAllPayment(req) {
   const { page, limit, id, invoice, begin, end } = req.query;

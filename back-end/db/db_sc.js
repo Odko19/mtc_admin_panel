@@ -6,6 +6,9 @@ const config = {
   user: process.env.USER_NAME_MYSQL,
   password: process.env.PASSWORD_MYSQL,
   database: process.env.DATABASE_MYSQL,
+  waitForConnections: true,
+  connectionLimit: 100,
+  queueLimit: 0,
 };
 async function query(sql, params) {
   let mysqlConnection;

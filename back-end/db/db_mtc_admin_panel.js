@@ -6,6 +6,9 @@ const config = {
   user: process.env.USER_NAME,
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
+  waitForConnections: true,
+  connectionLimit: 100,
+  queueLimit: 0,
 };
 
 async function query(sql, params) {
