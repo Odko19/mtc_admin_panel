@@ -2,7 +2,7 @@ const db_mtc = require("../../db/db_mtc_admin_panel");
 const bcrypt = require("bcryptjs");
 
 async function getAllUsers(req) {
-  const { id } = req.query;
+  const { id, page, limit } = req.query;
   if (req.query) {
     if (id) {
       const data = await db_mtc.query("SELECT * FROM users WHERE id=?", [id]);
@@ -10,9 +10,21 @@ async function getAllUsers(req) {
         ...data[0],
       };
     } else {
-      const data = await db_mtc.query("select * from users");
+      const startId = (page - 1) * limit;
+      const data_count = await db_mtc.query(
+        "select count(*) as count from users"
+      );
+      const totalPage = data_count && data_count[0].count / limit;
+      const data = await db_mtc.query("select * from users limit ?, ?", [
+        JSON.stringify(startId),
+        limit,
+      ]);
       return {
         success: true,
+        totalPages: Math.ceil(totalPage),
+        totalDatas: data_count[0].count,
+        currentPage: JSON.parse(page),
+        currentPageSize: JSON.parse(limit),
         data,
       };
     }
