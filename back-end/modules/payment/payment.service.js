@@ -28,7 +28,6 @@ async function getAllPayment(req) {
     params.startId = startId;
     params.limit = parseInt(limit);
   }
-  console.log(query);
   const data = await oracle_db.queryOrder(query, params);
   const totalPages = Math.ceil(totalDatas / limit);
 
