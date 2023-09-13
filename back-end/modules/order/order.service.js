@@ -2,66 +2,60 @@ const moment = require("moment");
 const oracle_db = require("../../db/db_oracle");
 
 async function getAllOrder(req) {
-  const { page, limit, all, location, begin, end, mobile } = req.query;
-  if (req.query) {
-    if (page && limit && location) {
-      const startId = (page - 1) * limit;
-      const data_count = await oracle_db.query(
-        "select count(*) as count from MTC_SC_ORDER_FORM  WHERE CITY LIKE '%" +
-          location.toUpperCase() +
-          "%'"
-      );
-      const totalPage = data_count[0].COUNT / limit;
-      const data = await oracle_db.query(
-        "select * from MTC_SC_ORDER_FORM WHERE CITY LIKE '%" +
-          location.toUpperCase() +
-          "%'  order by ID DESC OFFSET '" +
-          startId +
-          "' ROWS FETCH NEXT '" +
-          limit +
-          "' ROWS ONLY "
-      );
+  const { page, limit, all, location, begin, end, mobile, register, city } =
+    req.query;
+  let totalDatas;
+  let query = "SELECT * FROM MTC_SC_ORDER_FORM WHERE 1 = 1";
+  const params = [];
 
-      return {
-        totalPages: Math.ceil(totalPage),
-        totalDatas: data_count[0].count,
-        currentPage: JSON.parse(page),
-        currentPageSize: JSON.parse(limit),
-        data,
-      };
-    }
-    if (all) {
-      const data = await oracle_db.query("select * from MTC_SC_ORDER_FORM");
-      return {
-        data,
-      };
-    }
-    if (mobile) {
-      if (begin && end && mobile) {
-        const data = await oracle_db.query(
-          `select * from MTC_SC_ORDER_FORM WHERE CREATED_AT BETWEEN TO_DATE ('${begin}', 'YYYY-MM-DD"T"HH24:MI:SS') AND TO_DATE('${end}', 'YYYY-MM-DD"T"HH24:MI:SS') AND MOBILE = '${mobile}'`
-        );
-        return {
-          data,
-        };
-      }
-      if (mobile) {
-        const data = await oracle_db.query(
-          "select * from MTC_SC_ORDER_FORM WHERE MOBILE ='" + mobile + "'"
-        );
-        return {
-          data,
-        };
-      }
-    } else {
-      const data = await oracle_db.query(
-        `select * from MTC_SC_ORDER_FORM WHERE CREATED_AT BETWEEN TO_DATE ('${begin}', 'YYYY-MM-DD"T"HH24:MI:SS') AND TO_DATE('${end}', 'YYYY-MM-DD"T"HH24:MI:SS') ORDER BY ID DESC  OFFSET 1 ROWS FETCH NEXT 5 ROWS ONLY`
-      );
-      return {
-        data,
-      };
-    }
+  if (location) {
+    query += " AND CITY LIKE :location";
+    params.push("%" + location.toUpperCase() + "%");
   }
+  if (mobile) {
+    query += " AND MOBILE LIKE :mobilePattern";
+    const mobilePattern = `%${mobile}%`;
+    params.push(mobilePattern);
+  }
+  if (register) {
+    query += " AND REGISTER LIKE :registerPattern";
+    const registerPattern = `%${register}%`;
+    params.push(registerPattern);
+  }
+
+  if (city) {
+    query += " AND CITY LIKE :cityPattern";
+    const cityPattern = `%${city}%`;
+    params.push(cityPattern);
+  }
+
+  if (begin && end) {
+    query +=
+      " AND CREATED_AT BETWEEN TO_DATE(:begin, 'YYYY-MM-DD\"T\"HH24:MI:SS') AND TO_DATE(:end, 'YYYY-MM-DD\"T\"HH24:MI:SS')";
+    params.push(begin, end);
+  }
+
+  if (all) {
+    query = "SELECT * FROM MTC_SC_ORDER_FORM";
+  }
+
+  if (page && limit) {
+    const data = await oracle_db.query(query, params);
+    totalDatas = data.length;
+    const startId = (page - 1) * limit;
+    query += ` ORDER BY ID DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY`;
+    params.push(startId, parseInt(limit));
+  }
+
+  const data = await oracle_db.query(query, params);
+  const totalPages = Math.ceil(totalDatas / limit);
+  return {
+    totalPages,
+    totalDatas,
+    currentPage: parseInt(page),
+    currentPageSize: parseInt(limit),
+    data,
+  };
 }
 
 async function getUpdateOrder(req) {
