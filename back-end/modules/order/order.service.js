@@ -40,14 +40,14 @@ async function getAllOrder(req) {
   }
 
   if (page && limit) {
-    const data = await oracle_db.query(query, params);
+    const data = await oracle_db.queryOrder(query, params);
     totalDatas = data.length;
     const startId = (page - 1) * limit;
     query += ` ORDER BY ID DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY`;
     params.push(startId, parseInt(limit));
   }
 
-  const data = await oracle_db.query(query, params);
+  const data = await oracle_db.queryOrder(query, params);
   const totalPages = Math.ceil(totalDatas / limit);
   return {
     totalPages,
