@@ -24,8 +24,9 @@ async function getAllOrder(req) {
   }
 
   if (city) {
-    query += " AND CITY LIKE :cityPattern";
-    const cityPattern = `%${city}%`;
+    var trimmedText = city.replace(/\s+/g, "");
+    query += " AND CONCAT(CITY, DISTRICT) LIKE :cityPattern";
+    const cityPattern = `%${trimmedText.toUpperCase()}%`;
     params.push(cityPattern);
   }
 
@@ -47,6 +48,7 @@ async function getAllOrder(req) {
     params.push(startId, parseInt(limit));
   }
 
+  console.log(query);
   const data = await oracle_db.queryOrder(query, params);
   const totalPages = Math.ceil(totalDatas / limit);
   return {
