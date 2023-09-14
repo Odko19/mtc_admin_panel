@@ -48,7 +48,6 @@ async function getAllOrder(req) {
     params.push(startId, parseInt(limit));
   }
 
-  console.log(query);
   const data = await oracle_db.queryOrder(query, params);
   const totalPages = Math.ceil(totalDatas / limit);
   return {
