@@ -13,6 +13,7 @@ const workplace = require("./workplace.route");
 const feedback = require("./feedback.route");
 const payment = require("./payment.route");
 const coverImg = require("./coverImg.route");
+const ebarimt = require("./ebarimt.route");
 
 router.use("/news", newsRoute);
 router.use("/image", imageRoute);
@@ -27,5 +28,6 @@ router.use("/workplace", workplace);
 router.use("/feedback", feedback);
 router.use("/payment", payment);
 router.use("/coverimg", coverImg);
+router.use("/ebarimt", ebarimt);
 
 module.exports = router;
