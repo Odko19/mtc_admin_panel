@@ -60,6 +60,7 @@ async function getAllOrder(req) {
 
 async function getUpdateOrder(req) {
   const { ID, OPERATOR_ID, OPERATOR_STATUS } = req.body;
+
   let data = await oracle_db.query(
     "UPDATE MTC_SC_ORDER_FORM   SET OPERATOR_ID = '" +
       OPERATOR_ID +
