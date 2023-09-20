@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const cron = require("node-cron");
 const db = require("./db/db");
-
+const PORT = process.env.PORT || 8085;
 const app = express();
 
 let count = 0;
@@ -87,6 +87,6 @@ cron.schedule("*/10 * * * * *", async function () {
   }
 });
 
-app.listen(3000, () => {
-  console.log("application listening.....");
+app.listen(PORT, () => {
+  console.log(`cronJobs listening..... ${PORT}`);
 });
