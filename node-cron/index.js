@@ -28,7 +28,7 @@ async function updateDatabase(e, loginName, regNo) {
   }
 }
 
-cron.schedule("*/10 * * * * *", async function () {
+cron.schedule("*/20 * * * * *", async function () {
   try {
     const params = [];
     // page counter
