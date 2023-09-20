@@ -1,5 +1,32 @@
-const db_sc = require("../../db/db_sc");
+const oracle_db = require("../../db/db_oracle");
 const axios = require("axios");
+
+async function getAllEbarimt(req, res) {
+  const { page, limit, fill } = req.query;
+  let totalDatas;
+  let query = "SELECT * FROM mtc_sc_ebarimt_id WHERE ebarimt_id IS NOT NULL";
+  const params = [];
+  if (fill) {
+    console.log(fill);
+  }
+
+  if (page && limit) {
+    const data = await oracle_db.queryOrder(query, params);
+    totalDatas = data.length;
+    const startId = (page - 1) * limit;
+    query += ` ORDER BY created_at DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY`;
+    params.push(startId, parseInt(limit));
+  }
+  const data = await oracle_db.queryOrder(query, params);
+  const totalPages = Math.ceil(totalDatas / limit);
+  return {
+    totalPages,
+    totalDatas,
+    currentPage: parseInt(page),
+    currentPageSize: parseInt(limit),
+    data,
+  };
+}
 
 async function getTokenEbarimt(req, res) {
   const { client_id, grant_type, username, password } = req.query;
@@ -66,9 +93,6 @@ async function getSubsEbarimt(req, res) {
   };
   const response = await axios.request(config);
   return response.data;
-}
-async function getAllEbarimt(req, res) {
-  console.log("ji");
 }
 
 module.exports = {
