@@ -4,39 +4,87 @@ const cron = require("node-cron");
 const db = require("./db/db");
 
 const app = express();
-const counter = 0;
-cron.schedule("*/30 * * * * *", async function () {
-  const query = "SELECT * FROM mtc_sc_ebarimt_id";
-  const params = [];
-  const data = await db.query(query, params);
 
-  const countQuery = "SELECT count(*) as count FROM mtc_sc_ebarimt_id";
-  const count = await db.query(countQuery, params);
+let count = 0;
 
-  const pageSize = 10; // Set your desired page size here
-  const totalPages = Math.ceil(count[0].COUNT / pageSize);
+// Function to increment the counter
+function incrementCounter(totalPages) {
+  if (count <= totalPages) {
+    count++;
+    return count;
+  }
+}
+// Ebarimt update function
+async function updateDatabase(e, loginName, regNo) {
+  const queryUpdate =
+    "UPDATE mtc_sc_ebarimt_id SET ebarimt_id = :loginName WHERE REGNO = :regNo";
+  const paramsUpdate = [loginName, regNo];
 
-  // Increment the counter by 1
-  console.log(totalPages);
-  console.log(counter++);
+  try {
+    const result = await db.query(queryUpdate, paramsUpdate);
+    console.log(`Updated database for REGNO: ${e.REGNO}`);
+  } catch (error) {
+    console.error(`Error updating database for REGNO: ${e.REGNO}`, error);
+  }
+}
 
-  // for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
-  //   const startId = (currentPage - 1) * pageSize;
-  //   console.log(`Processing page ${currentPage}, startId: ${startId}`);
+cron.schedule("*/10 * * * * *", async function () {
+  try {
+    const params = [];
+    // page counter
+    const pageSize = 1;
+    const countQuery = "SELECT count(*) as count FROM mtc_sc_ebarimt_id";
+    const count = await db.query(countQuery, params);
+    const totalPages = Math.ceil(count[0].COUNT / pageSize);
+    const currentPage = incrementCounter(totalPages);
+    const startId = (currentPage - 1) * pageSize;
 
-  //   // Use startId and pageSize to fetch data for the current page
-  //   // You can execute your database query here with appropriate pagination
+    // data limit
+    query = `select * from mtc_sc_ebarimt_id WHERE ebarimt_id IS NULL ORDER BY created_at desc OFFSET :startId  ROWS FETCH NEXT :pageSize ROWS ONLY`;
+    params.push(startId, parseInt(pageSize));
+    const data = await db.query(query, params);
 
-  //   // Example:
-  //   // const queryForPage = `
-  //   //   SELECT *
-  //   //   FROM mtc_sc_ebarimt_id
-  //   //   LIMIT ${startId}, ${pageSize}
-  //   // `;
-  //   // const dataForPage = await db.query(queryForPage, params);
+    // ebarimt get token
+    const formData = {
+      client_id: "vatps",
+      grant_type: "password",
+      username: "er-2073943",
+      password: "Telec0m2023",
+    };
+    const formBody = new URLSearchParams(formData).toString();
+    const response = await axios.post(
+      "https://auth.itc.gov.mn/auth/realms/ITC/protocol/openid-connect/token",
+      formBody,
+      {
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    );
 
-  //   // Perform your processing with dataForPage
-  // }
+    // ebarimt get ID
+    if (data && response) {
+      data.forEach(async (e) => {
+        if (e.REGNO) {
+          const url = `https://service.itc.gov.mn/api/easy-register/api/info/consumer/${e.REGNO}`;
+          try {
+            const response2 = await axios.get(url, {
+              headers: {
+                Authorization: `Bearer ${response.data.access_token}`,
+              },
+            });
+            const loginName = response2.data.loginName;
+            const regNo = response2.data.regNo;
+            await updateDatabase(e, loginName, regNo);
+          } catch (error) {
+            const loginName = "not found";
+            const regNo = e.REGNO;
+            await updateDatabase(e, loginName, regNo);
+          }
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.listen(3000, () => {
