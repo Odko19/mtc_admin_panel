@@ -51,6 +51,16 @@ const getAllEbarimt = async (req, res) => {
     });
   }
 };
+const getUpdateEbarimt = async (req, res) => {
+  try {
+    const ebarimt = await ebarimtServices.getUpdateEbarimt(req, res);
+    res.json(ebarimt);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
 
 module.exports = {
   getTokenEbarimt,
@@ -58,4 +68,5 @@ module.exports = {
   getCusUserEbarimt,
   getSubsEbarimt,
   getAllEbarimt,
+  getUpdateEbarimt,
 };

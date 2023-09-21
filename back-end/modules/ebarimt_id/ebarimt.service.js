@@ -2,14 +2,37 @@ const oracle_db = require("../../db/db_oracle");
 const axios = require("axios");
 
 async function getAllEbarimt(req, res) {
-  const { page, limit, fill } = req.query;
+  const { page, limit, begin, end, mobile, regno, ebarimt_id, cust_id } =
+    req.query;
   let totalDatas;
   let query = "SELECT * FROM mtc_sc_ebarimt_id WHERE ebarimt_id IS NOT NULL";
   const params = [];
-  if (fill) {
-    console.log(fill);
+  if (mobile) {
+    query += " AND MOBILE LIKE :mobilePattern";
+    const mobilePattern = `%${mobile}%`;
+    params.push(mobilePattern);
+  }
+  if (regno) {
+    query += " AND REGNO LIKE :registerPattern";
+    const registerPattern = `%${regno}%`;
+    params.push(registerPattern);
+  }
+  if (ebarimt_id) {
+    query += " AND EBARIMT_ID LIKE :ebarimtPattern";
+    const ebarimtPattern = `%${ebarimt_id}%`;
+    params.push(ebarimtPattern);
+  }
+  if (cust_id) {
+    query += " AND CUST_ID LIKE :custPattern";
+    const custPattern = `%${cust_id}%`;
+    params.push(custPattern);
   }
 
+  if (begin && end) {
+    query +=
+      " AND CREATED_AT BETWEEN TO_DATE(:begin, 'YYYY-MM-DD\"T\"HH24:MI:SS') AND TO_DATE(:end, 'YYYY-MM-DD\"T\"HH24:MI:SS')";
+    params.push(begin, end);
+  }
   if (page && limit) {
     const data = await oracle_db.queryOrder(query, params);
     totalDatas = data.length;
@@ -24,6 +47,19 @@ async function getAllEbarimt(req, res) {
     totalDatas,
     currentPage: parseInt(page),
     currentPageSize: parseInt(limit),
+    data,
+  };
+}
+
+async function getUpdateEbarimt(req, res) {
+  const { ID, STAFF_ID, ID_CHECK } = req.body;
+  const params = [];
+  const query =
+    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK WHERE ID = :ID";
+  params.push(STAFF_ID, ID_CHECK, ID);
+  const data = await oracle_db.queryOrder(query, params);
+  return {
+    success: true,
     data,
   };
 }
@@ -101,4 +137,5 @@ module.exports = {
   getCusUserEbarimt,
   getSubsEbarimt,
   getAllEbarimt,
+  getUpdateEbarimt,
 };
