@@ -9,8 +9,12 @@ let count = 0;
 
 // Function to increment the counter
 function incrementCounter(totalPages) {
+  // if (count <= totalPages) {
+  //   count++;
+  //   return count;
+  // }
   if (count <= totalPages) {
-    count++;
+    count = 1;
     return count;
   }
 }
@@ -19,7 +23,6 @@ async function updateDatabase(e, loginName, regNo) {
   const queryUpdate =
     "UPDATE mtc_sc_ebarimt_id SET ebarimt_id = :loginName WHERE REGNO = :regNo";
   const paramsUpdate = [loginName, regNo];
-
   try {
     const result = await db.query(queryUpdate, paramsUpdate);
     console.log(`Updated database for REGNO: ${e.REGNO}`);
@@ -43,7 +46,6 @@ cron.schedule("*/20 * * * * *", async function () {
     query = `select * from mtc_sc_ebarimt_id WHERE ebarimt_id IS NULL ORDER BY created_at desc OFFSET :startId  ROWS FETCH NEXT :pageSize ROWS ONLY`;
     params.push(startId, parseInt(pageSize));
     const data = await db.query(query, params);
-
     // ebarimt get token
     const formData = {
       client_id: "vatps",
