@@ -15,36 +15,36 @@ async function getAllEbarimt(req, res) {
   `;
   const params = [];
   if (mobile) {
-    query += " AND MOBILE LIKE :mobilePattern";
+    query += " AND mtc_sc_ebarimt_id.MOBILE LIKE :mobilePattern";
     const mobilePattern = `%${mobile}%`;
     params.push(mobilePattern);
   }
   if (regno) {
-    query += " AND REGNO LIKE :registerPattern";
+    query += " AND mtc_sc_ebarimt_id.REGNO LIKE :registerPattern";
     const registerPattern = `%${regno}%`;
     params.push(registerPattern);
   }
   if (ebarimt_id) {
-    query += " AND EBARIMT_ID LIKE :ebarimtPattern";
+    query += " AND mtc_sc_ebarimt_id.EBARIMT_ID LIKE :ebarimtPattern";
     const ebarimtPattern = `%${ebarimt_id}%`;
     params.push(ebarimtPattern);
   }
   if (cust_id) {
-    query += " AND CUST_ID LIKE :custPattern";
+    query += " AND mtc_sc_ebarimt_id.CUST_ID LIKE :custPattern";
     const custPattern = `%${cust_id}%`;
     params.push(custPattern);
   }
 
   if (begin && end) {
     query +=
-      " AND CREATED_AT BETWEEN TO_DATE(:begin, 'YYYY-MM-DD\"T\"HH24:MI:SS') AND TO_DATE(:end, 'YYYY-MM-DD\"T\"HH24:MI:SS')";
+      " AND mtc_sc_ebarimt_id.CREATED_AT BETWEEN TO_DATE(:begin, 'YYYY-MM-DD\"T\"HH24:MI:SS') AND TO_DATE(:end, 'YYYY-MM-DD\"T\"HH24:MI:SS')";
     params.push(begin, end);
   }
   if (page && limit) {
     const data = await oracle_db.queryOrder(query, params);
     totalDatas = data.length;
     const startId = (page - 1) * limit;
-    query += ` ORDER BY created_at DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY`;
+    query += ` ORDER BY mtc_sc_ebarimt_id.created_at DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY`;
     params.push(startId, parseInt(limit));
   }
   const data = await oracle_db.queryOrder(query, params);
