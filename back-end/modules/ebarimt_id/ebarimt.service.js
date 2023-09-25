@@ -5,7 +5,14 @@ async function getAllEbarimt(req, res) {
   const { page, limit, begin, end, mobile, regno, ebarimt_id, cust_id } =
     req.query;
   let totalDatas;
-  let query = "SELECT * FROM mtc_sc_ebarimt_id WHERE ebarimt_id IS NOT NULL";
+  // let query = "SELECT * FROM mtc_sc_ebarimt_id WHERE ebarimt_id IS NOT NULL";
+  let query = `SELECT mtc_sc_ebarimt_id.id, mtc_sc_ebarimt_id.cust_id, ut_sb_customer.cust_name, mtc_sc_ebarimt_id.regno, mtc_sc_ebarimt_id.ebarimt_id, mtc_sc_ebarimt_id.created_at, mtc_sc_ebarimt_id.updated_at,
+  mtc_sc_ebarimt_id.id_check, mtc_sc_ebarimt_id.staff_id, mtc_sc_ebarimt_id.mobile, mtc_sc_ebarimt_id.edit_check
+  FROM ut_sb_customer 
+  INNER JOIN mtc_sc_ebarimt_id 
+  ON ut_sb_customer.CUST_ID = mtc_sc_ebarimt_id.CUST_ID 
+  WHERE mtc_sc_ebarimt_id.ebarimt_id IS NOT NULL
+  `;
   const params = [];
   if (mobile) {
     query += " AND MOBILE LIKE :mobilePattern";
@@ -57,6 +64,41 @@ async function getUpdateEbarimt(req, res) {
   const query =
     "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK WHERE ID = :ID";
   params.push(STAFF_ID, ID_CHECK, ID);
+  const data = await oracle_db.queryOrder(query, params);
+  return {
+    success: true,
+    data,
+  };
+}
+
+async function getAddEbarimt(req, res) {
+  const { CUSTID } = req.body;
+  const params = [];
+  const query = `INSERT INTO mtc_sc_ebarimt_id (id, cust_id, regno, ebarimt_id, created_at, updated_at, id_check, staff_id, mobile, edit_check)
+  SELECT
+      MTC_SC_ebarimt_id_SEQ.nextval,
+      c.cust_id,
+      c.personal_id AS regno,
+      NULL AS ebarimt_id,
+      c.created_at,
+      NULL AS updated_at,
+      0 AS id_check,
+      NULL AS staff_id,
+      c.contact_num1 AS mobile,
+      NULL AS edit_check
+  FROM
+      ut_sb_customer c
+  WHERE
+      c.cust_type = 'PSN'
+      AND c.cust_id = :CUSTID
+      AND c.cust_id IN (
+          SELECT cust_id
+          FROM ut_sb_subs
+          WHERE status IN ('A', 'S', 'R')
+          AND operator_id NOT IN ('MTC')
+      )
+      AND LENGTH(c.personal_id) = 10`;
+  params.push(CUSTID);
   const data = await oracle_db.queryOrder(query, params);
   return {
     success: true,
@@ -138,4 +180,5 @@ module.exports = {
   getSubsEbarimt,
   getAllEbarimt,
   getUpdateEbarimt,
+  getAddEbarimt,
 };

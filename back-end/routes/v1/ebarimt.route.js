@@ -8,5 +8,6 @@ const ebarimtController = require("../../modules/ebarimt_id");
 // router.get("/subs", ebarimtController.getSubsEbarimt);
 router.get("/", ebarimtController.getAllEbarimt);
 router.put("/", ebarimtController.getUpdateEbarimt);
+router.post("/", ebarimtController.getAddEbarimt);
 
 module.exports = router;
