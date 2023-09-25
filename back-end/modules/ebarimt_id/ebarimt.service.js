@@ -70,6 +70,19 @@ async function getUpdateEbarimt(req, res) {
     data,
   };
 }
+async function getUpdateEditEbarimt(req, res) {
+  const { STAFF_ID, CUST_ID, MOBILE, REGNO, ID } = req.body;
+  const params = [];
+  const query =
+    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, CUST_ID=:CUST_ID, MOBILE=:MOBILE,REGNO=:REGNO, ebarimt_id=NULL WHERE ID = :ID";
+  params.push(STAFF_ID, CUST_ID, MOBILE, REGNO, ID);
+  const data = await oracle_db.queryOrder(query, params);
+
+  return {
+    success: true,
+    data,
+  };
+}
 
 async function getAddEbarimt(req, res) {
   const { CUSTID } = req.body;
@@ -103,6 +116,23 @@ async function getAddEbarimt(req, res) {
   return {
     success: true,
     data,
+  };
+}
+
+async function getIdEbarimt(req, res) {
+  const { id } = req.query;
+  const params = [];
+  const query = ` 
+  SELECT mtc_sc_ebarimt_id.id, mtc_sc_ebarimt_id.cust_id, ut_sb_customer.cust_name, mtc_sc_ebarimt_id.regno, mtc_sc_ebarimt_id.ebarimt_id, mtc_sc_ebarimt_id.created_at, mtc_sc_ebarimt_id.updated_at,
+  mtc_sc_ebarimt_id.id_check, mtc_sc_ebarimt_id.staff_id, mtc_sc_ebarimt_id.mobile, mtc_sc_ebarimt_id.edit_check
+  FROM ut_sb_customer 
+  INNER JOIN mtc_sc_ebarimt_id 
+  ON ut_sb_customer.CUST_ID = mtc_sc_ebarimt_id.CUST_ID 
+  WHERE ID=:ID`;
+  params.push(id);
+  const data = await oracle_db.queryOrder(query, params);
+  return {
+    ...data[0],
   };
 }
 
@@ -180,5 +210,7 @@ module.exports = {
   getSubsEbarimt,
   getAllEbarimt,
   getUpdateEbarimt,
+  getUpdateEditEbarimt,
   getAddEbarimt,
+  getIdEbarimt,
 };

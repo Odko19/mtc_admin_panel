@@ -61,9 +61,29 @@ const getUpdateEbarimt = async (req, res) => {
     });
   }
 };
+const getUpdateEditEbarimt = async (req, res) => {
+  try {
+    const ebarimt = await ebarimtServices.getUpdateEditEbarimt(req, res);
+    res.json(ebarimt);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
 const getAddEbarimt = async (req, res) => {
   try {
     const ebarimt = await ebarimtServices.getAddEbarimt(req, res);
+    res.json(ebarimt);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
+const getIdEbarimt = async (req, res) => {
+  try {
+    const ebarimt = await ebarimtServices.getIdEbarimt(req, res);
     res.json(ebarimt);
   } catch (error) {
     res.json({
@@ -79,5 +99,7 @@ module.exports = {
   getSubsEbarimt,
   getAllEbarimt,
   getUpdateEbarimt,
+  getUpdateEditEbarimt,
   getAddEbarimt,
+  getIdEbarimt,
 };
