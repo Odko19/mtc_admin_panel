@@ -6,7 +6,7 @@ async function getAllOrder(req) {
   let totalDatas;
   let query = "SELECT * FROM MTC_SC_ORDER_FORM WHERE 1 = 1";
   const params = [];
-
+  console.log(location);
   if (location) {
     query += " AND CITY LIKE :location";
     params.push("%" + location.toUpperCase() + "%");

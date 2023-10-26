@@ -1,19 +1,34 @@
 const oracle_db = require("../../db/db_oracle");
 const axios = require("axios");
+const moment = require("moment");
 
 async function getAllEbarimt(req, res) {
-  const { page, limit, begin, end, mobile, regno, ebarimt_id, cust_id } =
-    req.query;
+  const {
+    page,
+    limit,
+    location,
+    begin,
+    end,
+    mobile,
+    regno,
+    ebarimt_id,
+    cust_id,
+  } = req.query;
   let totalDatas;
   // let query = "SELECT * FROM mtc_sc_ebarimt_id WHERE ebarimt_id IS NOT NULL";
   let query = `SELECT mtc_sc_ebarimt_id.id, mtc_sc_ebarimt_id.cust_id, ut_sb_customer.cust_name, mtc_sc_ebarimt_id.regno, mtc_sc_ebarimt_id.ebarimt_id, mtc_sc_ebarimt_id.created_at, mtc_sc_ebarimt_id.updated_at,
-  mtc_sc_ebarimt_id.id_check, mtc_sc_ebarimt_id.staff_id, mtc_sc_ebarimt_id.mobile, mtc_sc_ebarimt_id.edit_check
+  mtc_sc_ebarimt_id.id_check, mtc_sc_ebarimt_id.staff_id, mtc_sc_ebarimt_id.mobile, mtc_sc_ebarimt_id.edit_check, mtc_sc_ebarimt_id.location, mtc_sc_ebarimt_id.horoo
   FROM ut_sb_customer 
   INNER JOIN mtc_sc_ebarimt_id 
   ON ut_sb_customer.CUST_ID = mtc_sc_ebarimt_id.CUST_ID 
   WHERE mtc_sc_ebarimt_id.ebarimt_id IS NOT NULL
   `;
   const params = [];
+  if (location) {
+    query += " AND mtc_sc_ebarimt_id.LOCATION LIKE :location";
+    params.push("%" + location.toUpperCase() + "%");
+  }
+
   if (mobile) {
     query += " AND mtc_sc_ebarimt_id.MOBILE LIKE :mobilePattern";
     const mobilePattern = `%${mobile}%`;
@@ -61,9 +76,11 @@ async function getAllEbarimt(req, res) {
 async function getUpdateEbarimt(req, res) {
   const { ID, STAFF_ID, ID_CHECK } = req.body;
   const params = [];
+  const CHECK_DATE = moment(Date.now()).format("DD-MMM-YY");
+
   const query =
-    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK WHERE ID = :ID";
-  params.push(STAFF_ID, ID_CHECK, ID);
+    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK,CHECK_DATE =:CHECK_DATE WHERE ID = :ID";
+  params.push(STAFF_ID, ID_CHECK, CHECK_DATE, ID);
   const data = await oracle_db.queryOrder(query, params);
   return {
     success: true,
