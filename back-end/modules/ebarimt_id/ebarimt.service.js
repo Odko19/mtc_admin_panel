@@ -76,12 +76,13 @@ async function getAllEbarimt(req, res) {
 async function getUpdateEbarimt(req, res) {
   const { ID, STAFF_ID, ID_CHECK } = req.body;
   const params = [];
-  const CHECK_DATE = moment(Date.now()).format("DD-MMM-YY h:mm:ss");
-
+  // const CHECK_DATE = moment(Date.now()).format("DD-MMM-YY hh:mm:ss");
+  // console.log(CHECK_DATE);
   const query =
-    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK,CHECK_DATE =:CHECK_DATE WHERE ID = :ID";
-  params.push(STAFF_ID, ID_CHECK, CHECK_DATE, ID);
+    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK,CHECK_DATE =CURRENT_TIMESTAMP WHERE ID = :ID";
+  params.push(STAFF_ID, ID_CHECK, ID);
   const data = await oracle_db.queryOrder(query, params);
+
   return {
     success: true,
     data,
