@@ -7,28 +7,39 @@ async function getAllEbarimt(req, res) {
     page,
     limit,
     location,
+    branch,
     begin,
     end,
     mobile,
     regno,
     ebarimt_id,
     cust_id,
+    horoo,
   } = req.query;
   let totalDatas;
   // let query = "SELECT * FROM mtc_sc_ebarimt_id WHERE ebarimt_id IS NOT NULL";
   let query = `SELECT mtc_sc_ebarimt_id.id, mtc_sc_ebarimt_id.cust_id, ut_sb_customer.cust_name, mtc_sc_ebarimt_id.regno, mtc_sc_ebarimt_id.ebarimt_id, mtc_sc_ebarimt_id.created_at, mtc_sc_ebarimt_id.updated_at,
-  mtc_sc_ebarimt_id.id_check, mtc_sc_ebarimt_id.staff_id, mtc_sc_ebarimt_id.mobile, mtc_sc_ebarimt_id.edit_check, mtc_sc_ebarimt_id.location, mtc_sc_ebarimt_id.horoo
+  mtc_sc_ebarimt_id.id_check, mtc_sc_ebarimt_id.staff_id,mtc_sc_ebarimt_id.horoo, mtc_sc_ebarimt_id.mobile, mtc_sc_ebarimt_id.edit_check, mtc_sc_ebarimt_id.location, mtc_sc_ebarimt_id.horoo
   FROM ut_sb_customer 
   INNER JOIN mtc_sc_ebarimt_id 
   ON ut_sb_customer.CUST_ID = mtc_sc_ebarimt_id.CUST_ID 
   WHERE mtc_sc_ebarimt_id.ebarimt_id IS NOT NULL
   `;
+
   const params = [];
   if (location) {
     query += " AND mtc_sc_ebarimt_id.LOCATION LIKE :location";
     params.push("%" + location.toUpperCase() + "%");
   }
 
+  if (branch) {
+    query += " AND mtc_sc_ebarimt_id.BRANCH LIKE :branch";
+    params.push("%" + branch + "%");
+  }
+  if (horoo) {
+    query += " AND mtc_sc_ebarimt_id.HOROO LIKE :horoo";
+    params.push("%" + horoo.toUpperCase() + "%");
+  }
   if (mobile) {
     query += " AND mtc_sc_ebarimt_id.MOBILE LIKE :mobilePattern";
     const mobilePattern = `%${mobile}%`;
@@ -44,12 +55,12 @@ async function getAllEbarimt(req, res) {
     const ebarimtPattern = `%${ebarimt_id}%`;
     params.push(ebarimtPattern);
   }
+
   if (cust_id) {
     query += " AND mtc_sc_ebarimt_id.CUST_ID LIKE :custPattern";
     const custPattern = `%${cust_id}%`;
     params.push(custPattern);
   }
-
   if (begin && end) {
     query +=
       " AND mtc_sc_ebarimt_id.CREATED_AT BETWEEN TO_DATE(:begin, 'YYYY-MM-DD\"T\"HH24:MI:SS') AND TO_DATE(:end, 'YYYY-MM-DD\"T\"HH24:MI:SS')";
@@ -62,8 +73,10 @@ async function getAllEbarimt(req, res) {
     query += ` ORDER BY mtc_sc_ebarimt_id.created_at DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY`;
     params.push(startId, parseInt(limit));
   }
+
   const data = await oracle_db.queryOrder(query, params);
   const totalPages = Math.ceil(totalDatas / limit);
+
   return {
     totalPages,
     totalDatas,
@@ -76,8 +89,6 @@ async function getAllEbarimt(req, res) {
 async function getUpdateEbarimt(req, res) {
   const { ID, STAFF_ID, ID_CHECK } = req.body;
   const params = [];
-  // const CHECK_DATE = moment(Date.now()).format("DD-MMM-YY hh:mm:ss");
-  // console.log(CHECK_DATE);
   const query =
     "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, ID_CHECK = :ID_CHECK,CHECK_DATE =SYSDATE WHERE ID = :ID";
   params.push(STAFF_ID, ID_CHECK, ID);

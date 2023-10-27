@@ -32,10 +32,10 @@ async function getAllUsers(req) {
 }
 
 async function getCreateUser(req) {
-  const { firstName, password, permission, location } = req.body;
+  const { firstName, password, permission, location, branch } = req.body;
   const data = await db_mtc.query(
-    "INSERT INTO  users(firstName, password, permission, location) VALUES (?, ?, ?, ?)",
-    [firstName, password, permission, location]
+    "INSERT INTO  users(firstName, password, permission, location, branch) VALUES (?, ?, ?, ?,?)",
+    [firstName, password, permission, location, branch]
   );
   return {
     success: true,
@@ -44,11 +44,11 @@ async function getCreateUser(req) {
 }
 
 async function getUpdateUser(req) {
-  const { id, firstName, password, permission, location } = req.body;
+  const { id, firstName, password, permission, location, branch } = req.body;
   const data = await db_mtc.query(
     `UPDATE users
-     SET firstName=?, password=?, permission=?, location=? WHERE id=?`,
-    [firstName, password, permission, location, id]
+     SET firstName=?, password=?, permission=?, location=?, branch=? WHERE id=?`,
+    [firstName, password, permission, location, branch, id]
   );
   return {
     success: true,
