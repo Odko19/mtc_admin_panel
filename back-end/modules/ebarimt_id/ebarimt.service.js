@@ -45,6 +45,7 @@ async function getAllEbarimt(req, res) {
     const mobilePattern = `%${mobile}%`;
     params.push(mobilePattern);
   }
+
   if (regno) {
     query += " AND mtc_sc_ebarimt_id.REGNO LIKE :registerPattern";
     const registerPattern = `%${regno}%`;
