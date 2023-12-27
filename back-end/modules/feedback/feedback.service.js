@@ -27,10 +27,10 @@ async function getAllFeedback(req) {
     [5]
   );
   const totalPage = data_count && data_count[0].count / limit;
-  const data = await db_sc.query(
-    ` select * from feedback ORDER BY id asc limit ?, ?`,
-    [JSON.stringify(startId), limit]
-  );
+  const data = await db_sc.query(` select * from feedback ORDER BY id desc `, [
+    JSON.stringify(startId),
+    limit,
+  ]);
   return {
     totalPages: Math.ceil(totalPage),
     totalDatas: data_count[0].count,

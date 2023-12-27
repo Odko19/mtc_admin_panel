@@ -20,7 +20,7 @@ async function getAllWorkplace(req) {
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db_mtc.query(
         `select * from workplace
-         ORDER BY workplace_id desc limit ?, ?`,
+         ORDER BY workplace_id desc `,
         [JSON.stringify(startId), limit]
       );
       const cv = await db_mtc.query(`select * from workplace_cv;`);

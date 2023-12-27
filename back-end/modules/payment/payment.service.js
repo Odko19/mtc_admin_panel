@@ -20,10 +20,7 @@ async function getAllPayment(req) {
     const data = await oracle_db.queryOrder(query, params);
     totalDatas = data.length;
     const startId = (page - 1) * limit;
-    query +=
-      " ORDER BY MTC_SC_PAYMENT_TRANS.CREATED_DATE DESC OFFSET :startId ROWS FETCH NEXT :limit ROWS ONLY";
-    params.startId = startId;
-    params.limit = parseInt(limit);
+    query += " ORDER BY MTC_SC_PAYMENT_TRANS.CREATED_DATE DESC ";
   }
   const data = await oracle_db.queryOrder(query, params);
   const totalPages = Math.ceil(totalDatas / limit);

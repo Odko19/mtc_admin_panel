@@ -19,10 +19,8 @@ async function getAllProduct(req) {
       );
       const totalPage = data_count && data_count[0].count / limit;
       const data = await db_mtc.query(
-        `select * from product ORDER BY created_at desc limit ?, ?`,
-        [JSON.stringify(startId), limit]
+        `select * from product ORDER BY created_at desc `
       );
-
       return {
         totalPages: Math.ceil(totalPage),
         totalDatas: data_count[0].count,

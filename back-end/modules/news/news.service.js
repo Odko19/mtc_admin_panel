@@ -10,7 +10,7 @@ async function getAllNews(req) {
       ` SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at,
           news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
           datediff(news.expires_at, now()) as duration FROM news
-          left JOIN users ON created_by = users.id ORDER BY created_at desc limit ?, ?`,
+          left JOIN users ON created_by = users.id ORDER BY created_at desc `,
       [JSON.stringify(startId), limit]
     );
 
@@ -91,8 +91,8 @@ async function getSearchNews(req) {
     `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at,
           news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
           datediff(news.expires_at, now()) as duration FROM news
-          left JOIN users ON created_by = users.id  where news.title LIKE ? ORDER BY created_at desc limit ?, ? `,
-    [`%${value}%`, JSON.stringify(startId), limit]
+          left JOIN users ON created_by = users.id  where news.title LIKE ? ORDER BY created_at  `,
+    [`%${value}%`]
   );
   const totalPage = data?.length / limit;
 
