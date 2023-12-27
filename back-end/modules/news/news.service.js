@@ -84,6 +84,28 @@ async function getAllNews(req) {
   }
 }
 
+async function getSearchNews(req) {
+  const { limit, page, value } = req.query;
+  const startId = (page - 1) * limit;
+  const data = await db_mtc.query(
+    `SELECT news.id, news.title, news.cover_img, news.body, news.type, news.created_at,
+          news.updated_at, news.expires_at, news.customer_type, users.firstName as created_by,
+          datediff(news.expires_at, now()) as duration FROM news
+          left JOIN users ON created_by = users.id  where news.title LIKE ? ORDER BY created_at desc limit ?, ? `,
+    [`%${value}%`, JSON.stringify(startId), limit]
+  );
+  const totalPage = data?.length / limit;
+
+  return {
+    success: true,
+    totalPages: Math.ceil(totalPage),
+    totalDatas: data?.length,
+    currentPage: JSON.parse(page),
+    currentPageSize: limit,
+    data,
+  };
+}
+
 async function getCreateNews(req) {
   const { title, body, created_by, type, expires_at, customer_type } = req.body;
   let data;
@@ -191,6 +213,7 @@ async function getDeleteNews(req) {
 
 module.exports = {
   getAllNews,
+  getSearchNews,
   getCreateNews,
   getUpdateNews,
   getDeleteNews,

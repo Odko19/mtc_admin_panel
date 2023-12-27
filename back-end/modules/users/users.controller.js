@@ -43,9 +43,21 @@ const getDeleteUser = async (req, res) => {
   }
 };
 
+const getSearchUser = async (req, res) => {
+  try {
+    const user = await usersServices.getSearchUser(req);
+    res.json(user);
+  } catch (error) {
+    res.json({
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getCreateUser,
   getUpdateUser,
   getDeleteUser,
+  getSearchUser,
 };

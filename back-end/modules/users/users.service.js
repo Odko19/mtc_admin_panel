@@ -3,32 +3,26 @@ const bcrypt = require("bcryptjs");
 
 async function getAllUsers(req) {
   const { id, page, limit } = req.query;
-  if (req.query) {
-    if (id) {
-      const data = await db_mtc.query("SELECT * FROM users WHERE id=?", [id]);
-      return {
-        ...data[0],
-      };
-    } else {
-      const startId = (page - 1) * limit;
-      const data_count = await db_mtc.query(
-        "select count(*) as count from users"
-      );
-      const totalPage = data_count && data_count[0].count / limit;
-      const data = await db_mtc.query("select * from users limit ?, ?", [
-        JSON.stringify(startId),
-        limit,
-      ]);
-      return {
-        success: true,
-        totalPages: Math.ceil(totalPage),
-        totalDatas: data_count[0].count,
-        currentPage: JSON.parse(page),
-        currentPageSize: JSON.parse(limit),
-        data,
-      };
-    }
+
+  if (id) {
+    const data = await db_mtc.query("SELECT * FROM users WHERE id=?", [id]);
+    return {
+      ...data[0],
+    };
   }
+  const startId = (page - 1) * limit;
+  const data_count = await db_mtc.query("select count(*) as count from users");
+
+  const totalPage = data_count && data_count[0].count / limit;
+  const data = await db_mtc.query("select * from users order by id desc ");
+
+  return {
+    success: true,
+    totalPages: Math.ceil(totalPage),
+    currentPage: JSON.parse(page),
+    currentPageSize: JSON.parse(limit),
+    data,
+  };
 }
 
 async function getCreateUser(req) {
@@ -70,9 +64,32 @@ async function getDeleteUser(req) {
   };
 }
 
+async function getSearchUser(req) {
+  const { limit, page, value } = req.query;
+  const startId = (page - 1) * limit;
+  const data_count = await db_mtc.query(
+    `SELECT count(*) as count FROM users where users.firstName LIKE ?  `,
+    [`%${value}%`]
+  );
+  const totalPage = data_count[0].count && data_count[0].count / limit;
+  const data = await db_mtc.query(
+    `SELECT * FROM users where users.firstName LIKE ? order by id desc  `,
+    [`%${value}%`]
+  );
+
+  return {
+    success: true,
+    totalPages: Math.ceil(totalPage),
+    currentPage: JSON.parse(page),
+    currentPageSize: JSON.parse(limit),
+    data,
+  };
+}
+
 module.exports = {
   getAllUsers,
   getCreateUser,
   getUpdateUser,
   getDeleteUser,
+  getSearchUser,
 };
