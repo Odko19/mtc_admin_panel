@@ -102,13 +102,17 @@ async function getUpdateEbarimt(req, res) {
   };
 }
 async function getUpdateEditEbarimt(req, res) {
-  const { STAFF_ID, CUST_ID, MOBILE, REGNO, ID } = req.body;
+  const { STAFF_ID, CUST_ID, MOBILE, EBARIMT_ID, REGNO, ID } = req.body;
   const params = [];
-  const query =
-    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, CUST_ID=:CUST_ID, MOBILE=:MOBILE,REGNO=:REGNO, ebarimt_id=NULL WHERE ID = :ID";
-  params.push(STAFF_ID, CUST_ID, MOBILE, REGNO, ID);
-  const data = await oracle_db.queryOrder(query, params);
+  // const query =
+  // "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, CUST_ID=:CUST_ID, MOBILE=:MOBILE, REGNO=:REGNO, ebarimt_id=null WHERE ID = :ID";
+  // params.push(STAFF_ID, CUST_ID, MOBILE, REGNO, ID);
+  // const data = await oracle_db.queryOrder(query, params);
 
+  const query =
+    "UPDATE mtc_sc_ebarimt_id SET STAFF_ID = :STAFF_ID, CUST_ID=:CUST_ID, MOBILE=:MOBILE, REGNO=:REGNO, ebarimt_id=:EBARIMT_ID WHERE ID = :ID";
+  params.push(STAFF_ID, CUST_ID, MOBILE, REGNO, EBARIMT_ID, ID);
+  const data = await oracle_db.queryOrder(query, params);
   return {
     success: true,
     data,
