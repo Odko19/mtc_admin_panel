@@ -9,8 +9,12 @@ async function getCreateImage(req) {
   };
 }
 async function getCreateFile(req) {
+  console.log(req.files);
   const file = req.files.map((file) => {
-    return file.filename;
+    return {
+      file: file.filename,
+      name: file.originalname,
+    };
   });
   return {
     file,
